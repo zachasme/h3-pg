@@ -1,0 +1,417 @@
+\set hexagon '\'880326b88dfffff\''
+\set origin '\'880326b887fffff\''
+\set pentagon '\'831c00fffffffff\''
+SELECT h3_k_ring(:hexagon);
+    h3_k_ring    
+-----------------
+ 880326b88dfffff
+ 880326b8ebfffff
+ 880326b8e3fffff
+ 880326b885fffff
+ 880326b881fffff
+ 880326b889fffff
+ 880326b8c7fffff
+(7 rows)
+
+SELECT h3_k_ring(h3_k_ring(:hexagon));
+    h3_k_ring    
+-----------------
+ 880326b88dfffff
+ 880326b8ebfffff
+ 880326b8e3fffff
+ 880326b885fffff
+ 880326b881fffff
+ 880326b889fffff
+ 880326b8c7fffff
+ 880326b8ebfffff
+ 880326b8e9fffff
+ 880326b8e1fffff
+ 880326b8e3fffff
+ 880326b88dfffff
+ 880326b8c7fffff
+ 880326b8c5fffff
+ 880326b8e3fffff
+ 880326b8e1fffff
+ 880326b8e7fffff
+ 880326b8a9fffff
+ 880326b885fffff
+ 880326b88dfffff
+ 880326b8ebfffff
+ 880326b885fffff
+ 880326b8e3fffff
+ 880326b8a9fffff
+ 880326b8abfffff
+ 880326b887fffff
+ 880326b881fffff
+ 880326b88dfffff
+ 880326b881fffff
+ 880326b88dfffff
+ 880326b885fffff
+ 880326b887fffff
+ 880326b883fffff
+ 880326b88bfffff
+ 880326b889fffff
+ 880326b889fffff
+ 880326b8c7fffff
+ 880326b88dfffff
+ 880326b881fffff
+ 880326b88bfffff
+ 880326b8d5fffff
+ 880326b8c3fffff
+ 880326b8c7fffff
+ 880326b8c5fffff
+ 880326b8ebfffff
+ 880326b88dfffff
+ 880326b889fffff
+ 880326b8c3fffff
+ 880326b8c1fffff
+(49 rows)
+
+SELECT * FROM h3_k_ring_distances(:hexagon);
+      index      | distance 
+-----------------+----------
+ 880326b88dfffff |        0
+ 880326b8ebfffff |        1
+ 880326b8e3fffff |        1
+ 880326b885fffff |        1
+ 880326b881fffff |        1
+ 880326b889fffff |        1
+ 880326b8c7fffff |        1
+(7 rows)
+
+SELECT h3_k_ring_distances(:pentagon);
+ h3_k_ring_distances 
+---------------------
+ (831c04fffffffff,1)
+ (831c05fffffffff,1)
+ (831c06fffffffff,1)
+ (831c00fffffffff,0)
+ (831c02fffffffff,1)
+ (831c03fffffffff,1)
+(6 rows)
+
+SELECT h3_k_ring(:hexagon);
+    h3_k_ring    
+-----------------
+ 880326b88dfffff
+ 880326b8ebfffff
+ 880326b8e3fffff
+ 880326b885fffff
+ 880326b881fffff
+ 880326b889fffff
+ 880326b8c7fffff
+(7 rows)
+
+SELECT h3_hex_range(:hexagon);
+  h3_hex_range   
+-----------------
+ 880326b88dfffff
+ 880326b8ebfffff
+ 880326b8e3fffff
+ 880326b885fffff
+ 880326b881fffff
+ 880326b889fffff
+ 880326b8c7fffff
+(7 rows)
+
+SELECT h3_k_ring(:hexagon, 2);
+    h3_k_ring    
+-----------------
+ 880326b88dfffff
+ 880326b8ebfffff
+ 880326b8e3fffff
+ 880326b885fffff
+ 880326b881fffff
+ 880326b889fffff
+ 880326b8c7fffff
+ 880326b8c5fffff
+ 880326b8e9fffff
+ 880326b8e1fffff
+ 880326b8e7fffff
+ 880326b8a9fffff
+ 880326b8abfffff
+ 880326b887fffff
+ 880326b883fffff
+ 880326b88bfffff
+ 880326b8d5fffff
+ 880326b8c3fffff
+ 880326b8c1fffff
+(19 rows)
+
+SELECT h3_hex_range(:hexagon, 2);
+  h3_hex_range   
+-----------------
+ 880326b88dfffff
+ 880326b8ebfffff
+ 880326b8e3fffff
+ 880326b885fffff
+ 880326b881fffff
+ 880326b889fffff
+ 880326b8c7fffff
+ 880326b8c5fffff
+ 880326b8e9fffff
+ 880326b8e1fffff
+ 880326b8e7fffff
+ 880326b8a9fffff
+ 880326b8abfffff
+ 880326b887fffff
+ 880326b883fffff
+ 880326b88bfffff
+ 880326b8d5fffff
+ 880326b8c3fffff
+ 880326b8c1fffff
+(19 rows)
+
+SELECT * FROM h3_hex_range_distances(:hexagon, 2);
+      index      | distance 
+-----------------+----------
+ 880326b88dfffff |        0
+ 880326b8ebfffff |        1
+ 880326b8e3fffff |        1
+ 880326b885fffff |        1
+ 880326b881fffff |        1
+ 880326b889fffff |        1
+ 880326b8c7fffff |        1
+ 880326b8c5fffff |        2
+ 880326b8e9fffff |        2
+ 880326b8e1fffff |        2
+ 880326b8e7fffff |        2
+ 880326b8a9fffff |        2
+ 880326b8abfffff |        2
+ 880326b887fffff |        2
+ 880326b883fffff |        2
+ 880326b88bfffff |        2
+ 880326b8d5fffff |        2
+ 880326b8c3fffff |        2
+ 880326b8c1fffff |        2
+(19 rows)
+
+SELECT h3_hex_range(:hexagon);
+  h3_hex_range   
+-----------------
+ 880326b88dfffff
+ 880326b8ebfffff
+ 880326b8e3fffff
+ 880326b885fffff
+ 880326b881fffff
+ 880326b889fffff
+ 880326b8c7fffff
+(7 rows)
+
+SELECT h3_hex_range('880326b8ebfffff');
+  h3_hex_range   
+-----------------
+ 880326b8ebfffff
+ 880326b8e9fffff
+ 880326b8e1fffff
+ 880326b8e3fffff
+ 880326b88dfffff
+ 880326b8c7fffff
+ 880326b8c5fffff
+(7 rows)
+
+SELECT h3_hex_ranges('{880326b88dfffff,880326b8ebfffff}'::h3index[]);
+  h3_hex_ranges  
+-----------------
+ 880326b88dfffff
+ 880326b8ebfffff
+ 880326b8e3fffff
+ 880326b885fffff
+ 880326b881fffff
+ 880326b889fffff
+ 880326b8c7fffff
+ 880326b8ebfffff
+ 880326b8e9fffff
+ 880326b8e1fffff
+ 880326b8e3fffff
+ 880326b88dfffff
+ 880326b8c7fffff
+ 880326b8c5fffff
+(14 rows)
+
+SELECT h3_hex_range(:hexagon, 2);
+  h3_hex_range   
+-----------------
+ 880326b88dfffff
+ 880326b8ebfffff
+ 880326b8e3fffff
+ 880326b885fffff
+ 880326b881fffff
+ 880326b889fffff
+ 880326b8c7fffff
+ 880326b8c5fffff
+ 880326b8e9fffff
+ 880326b8e1fffff
+ 880326b8e7fffff
+ 880326b8a9fffff
+ 880326b8abfffff
+ 880326b887fffff
+ 880326b883fffff
+ 880326b88bfffff
+ 880326b8d5fffff
+ 880326b8c3fffff
+ 880326b8c1fffff
+(19 rows)
+
+SELECT h3_hex_ring(:hexagon, 1);
+   h3_hex_ring   
+-----------------
+ 880326b8c7fffff
+ 880326b8ebfffff
+ 880326b8e3fffff
+ 880326b885fffff
+ 880326b881fffff
+ 880326b889fffff
+(6 rows)
+
+SELECT h3_hex_ring(:hexagon, 2);
+   h3_hex_ring   
+-----------------
+ 880326b8c1fffff
+ 880326b8c5fffff
+ 880326b8e9fffff
+ 880326b8e1fffff
+ 880326b8e7fffff
+ 880326b8a9fffff
+ 880326b8abfffff
+ 880326b887fffff
+ 880326b883fffff
+ 880326b88bfffff
+ 880326b8d5fffff
+ 880326b8c3fffff
+(12 rows)
+
+SELECT h3_h3_get_resolution(:hexagon);
+ h3_h3_get_resolution 
+----------------------
+                    8
+(1 row)
+
+SELECT h3_h3_get_resolution(h3_k_ring(:hexagon));
+ h3_h3_get_resolution 
+----------------------
+                    8
+                    8
+                    8
+                    8
+                    8
+                    8
+                    8
+(7 rows)
+
+SELECT h3_h3_get_resolution(h3_hex_range(:hexagon));
+ h3_h3_get_resolution 
+----------------------
+                    8
+                    8
+                    8
+                    8
+                    8
+                    8
+                    8
+(7 rows)
+
+SELECT h3_k_ring(:pentagon);
+    h3_k_ring    
+-----------------
+ 831c04fffffffff
+ 831c05fffffffff
+ 831c06fffffffff
+ 831c00fffffffff
+ 831c02fffffffff
+ 831c03fffffffff
+(6 rows)
+
+SELECT h3_k_ring(h3_k_ring(:pentagon));
+    h3_k_ring    
+-----------------
+ 831c04fffffffff
+ 831c05fffffffff
+ 831c06fffffffff
+ 831c00fffffffff
+ 831c23fffffffff
+ 831c22fffffffff
+ 831c31fffffffff
+ 831c2efffffffff
+ 831c05fffffffff
+ 831c04fffffffff
+ 831c00fffffffff
+ 831c2afffffffff
+ 831c23fffffffff
+ 831c03fffffffff
+ 831c04fffffffff
+ 831c33fffffffff
+ 831c06fffffffff
+ 831c15fffffffff
+ 831c00fffffffff
+ 831c02fffffffff
+ 831c31fffffffff
+ 831c04fffffffff
+ 831c05fffffffff
+ 831c06fffffffff
+ 831c00fffffffff
+ 831c02fffffffff
+ 831c03fffffffff
+ 831c03fffffffff
+ 831c15fffffffff
+ 831c06fffffffff
+ 831c1cfffffffff
+ 831c00fffffffff
+ 831c02fffffffff
+ 831c11fffffffff
+ 831c00fffffffff
+ 831c05fffffffff
+ 831c02fffffffff
+ 831c1cfffffffff
+ 831c1dfffffffff
+ 831c2afffffffff
+ 831c03fffffffff
+(41 rows)
+
+SELECT h3_h3_get_resolution(:pentagon);
+ h3_h3_get_resolution 
+----------------------
+                    3
+(1 row)
+
+SELECT h3_h3_get_resolution(h3_k_ring(:pentagon));
+ h3_h3_get_resolution 
+----------------------
+                    3
+                    3
+                    3
+                    3
+                    3
+                    3
+(6 rows)
+
+SELECT h3_h3_indexes_are_neighbors(:hexagon, '880326b8ebfffff'), h3_h3_indexes_are_neighbors('880326b881fffff', '880326b8ebfffff');
+ h3_h3_indexes_are_neighbors | h3_h3_indexes_are_neighbors 
+-----------------------------+-----------------------------
+ t                           | f
+(1 row)
+
+SELECT h3_distance('880326b881fffff', '880326b885fffff');
+ h3_distance 
+-------------
+           1
+(1 row)
+
+SELECT h3_distance('880326b881fffff', h3_h3_to_parent('880326b885fffff'));
+ h3_distance 
+-------------
+          -1
+(1 row)
+
+SELECT h3_experimental_h3_to_local_ij(:origin, :hexagon);
+ h3_experimental_h3_to_local_ij 
+--------------------------------
+ (1478,456)
+(1 row)
+
+SELECT :hexagon, h3_experimental_local_ij_to_h3(:origin, h3_experimental_h3_to_local_ij(:origin, :hexagon));
+    ?column?     | h3_experimental_local_ij_to_h3 
+-----------------+--------------------------------
+ 880326b88dfffff | 880326b88dfffff
+(1 row)
+

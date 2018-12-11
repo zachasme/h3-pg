@@ -1,0 +1,15 @@
+# C
+*.o
+*.bc
+*.so
+
+# Test results
+test/regression.*
+test/results
+
+# Generated SQL files
+sql/h3--?.?.?.sql
+!sql/h3--?.?.?--*.sql
+
+# IDEs
+.vscode

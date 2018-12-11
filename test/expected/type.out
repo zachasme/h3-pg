@@ -1,0 +1,42 @@
+\set geometry POINT('64.7498111652365,89.5695822308866')
+\set resolution 8
+\set hexagon '\'880326b88dfffff\''
+\set pentagon '\'844c001ffffffff\''
+\set pentagon_edgecross '\'831c00fffffffff\''
+-- Type conversions
+SELECT h3_string_to_h3(h3_h3_to_string(:hexagon));
+ h3_string_to_h3 
+-----------------
+ 880326b88dfffff
+(1 row)
+
+SELECT h3_h3_to_string(h3_string_to_h3(:hexagon));
+ h3_h3_to_string 
+-----------------
+ 880326b88dfffff
+(1 row)
+
+SELECT h3_string_to_h3(:hexagon) = h3_string_to_h3(:hexagon);
+ ?column? 
+----------
+ t
+(1 row)
+
+SELECT h3_string_to_h3(:hexagon) = h3_string_to_h3(:pentagon);
+ ?column? 
+----------
+ f
+(1 row)
+
+SELECT h3_string_to_h3(:hexagon) <> h3_string_to_h3(:hexagon);
+ ?column? 
+----------
+ f
+(1 row)
+
+SELECT h3_string_to_h3(:hexagon) <> h3_string_to_h3(:pentagon);
+ ?column? 
+----------
+ t
+(1 row)
+
