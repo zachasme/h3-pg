@@ -69,6 +69,9 @@ PG_FUNCTION_INFO_V1(h3_h3_to_geo_boundary);
 Datum h3_h3_to_geo_boundary(PG_FUNCTION_ARGS)
 {
     H3Index *idx = PG_GETARG_H3_INDEX_P(0);
+    bool extend = PG_GETARG_BOOL(1);
+
+    double delta, firstLon, lon, lat;
 
     int size;
     POLYGON *polygon;
@@ -80,10 +83,23 @@ Datum h3_h3_to_geo_boundary(PG_FUNCTION_ARGS)
     SET_VARSIZE(polygon, size);
     polygon->npts = boundary.numVerts;
 
+    firstLon = boundary.verts[0].lon;
+    if (firstLon < 0) {
+      delta = - 2 * M_PI;
+    } else {
+      delta = + 2 * M_PI;
+    }
+
     for (int v = 0; v < boundary.numVerts; v++)
     {
-        polygon->p[v].x = radsToDegs(boundary.verts[v].lon);
-        polygon->p[v].y = radsToDegs(boundary.verts[v].lat);
+        lon = boundary.verts[v].lon;
+        lat = boundary.verts[v].lat;
+
+        if (extend && abs(lon - firstLon) > M_PI) // check if different sign
+          lon = lon + delta;
+
+        polygon->p[v].x = radsToDegs(lon);
+        polygon->p[v].y = radsToDegs(lat);
     }
 
     PG_RETURN_POLYGON_P(polygon);

@@ -21,3 +21,6 @@ SELECT h3_h3_to_geo_boundary(:pentagon_edgecross);
 
 SELECT h3_h3_to_geo('880326b88dfffff');
 SELECT h3_geo_to_h3(POINT('64.7498111652365,89.5695822308866'), 8);
+
+SELECT h3_h3_to_geo_boundary('80dbfffffffffff');
+SELECT h3_h3_to_geo_boundary('80dbfffffffffff', true);

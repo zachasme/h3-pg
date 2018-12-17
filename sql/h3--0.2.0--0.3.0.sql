@@ -47,7 +47,7 @@ CREATE FUNCTION __h3_h3_to_children_aux(index h3index, resolution integer, curre
             END LOOP;
         ELSE
             RETURN NEXT index;
-        END IF;     
+        END IF;
     END;$$ LANGUAGE plpgsql;
 CREATE FUNCTION h3_h3_to_children_slow(index h3index, resolution integer DEFAULT -1) RETURNS SETOF h3index
     AS $$ SELECT __h3_h3_to_children_aux($1, $2, -1) $$ LANGUAGE SQL;
