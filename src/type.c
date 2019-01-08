@@ -95,7 +95,7 @@ Datum h3index_cmp(PG_FUNCTION_ARGS)
     {
         PG_RETURN_INT32(1);
     }
-    else if (a == b)
+    else if (*a == *b)
     {
         PG_RETURN_INT32(0);
     }

@@ -1,19 +1,19 @@
 {
-    "name": "h3",
-    "abstract": "PostgreSQL bindings for H3",
-    "version": "0.3.1",
-    "maintainer": "Bytes & Brains <developers@bytesandbrains.com>",
-    "license": "apache_2_0",
-    "provides": {
-        "h3": {
-            "abstract": "PostgreSQL bindings for H3",
-            "file": "sql/h3--0.3.1.sql",
-            "docfile": "README.md",
-            "version": "0.3.1"
-        }
-    },
-    "meta-spec": {
-        "version": "1.0.0",
-        "url": "http://pgxn.org/meta/spec.txt"
+  "name": "h3",
+  "abstract": "PostgreSQL bindings for H3",
+  "version": "0.3.2",
+  "maintainer": "Bytes & Brains <developers@bytesandbrains.com>",
+  "license": "apache_2_0",
+  "provides": {
+    "h3": {
+      "abstract": "PostgreSQL bindings for H3",
+      "file": "sql/h3--0.3.2.sql",
+      "docfile": "README.md",
+      "version": "0.3.2"
     }
- }
+  },
+  "meta-spec": {
+    "version": "1.0.0",
+    "url": "http://pgxn.org/meta/spec.txt"
+  }
+}

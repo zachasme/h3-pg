@@ -13,3 +13,8 @@ SELECT h3_string_to_h3(:hexagon) = h3_string_to_h3(:pentagon);
 
 SELECT h3_string_to_h3(:hexagon) <> h3_string_to_h3(:hexagon);
 SELECT h3_string_to_h3(:hexagon) <> h3_string_to_h3(:pentagon);
+
+--- B-Tree operators
+CREATE TABLE h3_test_type (hex h3index PRIMARY KEY);
+INSERT INTO h3_test_type (hex) SELECT * from h3_basecells();
+SELECT * FROM h3_test_type WHERE hex = '801dfffffffffff';
