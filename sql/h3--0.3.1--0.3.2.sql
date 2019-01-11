@@ -15,6 +15,6 @@
  */
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "ALTER EXTENSION h3 UPDATE TO '0.3.1'" to load this file. \quit
+\echo Use "ALTER EXTENSION h3 UPDATE TO '0.3.2'" to load this file. \quit
 
 -- NO CHANGES HERE, ONLY IN C FILES
