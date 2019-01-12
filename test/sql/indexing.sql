@@ -6,6 +6,7 @@
 \set pentagon '\'831c00fffffffff\'::h3index'
 \set edgecross '\'8003fffffffffff\'::h3index'
 \set resolution 3
+
 --
 -- TEST h3_h3_to_geo and h3_geo_to_h3
 --
