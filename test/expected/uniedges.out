@@ -1,92 +1,63 @@
-\set hexagon '\'880326b885fffff\''
-\set neighbor '\'880326b887fffff\''
-\set pentagon '\'831c00fffffffff\''
-\set uniedge 'h3_get_h3_unidirectional_edge(:hexagon, :neighbor)'
-SELECT :uniedge;
- h3_get_h3_unidirectional_edge 
--------------------------------
- 1180326b885fffff
-(1 row)
+\pset tuples_only on
+\set hexagon '\'880326b885fffff\'::h3index'
+\set neighbor '\'880326b887fffff\'::h3index'
+\set pentagon '\'831c00fffffffff\'::h3index'
+\set uniedge '\'1180326b885fffff\'::h3index'
+--
+-- TEST h3_h3_indexes_are_neighbors
+--
+SELECT h3_h3_indexes_are_neighbors(:hexagon, :neighbor);
+ t
 
-SELECT h3_h3_indexes_are_neighbors(:hexagon, :neighbor), TRUE expected;
- h3_h3_indexes_are_neighbors | expected 
------------------------------+----------
- t                           | t
-(1 row)
+SELECT NOT h3_h3_indexes_are_neighbors(:hexagon, :hexagon);
+ t
 
-SELECT h3_h3_indexes_are_neighbors(:hexagon, :hexagon), FALSE expected;
- h3_h3_indexes_are_neighbors | expected 
------------------------------+----------
- f                           | f
-(1 row)
+--
+-- TEST h3_get_h3_unidirectional_edge
+--
+SELECT h3_get_h3_unidirectional_edge(:hexagon, :neighbor) = :uniedge;
+ t
 
-SELECT h3_h3_unidirectional_edge_is_valid(:uniedge), TRUE expected;
- h3_h3_unidirectional_edge_is_valid | expected 
-------------------------------------+----------
- t                                  | t
-(1 row)
+--
+-- TEST h3_h3_unidirectional_edge_is_valid
+--
+SELECT h3_h3_unidirectional_edge_is_valid(:uniedge);
+ t
 
-SELECT h3_h3_unidirectional_edge_is_valid(:hexagon), FALSE expected;
- h3_h3_unidirectional_edge_is_valid | expected 
-------------------------------------+----------
- f                                  | f
-(1 row)
+SELECT NOT h3_h3_unidirectional_edge_is_valid(:hexagon);
+ t
 
-SELECT
-	h3_get_origin_h3_index_from_unidirectional_edge(:uniedge),
-	:hexagon expected;
- h3_get_origin_h3_index_from_unidirectional_edge |    expected     
--------------------------------------------------+-----------------
- 880326b885fffff                                 | 880326b885fffff
-(1 row)
+--
+-- TEST h3_get_origin_h3_index_from_unidirectional_edge and
+--      h3_get_destination_h3_index_from_unidirectional_edge
+--
+SELECT h3_get_origin_h3_index_from_unidirectional_edge(:uniedge) = :hexagon
+AND h3_get_destination_h3_index_from_unidirectional_edge(:uniedge) = :neighbor;
+ t
 
-SELECT
-	h3_get_destination_h3_index_from_unidirectional_edge(:uniedge),
-	:neighbor expected;
- h3_get_destination_h3_index_from_unidirectional_edge |    expected     
-------------------------------------------------------+-----------------
- 880326b887fffff                                      | 880326b887fffff
-(1 row)
+--
+-- TEST h3_get_h3_indexes_from_unidirectional_edge
+--
+SELECT h3_get_h3_indexes_from_unidirectional_edge(:uniedge) = (:hexagon, :neighbor);
+ t
 
-SELECT
-	h3_get_h3_indexes_from_unidirectional_edge(:uniedge),
-	(:hexagon, :neighbor) expected;
- h3_get_h3_indexes_from_unidirectional_edge |             expected              
---------------------------------------------+-----------------------------------
- (880326b885fffff,880326b887fffff)          | (880326b885fffff,880326b887fffff)
-(1 row)
-
-SELECT array_length(array_agg(edge), 1), 6 expected FROM (
+--
+-- TEST h3_get_h3_unidirectional_edges_from_hexagon
+--
+SELECT array_length(array_agg(edge), 1) = 6 FROM (
 	SELECT h3_get_h3_unidirectional_edges_from_hexagon(:hexagon) edge
 ) q;
- array_length | expected 
---------------+----------
-            6 |        6
-(1 row)
+ t
 
-SELECT array_length(array_agg(edge), 1), 5 expected FROM (
+SELECT array_length(array_agg(edge), 1) = 5 expected FROM (
 	SELECT h3_get_h3_unidirectional_edges_from_hexagon(:pentagon) edge
 ) q;
- array_length | expected 
---------------+----------
-            5 |        5
-(1 row)
+ t
 
-SELECT h3_get_origin_h3_index_from_unidirectional_edge(h3_get_h3_unidirectional_edges_from_hexagon(:hexagon)),
-	h3_get_destination_h3_index_from_unidirectional_edge(h3_get_h3_unidirectional_edges_from_hexagon(:hexagon));
- h3_get_origin_h3_index_from_unidirectional_edge | h3_get_destination_h3_index_from_unidirectional_edge 
--------------------------------------------------+------------------------------------------------------
- 880326b885fffff                                 | 880326b887fffff
- 880326b885fffff                                 | 880326b8a9fffff
- 880326b885fffff                                 | 880326b8abfffff
- 880326b885fffff                                 | 880326b88dfffff
- 880326b885fffff                                 | 880326b881fffff
- 880326b885fffff                                 | 880326b8e3fffff
-(6 rows)
-
-SELECT h3_get_unidirectional_edge_boundary(:uniedge);
-                    h3_get_unidirectional_edge_boundary                    
----------------------------------------------------------------------------
- ((89.5830164946548,64.7146398954916),(89.5790678021742,64.2872231517217))
-(1 row)
+--
+-- TEST h3_get_unidirectional_edge_boundary
+--
+SELECT h3_get_unidirectional_edge_boundary(:uniedge)
+	~= polygon '((89.5830164946548,64.7146398954916),(89.5790678021742,64.2872231517217))'
+ t
 
