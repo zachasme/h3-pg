@@ -1,20 +1,25 @@
-\set geometry POINT('64.7498111652365,89.5695822308866')
-\set resolution 8
-\set hexagon '\'880326b88dfffff\''
-\set pentagon '\'844c001ffffffff\''
-\set pentagon_edgecross '\'831c00fffffffff\''
+\pset tuples_only on
+\set string '\'801dfffffffffff\''
+\set hexagon ':string::h3index'
+\set pentagon '\'844c001ffffffff\'::h3index'
 
 -- Type conversions
-SELECT h3_string_to_h3(h3_h3_to_string(:hexagon));
-SELECT h3_h3_to_string(h3_string_to_h3(:hexagon));
+SELECT h3_string_to_h3(h3_h3_to_string(:hexagon)) = :hexagon;
+SELECT h3_h3_to_string(h3_string_to_h3(:string))::text = :string::text;
 
-SELECT h3_string_to_h3(:hexagon) = h3_string_to_h3(:hexagon);
-SELECT h3_string_to_h3(:hexagon) = h3_string_to_h3(:pentagon);
+--
+-- TEST operators
+--
+SELECT :hexagon = :hexagon;
+SELECT NOT :hexagon = :pentagon;
+SELECT NOT :hexagon <> :hexagon;
+SELECT :hexagon <> :pentagon;
 
-SELECT h3_string_to_h3(:hexagon) <> h3_string_to_h3(:hexagon);
-SELECT h3_string_to_h3(:hexagon) <> h3_string_to_h3(:pentagon);
-
---- B-Tree operators
+--
+-- TEST b-tree index
+--
 CREATE TABLE h3_test_type (hex h3index PRIMARY KEY);
 INSERT INTO h3_test_type (hex) SELECT * from h3_basecells();
-SELECT * FROM h3_test_type WHERE hex = '801dfffffffffff';
+SELECT hex = :hexagon FROM (
+    SELECT hex FROM h3_test_type WHERE hex = :hexagon
+) q;
