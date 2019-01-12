@@ -1,44 +1,107 @@
+\pset tuples_only on
 \set hexagon '\'880326b88dfffff\''
 \set origin '\'880326b887fffff\''
 \set pentagon '\'831c00fffffffff\''
 
-SELECT h3_k_ring(:hexagon);
-SELECT h3_k_ring(h3_k_ring(:hexagon));
-SELECT * FROM h3_k_ring_distances(:hexagon);
+--
+-- TEST h3_k_ring and h3_hex_ring
+--
 
-SELECT h3_k_ring_distances(:pentagon);
+-- kRing 0 is input index
 
-SELECT h3_k_ring(:hexagon);
-SELECT h3_hex_range(:hexagon);
-SELECT h3_k_ring(:hexagon, 2);
-SELECT h3_hex_range(:hexagon, 2);
-SELECT * FROM h3_hex_range_distances(:hexagon, 2);
+SELECT h3_k_ring(:hexagon, 0) = :hexagon;
 
-SELECT h3_hex_range(:hexagon);
-SELECT h3_hex_range('880326b8ebfffff');
-SELECT h3_hex_ranges('{880326b88dfffff,880326b8ebfffff}'::h3index[]);
+-- kRing 2 is same as sum of hexRing 0, 1 and 2
 
-SELECT h3_hex_range(:hexagon, 2);
-SELECT h3_hex_ring(:hexagon, 1);
-SELECT h3_hex_ring(:hexagon, 2);
+SELECT array_agg(r) is null FROM (
+    SELECT h3_k_ring(:hexagon, 2) r
+    EXCEPT (
+        SELECT h3_hex_ring(:hexagon, 0) r
+        UNION SELECT h3_hex_ring(:hexagon, 1) r
+        UNION SELECT h3_hex_ring(:hexagon, 2) r
+    )
+) q;
 
-SELECT h3_h3_get_resolution(:hexagon);
-SELECT h3_h3_get_resolution(h3_k_ring(:hexagon));
-SELECT h3_h3_get_resolution(h3_hex_range(:hexagon));
+--
+-- TEST h3_k_ring_distances
+--
 
-SELECT h3_k_ring(:pentagon);
-SELECT h3_k_ring(h3_k_ring(:pentagon));
+-- correct number of indexes at distances 0, 1 and 2 for k=2
+SELECT COUNT(index) filter (WHERE distance = 0) = 1
+AND COUNT(index) filter (WHERE distance = 1) = 6
+AND COUNT(index) filter (WHERE distance = 2) = 12
+FROM (
+    SELECT index, distance FROM h3_k_ring_distances(:hexagon, 2)
+) q;
 
-SELECT h3_h3_get_resolution(:pentagon);
-SELECT h3_h3_get_resolution(h3_k_ring(:pentagon));
+-- same for pentagon
+SELECT COUNT(index) filter (WHERE distance = 0) = 1
+AND COUNT(index) filter (WHERE distance = 1) = 5
+AND COUNT(index) filter (WHERE distance = 2) = 10
+FROM (
+    SELECT index, distance FROM h3_k_ring_distances(:pentagon, 2)
+) q;
 
-SELECT h3_h3_indexes_are_neighbors(:hexagon, '880326b8ebfffff'), h3_h3_indexes_are_neighbors('880326b881fffff', '880326b8ebfffff');
+--
+-- TEST h3_hex_range
+--
 
-SELECT h3_distance('880326b881fffff', '880326b885fffff');
-SELECT h3_distance('880326b881fffff', h3_h3_to_parent('880326b885fffff'));
+-- hexRange 0 is input index
 
-SELECT h3_line('841c023ffffffff', '841c025ffffffff');
+SELECT h3_hex_range(:hexagon, 0) = :hexagon;
 
-SELECT h3_experimental_h3_to_local_ij(:origin, :hexagon);
+-- last elements of hex_range k=2 is same as hex ring k=2 (since it is sorted)
+SELECT array_agg(r) is null FROM (
+    SELECT h3_hex_ring(:hexagon, 2) r
+    EXCEPT SELECT h3_hex_range(:hexagon, 2) r OFFSET 6
+) q;
 
-SELECT :hexagon, h3_experimental_local_ij_to_h3(:origin, h3_experimental_h3_to_local_ij(:origin, :hexagon));
+
+--
+-- TEST h3_hex_range_distances
+--
+
+-- correct number of indexes at distances 0, 1 and 2 for k=2
+SELECT COUNT(index) filter (WHERE distance = 0) = 1
+AND COUNT(index) filter (WHERE distance = 1) = 6
+AND COUNT(index) filter (WHERE distance = 2) = 12
+FROM (
+    SELECT index, distance FROM h3_hex_range_distances(:hexagon, 2)
+) q;
+
+--
+-- TEST h3_hex_ranges
+--
+
+-- hex ranges is sum of hex range on all elements
+SELECT array_agg(r) is null FROM (
+    SELECT h3_hex_ranges(ARRAY['841c023ffffffff', '841c027ffffffff']::h3index[], 2) r
+    EXCEPT (
+        SELECT h3_hex_range('841c023ffffffff', 2) r
+        UNION SELECT h3_hex_range('841c027ffffffff', 2) r
+    )
+) q;
+
+--
+-- TEST h3_line
+--
+
+SELECT ARRAY(SELECT h3_line('841c023ffffffff', '841c025ffffffff'))
+    = ARRAY['841c023ffffffff','841c027ffffffff','841c025ffffffff']::h3index[];
+
+--
+-- TEST h3_distance
+--
+
+-- returns 1 for indexes with one index between them
+SELECT h3_distance('880326b881fffff', '880326b885fffff') = 1;
+
+-- returns -1 for invalid inputs
+SELECT h3_distance('880326b881fffff', h3_h3_to_parent('880326b885fffff')) = -1;
+
+--
+-- TEST h3_experimental_h3_to_local_ij and h3_experimental_local_ij_to_h3
+--
+
+-- they are inverse of each others
+SELECT :hexagon = h3_experimental_local_ij_to_h3(:origin, h3_experimental_h3_to_local_ij(:origin, :hexagon));
