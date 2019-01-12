@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed B-Tree operators, now indexing works.
 
-## [0.3.1] - 2018-07-10
+## [0.3.1] - 2018-12-17
 ### Changed
 - Added flag `extend` such that polygons returned by `h3_h3_to_geo_boundary` are not wrapped at 180th meridian.
 
