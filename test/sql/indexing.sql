@@ -1,26 +1,44 @@
-\set geometry POINT('64.7498111652365,89.5695822308866')
-\set resolution 8
-\set hexagon '\'880326b88dfffff\''
-\set pentagon '\'844c001ffffffff\''
-\set pentagon_edgecross '\'831c00fffffffff\''
+\pset tuples_only on
 
--- Index/coord conversions
-SELECT h3_h3_to_geo(idx), h3_h3_get_resolution(idx) FROM (
-    SELECT h3_geo_to_h3(:geometry, :resolution) AS idx
+-- neighbouring indexes (one hexagon, one pentagon) at resolution 3
+\set geo POINT(-144.52399108028, 49.7165031828995)
+\set hexagon '\'831c02fffffffff\'::h3index'
+\set pentagon '\'831c00fffffffff\'::h3index'
+\set edgecross '\'8003fffffffffff\'::h3index'
+\set resolution 3
+--
+-- TEST h3_h3_to_geo and h3_geo_to_h3
+--
+
+-- convertion to geo works
+SELECT h3_h3_to_geo(:hexagon) ~= :geo;
+
+-- convertion to h3 index works
+SELECT h3_geo_to_h3(:geo, :resolution) = :hexagon;
+
+-- h3_h3_to_geo is inverse of h3_geo_to_h3
+SELECT h3_h3_to_geo(i) ~= :geo AND h3_h3_get_resolution(i) = :resolution FROM (
+    SELECT h3_geo_to_h3(:geo, :resolution) AS i
 ) AS q;
-SELECT h3_geo_to_h3(geo, res) FROM (
-    SELECT h3_h3_to_geo(:hexagon) AS geo, h3_h3_get_resolution(:hexagon) AS res
+-- h3_geo_to_h3 is inverse of h3_h3_to_geo
+SELECT h3_geo_to_h3(g, r) = :hexagon FROM (
+    SELECT h3_h3_to_geo(:hexagon) AS g, h3_h3_get_resolution(:hexagon) AS r
 ) AS q;
-SELECT h3_geo_to_h3(geo, res) FROM (
-    SELECT h3_h3_to_geo(:pentagon) AS geo, h3_h3_get_resolution(:pentagon) AS res
+-- same for pentagon
+SELECT h3_geo_to_h3(g, r) = :pentagon FROM (
+    SELECT h3_h3_to_geo(:pentagon) AS g, h3_h3_get_resolution(:pentagon) AS r
 ) AS q;
 
-SELECT h3_h3_to_geo_boundary(:hexagon);
-SELECT h3_h3_to_geo_boundary(:pentagon);
-SELECT h3_h3_to_geo_boundary(:pentagon_edgecross);
+--
+-- TEST h3_h3_to_geo_boundary
+--
 
-SELECT h3_h3_to_geo('880326b88dfffff');
-SELECT h3_geo_to_h3(POINT('64.7498111652365,89.5695822308866'), 8);
+-- polyfill of geo boundary returns original index
+SELECT h3_polyfill(h3_h3_to_geo_boundary(:hexagon), null, :resolution) = :hexagon;
 
-SELECT h3_h3_to_geo_boundary('80dbfffffffffff');
-SELECT h3_h3_to_geo_boundary('80dbfffffffffff', true);
+-- same for pentagon
+SELECT h3_polyfill(h3_h3_to_geo_boundary(:pentagon), null, :resolution) = :pentagon;
+
+-- the boundary of an edgecrossing index is different with flag set to true
+SELECT h3_h3_to_geo_boundary(:hexagon) ~= h3_h3_to_geo_boundary(:hexagon, true)
+AND NOT h3_h3_to_geo_boundary(:edgecross) ~= h3_h3_to_geo_boundary(:edgecross, true);

@@ -1,72 +1,52 @@
-\set geometry POINT('64.7498111652365,89.5695822308866')
-\set resolution 8
-\set hexagon '\'880326b88dfffff\''
-\set pentagon '\'844c001ffffffff\''
-\set pentagon_edgecross '\'831c00fffffffff\''
--- Index/coord conversions
-SELECT h3_h3_to_geo(idx), h3_h3_get_resolution(idx) FROM (
-    SELECT h3_geo_to_h3(:geometry, :resolution) AS idx
+\pset tuples_only on
+-- neighbouring indexes (one hexagon, one pentagon) at resolution 3
+\set geo POINT(-144.52399108028, 49.7165031828995)
+\set hexagon '\'831c02fffffffff\'::h3index'
+\set pentagon '\'831c00fffffffff\'::h3index'
+\set edgecross '\'8003fffffffffff\'::h3index'
+\set resolution 3
+--
+-- TEST h3_h3_to_geo and h3_geo_to_h3
+--
+-- convertion to geo works
+SELECT h3_h3_to_geo(:hexagon) ~= :geo;
+ t
+
+-- convertion to h3 index works
+SELECT h3_geo_to_h3(:geo, :resolution) = :hexagon;
+ t
+
+-- h3_h3_to_geo is inverse of h3_geo_to_h3
+SELECT h3_h3_to_geo(i) ~= :geo AND h3_h3_get_resolution(i) = :resolution FROM (
+    SELECT h3_geo_to_h3(:geo, :resolution) AS i
 ) AS q;
-            h3_h3_to_geo             | h3_h3_get_resolution 
--------------------------------------+----------------------
- (64.7498111652365,89.5695822308866) |                    8
-(1 row)
+ t
 
-SELECT h3_geo_to_h3(geo, res) FROM (
-    SELECT h3_h3_to_geo(:hexagon) AS geo, h3_h3_get_resolution(:hexagon) AS res
+-- h3_geo_to_h3 is inverse of h3_h3_to_geo
+SELECT h3_geo_to_h3(g, r) = :hexagon FROM (
+    SELECT h3_h3_to_geo(:hexagon) AS g, h3_h3_get_resolution(:hexagon) AS r
 ) AS q;
-  h3_geo_to_h3   
------------------
- 880326b88dfffff
-(1 row)
+ t
 
-SELECT h3_geo_to_h3(geo, res) FROM (
-    SELECT h3_h3_to_geo(:pentagon) AS geo, h3_h3_get_resolution(:pentagon) AS res
+-- same for pentagon
+SELECT h3_geo_to_h3(g, r) = :pentagon FROM (
+    SELECT h3_h3_to_geo(:pentagon) AS g, h3_h3_get_resolution(:pentagon) AS r
 ) AS q;
-  h3_geo_to_h3   
------------------
- 844c001ffffffff
-(1 row)
+ t
 
-SELECT h3_h3_to_geo_boundary(:hexagon);
-                                                                                                  h3_h3_to_geo_boundary                                                                                                  
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- ((64.3352882950961,89.5656359347422),(64.9735428791841,89.5648291130886),(65.3931051992816,89.5687402592777),(65.1719930581934,89.5735056770753),(64.5210916348838,89.5743285361039),(64.104106930976,89.570369702947))
-(1 row)
+--
+-- TEST h3_h3_to_geo_boundary
+--
+-- polyfill of geo boundary returns original index
+SELECT h3_polyfill(h3_h3_to_geo_boundary(:hexagon), null, :resolution) = :hexagon;
+ t
 
-SELECT h3_h3_to_geo_boundary(:pentagon);
-                                                                                   h3_h3_to_geo_boundary                                                                                   
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- ((-67.0431837139629,23.8723443291486),(-67.2653769611427,23.843121188364),(-67.3034129124381,23.6407971449002),(-67.1052392995192,23.5450603765006),(-66.9444189451127,23.6880109937544))
-(1 row)
+-- same for pentagon
+SELECT h3_polyfill(h3_h3_to_geo_boundary(:pentagon), null, :resolution) = :pentagon;
+ t
 
-SELECT h3_h3_to_geo_boundary(:pentagon_edgecross);
-                                                                                                                                                                             h3_h3_to_geo_boundary                                                                                                                                                                              
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- ((-143.6016553151,50.5338271422596),(-144.031945825263,50.3066616230969),(-144.155631118115,50.1598692121925),(-143.949729085173,49.8293441809871),(-143.77201562177,49.70837721268),(-143.222289746467,49.7294855170065),(-142.988158352874,49.7997443658674),(-142.844448066145,50.1435818584537),(-142.874989673059,50.3091889524779),(-143.344037347522,50.5025794565712))
-(1 row)
-
-SELECT h3_h3_to_geo('880326b88dfffff');
-            h3_h3_to_geo             
--------------------------------------
- (64.7498111652365,89.5695822308866)
-(1 row)
-
-SELECT h3_geo_to_h3(POINT('64.7498111652365,89.5695822308866'), 8);
-  h3_geo_to_h3   
------------------
- 880326b88dfffff
-(1 row)
-
-SELECT h3_h3_to_geo_boundary('80dbfffffffffff');
-                                                                                                      h3_h3_to_geo_boundary                                                                                                      
----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- ((-174.47635345071,-55.7067684651523),(-177.973431034615,-45.1842486897064),(167.61587312701,-40.8691331916655),(152.507076939633,-46.7602772436923),(150.117664355506,-58.0321137581763),(169.555022455222,-63.0950540775254))
-(1 row)
-
-SELECT h3_h3_to_geo_boundary('80dbfffffffffff', true);
-                                                                                                        h3_h3_to_geo_boundary                                                                                                        
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- ((-174.47635345071,-55.7067684651523),(-177.973431034615,-45.1842486897064),(-192.38412687299,-40.8691331916655),(-207.492923060367,-46.7602772436923),(-209.882335644494,-58.0321137581763),(-190.444977544778,-63.0950540775254))
-(1 row)
+-- the boundary of an edgecrossing index is different with flag set to true
+SELECT h3_h3_to_geo_boundary(:hexagon) ~= h3_h3_to_geo_boundary(:hexagon, true)
+AND NOT h3_h3_to_geo_boundary(:edgecross) ~= h3_h3_to_geo_boundary(:edgecross, true);
+ t
 
