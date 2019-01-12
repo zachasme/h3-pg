@@ -1,10 +1,44 @@
-SELECT h3_rads_to_degs(h3_degs_to_rads(90.45));
+\pset tuples_only on
+\set degs 90.45
+\set rads 1.57865030842887
+\set epsilon 0.0000000000001
 
-SELECT h3_hex_area_km2(10);
-SELECT h3_hex_area_m2(10);
+--
+-- TEST h3_degs_to_rads and h3_rads_to_degs
+--
 
-SELECT h3_edge_length_km(10);
-SELECT h3_edge_length_m(10);
+SELECT h3_degs_to_rads(:degs) - :rads < :epsilon;
+SELECT h3_degs_to_rads(:rads) - :degs < :epsilon;
+SELECT h3_rads_to_degs(h3_degs_to_rads(:degs)) = :degs;
+SELECT h3_degs_to_rads(h3_rads_to_degs(:rads)) = :rads;
 
-SELECT h3_num_hexagons(0);
-SELECT h3_num_hexagons(15);
+--
+-- TEST h3_hex_area_km2
+--
+
+SELECT h3_hex_area_km2(10) = 0.0150475;
+
+--
+-- TEST h3_hex_area_m2
+--
+
+SELECT h3_hex_area_m2(10) = 15047.5;
+
+--
+-- TEST h3_edge_length_km
+--
+
+SELECT h3_edge_length_km(10) = 0.065907807;
+
+--
+-- TEST h3_edge_length_m
+--
+
+SELECT h3_edge_length_m(10) = 65.90780749;
+
+--
+-- TEST h3_num_hexagons
+--
+
+SELECT h3_num_hexagons(0) = 122;
+SELECT h3_num_hexagons(15) = 569707381193162;
