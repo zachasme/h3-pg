@@ -1,402 +1,92 @@
-\set hexagon '\'880326b88dfffff\''
-\set pentagon '\'831c00fffffffff\''
-SELECT array_length(array_agg(i), 1), 7 expected FROM (
-	SELECT h3_h3_to_children(:hexagon) i
+\pset tuples_only on
+-- neighbouring indexes (one hexagon, one pentagon) at resolution 3
+\set hexagon '\'831c02fffffffff\'::h3index'
+\set pentagon '\'831c00fffffffff\'::h3index'
+\set resolution 3
+--
+-- TEST h3_h3_to_children and h3_h3_to_parent
+--
+-- all parents of one the children of a hexagon, must be the original hexagon
+SELECT bool_and(i = :hexagon) FROM (
+	SELECT h3_h3_to_parent(h3_h3_to_children(:hexagon)) i
 ) q;
- array_length | expected 
---------------+----------
-            7 |        7
-(1 row)
+ t
 
-SELECT array_length(array_agg(i), 1), 6 expected FROM (
-	SELECT h3_h3_to_children(:pentagon) i
+-- one child of the parent of a hexagon, must be the original hexagon
+SELECT bool_or(i = :hexagon) FROM (
+	SELECT h3_h3_to_children(h3_h3_to_parent(:hexagon)) i
 ) q;
- array_length | expected 
---------------+----------
-            6 |        6
-(1 row)
+ t
 
-SELECT h3_h3_to_children(:pentagon);
- h3_h3_to_children 
--------------------
- 841c001ffffffff
- 841c005ffffffff
- 841c007ffffffff
- 841c009ffffffff
- 841c00bffffffff
- 841c00dffffffff
-(6 rows)
+-- all parents of one the children of a pentagon, must be the original pentagon
+SELECT bool_and(i = :pentagon) FROM (
+	SELECT h3_h3_to_parent(h3_h3_to_children(:pentagon)) i
+) q;
+ t
 
-SELECT h3_h3_to_children(h3_h3_to_parent(:hexagon));
- h3_h3_to_children 
--------------------
- 880326b881fffff
- 880326b883fffff
- 880326b885fffff
- 880326b887fffff
- 880326b889fffff
- 880326b88bfffff
- 880326b88dfffff
-(7 rows)
+-- one child of the parent of a pentagon, must be the original pentagon
+SELECT bool_or(i = :pentagon) FROM (
+	SELECT h3_h3_to_children(h3_h3_to_parent(:pentagon)) i
+) q;
+ t
 
-SELECT h3_h3_to_parent(h3_h3_to_children(:hexagon));
- h3_h3_to_parent 
------------------
- 880326b88dfffff
- 880326b88dfffff
- 880326b88dfffff
- 880326b88dfffff
- 880326b88dfffff
- 880326b88dfffff
- 880326b88dfffff
-(7 rows)
+-- hexagon has 7 children
+SELECT array_length(array_agg(hex), 1) = 7 FROM (
+	SELECT h3_h3_to_children(:hexagon) hex
+) q;
+ t
 
-SELECT h3_h3_get_resolution(:hexagon);
- h3_h3_get_resolution 
-----------------------
-                    8
-(1 row)
+-- pentagon has 6 children
+SELECT array_length(array_agg(hex), 1) = 6 FROM (
+	SELECT h3_h3_to_children(:pentagon) hex
+) q;
+ t
 
-SELECT h3_h3_get_resolution(h3_h3_to_parent(:hexagon));
- h3_h3_get_resolution 
-----------------------
-                    7
-(1 row)
+-- parent is one lower resolution
+SELECT h3_h3_get_resolution(h3_h3_to_parent(:hexagon)) = :resolution -1;
+ t
 
-SELECT h3_h3_get_resolution(h3_h3_to_children(:hexagon));
- h3_h3_get_resolution 
-----------------------
-                    9
-                    9
-                    9
-                    9
-                    9
-                    9
-                    9
-(7 rows)
+-- all children is one higher resolution
+SELECT bool_and(r = :resolution +1) FROM (
+	SELECT h3_h3_get_resolution(h3_h3_to_children(:hexagon)) r
+) q;
+ t
 
-SELECT h3_h3_to_children(h3_h3_to_parent(:pentagon));
- h3_h3_to_children 
--------------------
- 831c00fffffffff
- 831c02fffffffff
- 831c03fffffffff
- 831c04fffffffff
- 831c05fffffffff
- 831c06fffffffff
-(6 rows)
+--
+-- TEST h3_compact and h3_uncompact
+--
+-- compacts the children of two hexes into the original two hexes
+SELECT array_agg(result) is null FROM (
+	SELECT h3_compact(
+		ARRAY(SELECT h3_h3_to_children(:hexagon) UNION SELECT h3_h3_to_children(:pentagon))
+	) result
+	EXCEPT SELECT unnest(ARRAY[:hexagon, :pentagon]) result
+) q;
+ t
 
-SELECT h3_h3_to_parent(h3_h3_to_children(:pentagon));
- h3_h3_to_parent 
------------------
- 831c00fffffffff
- 831c00fffffffff
- 831c00fffffffff
- 831c00fffffffff
- 831c00fffffffff
- 831c00fffffffff
-(6 rows)
+-- compact is inverse of uncompact
+SELECT h3_compact(ARRAY(SELECT h3_uncompact(ARRAY[:hexagon], :resolution))) = :hexagon;
+ t
 
-SELECT h3_h3_get_resolution(:pentagon);
- h3_h3_get_resolution 
-----------------------
-                    3
-(1 row)
+-- uncompacts all to same resolution, gives same result as getting children
+SELECT array_agg(result) is null FROM (
+	SELECT h3_uncompact(ARRAY(
+		SELECT h3_h3_to_children(:hexagon) UNION SELECT :pentagon
+	), :resolution +2) result
+	EXCEPT (
+		SELECT h3_h3_to_children(:hexagon, :resolution +2) result
+		UNION SELECT h3_h3_to_children(:pentagon, :resolution +2) result
+	)
+) q;
+ t
 
-SELECT h3_h3_get_resolution(h3_h3_to_parent(:pentagon));
- h3_h3_get_resolution 
-----------------------
-                    2
-(1 row)
-
-SELECT h3_h3_get_resolution(h3_h3_to_children(:pentagon));
- h3_h3_get_resolution 
-----------------------
-                    4
-                    4
-                    4
-                    4
-                    4
-                    4
-(6 rows)
-
-SELECT h3_compact(array_cat(ARRAY(SELECT h3_h3_to_children('880326b88dfffff')), ARRAY(SELECT h3_h3_to_children('880326b88bfffff'))));
-   h3_compact    
------------------
- 880326b88bfffff
- 880326b88dfffff
-(2 rows)
-
---Checks that the uncompact call finds the sum of the two below calls. i.e. uncompacts all to same resolution
-SELECT h3_uncompact(array_cat(ARRAY(SELECT h3_h3_to_children('880326b88dfffff')), '{880326b88bfffff}'::h3index[]));
-  h3_uncompact   
------------------
- 8a0326b88c07fff
- 8a0326b88c0ffff
- 8a0326b88c17fff
- 8a0326b88c1ffff
- 8a0326b88c27fff
- 8a0326b88c2ffff
- 8a0326b88c37fff
- 8a0326b88c47fff
- 8a0326b88c4ffff
- 8a0326b88c57fff
- 8a0326b88c5ffff
- 8a0326b88c67fff
- 8a0326b88c6ffff
- 8a0326b88c77fff
- 8a0326b88c87fff
- 8a0326b88c8ffff
- 8a0326b88c97fff
- 8a0326b88c9ffff
- 8a0326b88ca7fff
- 8a0326b88caffff
- 8a0326b88cb7fff
- 8a0326b88cc7fff
- 8a0326b88ccffff
- 8a0326b88cd7fff
- 8a0326b88cdffff
- 8a0326b88ce7fff
- 8a0326b88ceffff
- 8a0326b88cf7fff
- 8a0326b88d07fff
- 8a0326b88d0ffff
- 8a0326b88d17fff
- 8a0326b88d1ffff
- 8a0326b88d27fff
- 8a0326b88d2ffff
- 8a0326b88d37fff
- 8a0326b88d47fff
- 8a0326b88d4ffff
- 8a0326b88d57fff
- 8a0326b88d5ffff
- 8a0326b88d67fff
- 8a0326b88d6ffff
- 8a0326b88d77fff
- 8a0326b88d87fff
- 8a0326b88d8ffff
- 8a0326b88d97fff
- 8a0326b88d9ffff
- 8a0326b88da7fff
- 8a0326b88daffff
- 8a0326b88db7fff
- 8a0326b88a07fff
- 8a0326b88a0ffff
- 8a0326b88a17fff
- 8a0326b88a1ffff
- 8a0326b88a27fff
- 8a0326b88a2ffff
- 8a0326b88a37fff
- 8a0326b88a47fff
- 8a0326b88a4ffff
- 8a0326b88a57fff
- 8a0326b88a5ffff
- 8a0326b88a67fff
- 8a0326b88a6ffff
- 8a0326b88a77fff
- 8a0326b88a87fff
- 8a0326b88a8ffff
- 8a0326b88a97fff
- 8a0326b88a9ffff
- 8a0326b88aa7fff
- 8a0326b88aaffff
- 8a0326b88ab7fff
- 8a0326b88ac7fff
- 8a0326b88acffff
- 8a0326b88ad7fff
- 8a0326b88adffff
- 8a0326b88ae7fff
- 8a0326b88aeffff
- 8a0326b88af7fff
- 8a0326b88b07fff
- 8a0326b88b0ffff
- 8a0326b88b17fff
- 8a0326b88b1ffff
- 8a0326b88b27fff
- 8a0326b88b2ffff
- 8a0326b88b37fff
- 8a0326b88b47fff
- 8a0326b88b4ffff
- 8a0326b88b57fff
- 8a0326b88b5ffff
- 8a0326b88b67fff
- 8a0326b88b6ffff
- 8a0326b88b77fff
- 8a0326b88b87fff
- 8a0326b88b8ffff
- 8a0326b88b97fff
- 8a0326b88b9ffff
- 8a0326b88ba7fff
- 8a0326b88baffff
- 8a0326b88bb7fff
-(98 rows)
-
-SELECT h3_h3_to_children(h3_h3_to_children('880326b88bfffff'));
- h3_h3_to_children 
--------------------
- 8a0326b88a07fff
- 8a0326b88a0ffff
- 8a0326b88a17fff
- 8a0326b88a1ffff
- 8a0326b88a27fff
- 8a0326b88a2ffff
- 8a0326b88a37fff
- 8a0326b88a47fff
- 8a0326b88a4ffff
- 8a0326b88a57fff
- 8a0326b88a5ffff
- 8a0326b88a67fff
- 8a0326b88a6ffff
- 8a0326b88a77fff
- 8a0326b88a87fff
- 8a0326b88a8ffff
- 8a0326b88a97fff
- 8a0326b88a9ffff
- 8a0326b88aa7fff
- 8a0326b88aaffff
- 8a0326b88ab7fff
- 8a0326b88ac7fff
- 8a0326b88acffff
- 8a0326b88ad7fff
- 8a0326b88adffff
- 8a0326b88ae7fff
- 8a0326b88aeffff
- 8a0326b88af7fff
- 8a0326b88b07fff
- 8a0326b88b0ffff
- 8a0326b88b17fff
- 8a0326b88b1ffff
- 8a0326b88b27fff
- 8a0326b88b2ffff
- 8a0326b88b37fff
- 8a0326b88b47fff
- 8a0326b88b4ffff
- 8a0326b88b57fff
- 8a0326b88b5ffff
- 8a0326b88b67fff
- 8a0326b88b6ffff
- 8a0326b88b77fff
- 8a0326b88b87fff
- 8a0326b88b8ffff
- 8a0326b88b97fff
- 8a0326b88b9ffff
- 8a0326b88ba7fff
- 8a0326b88baffff
- 8a0326b88bb7fff
-(49 rows)
-
-SELECT h3_h3_to_children(h3_h3_to_children('880326b88dfffff'));
- h3_h3_to_children 
--------------------
- 8a0326b88c07fff
- 8a0326b88c0ffff
- 8a0326b88c17fff
- 8a0326b88c1ffff
- 8a0326b88c27fff
- 8a0326b88c2ffff
- 8a0326b88c37fff
- 8a0326b88c47fff
- 8a0326b88c4ffff
- 8a0326b88c57fff
- 8a0326b88c5ffff
- 8a0326b88c67fff
- 8a0326b88c6ffff
- 8a0326b88c77fff
- 8a0326b88c87fff
- 8a0326b88c8ffff
- 8a0326b88c97fff
- 8a0326b88c9ffff
- 8a0326b88ca7fff
- 8a0326b88caffff
- 8a0326b88cb7fff
- 8a0326b88cc7fff
- 8a0326b88ccffff
- 8a0326b88cd7fff
- 8a0326b88cdffff
- 8a0326b88ce7fff
- 8a0326b88ceffff
- 8a0326b88cf7fff
- 8a0326b88d07fff
- 8a0326b88d0ffff
- 8a0326b88d17fff
- 8a0326b88d1ffff
- 8a0326b88d27fff
- 8a0326b88d2ffff
- 8a0326b88d37fff
- 8a0326b88d47fff
- 8a0326b88d4ffff
- 8a0326b88d57fff
- 8a0326b88d5ffff
- 8a0326b88d67fff
- 8a0326b88d6ffff
- 8a0326b88d77fff
- 8a0326b88d87fff
- 8a0326b88d8ffff
- 8a0326b88d97fff
- 8a0326b88d9ffff
- 8a0326b88da7fff
- 8a0326b88daffff
- 8a0326b88db7fff
-(49 rows)
-
-SELECT h3_uncompact(array_cat(ARRAY(SELECT h3_h3_to_parent('880326b88dfffff')), '{880326b88bfffff}'::h3index[]));
-  h3_uncompact   
------------------
- 890326b8803ffff
- 890326b8807ffff
- 890326b880bffff
- 890326b880fffff
- 890326b8813ffff
- 890326b8817ffff
- 890326b881bffff
- 890326b8823ffff
- 890326b8827ffff
- 890326b882bffff
- 890326b882fffff
- 890326b8833ffff
- 890326b8837ffff
- 890326b883bffff
- 890326b8843ffff
- 890326b8847ffff
- 890326b884bffff
- 890326b884fffff
- 890326b8853ffff
- 890326b8857ffff
- 890326b885bffff
- 890326b8863ffff
- 890326b8867ffff
- 890326b886bffff
- 890326b886fffff
- 890326b8873ffff
- 890326b8877ffff
- 890326b887bffff
- 890326b8883ffff
- 890326b8887ffff
- 890326b888bffff
- 890326b888fffff
- 890326b8893ffff
- 890326b8897ffff
- 890326b889bffff
- 890326b88a3ffff
- 890326b88a7ffff
- 890326b88abffff
- 890326b88afffff
- 890326b88b3ffff
- 890326b88b7ffff
- 890326b88bbffff
- 890326b88c3ffff
- 890326b88c7ffff
- 890326b88cbffff
- 890326b88cfffff
- 890326b88d3ffff
- 890326b88d7ffff
- 890326b88dbffff
- 890326b88a3ffff
- 890326b88a7ffff
- 890326b88abffff
- 890326b88afffff
- 890326b88b3ffff
- 890326b88b7ffff
- 890326b88bbffff
-(56 rows)
+--
+-- TEST h3_h3_to_children_slow
+--
+-- h3_h3_to_children_slow and h3_h3_to_children have same result
+SELECT array_agg(result) is null FROM (
+	SELECT h3_h3_to_children_slow(:hexagon, :resolution + 3) result
+	EXCEPT SELECT h3_h3_to_children(:hexagon, :resolution + 3) result
+) q;
+ t
 

@@ -403,6 +403,14 @@ SELECT h3_distance('880326b881fffff', h3_h3_to_parent('880326b885fffff'));
           -1
 (1 row)
 
+SELECT h3_line('841c023ffffffff', '841c025ffffffff');
+     h3_line     
+-----------------
+ 841c023ffffffff
+ 841c027ffffffff
+ 841c025ffffffff
+(3 rows)
+
 SELECT h3_experimental_h3_to_local_ij(:origin, :hexagon);
  h3_experimental_h3_to_local_ij 
 --------------------------------

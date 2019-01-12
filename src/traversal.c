@@ -345,6 +345,44 @@ Datum h3_distance(PG_FUNCTION_ARGS)
 }
 
 /**
+ * Given two H3 indexes, return the line of indexes between them (inclusive).
+ *
+ * This function may fail to find the line between two indexes, for
+ * example if they are very far apart. It may also fail when finding
+ * distances for indexes on opposite sides of a pentagon.
+ */
+PG_FUNCTION_INFO_V1(h3_line);
+Datum h3_line(PG_FUNCTION_ARGS)
+{
+    if (SRF_IS_FIRSTCALL())
+    {
+        FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
+        MemoryContext oldcontext =
+            MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+        // get function arguments
+        H3Index *start = PG_GETARG_H3_INDEX_P(0);
+        H3Index *end = PG_GETARG_H3_INDEX_P(1);
+        int size = h3LineSize(*start, *end);
+        H3Index *indices = palloc(size * sizeof(H3Index));
+
+        if (h3Line(*start, *end, indices) != 0)
+        {
+            ereport(
+                ERROR,
+                (errcode(ERRCODE_EXTERNAL_ROUTINE_EXCEPTION),
+                 errmsg("Failed to get line")));
+        }
+
+        funcctx->user_fctx = indices;
+        funcctx->max_calls = size;
+        MemoryContextSwitchTo(oldcontext);
+    }
+
+    SRF_RETURN_H3_INDEXES_FROM_USER_FCTX();
+}
+
+/**
  * Produces local IJ coordinates for an H3 index anchored by an origin.
  *
  * This function is experimental, and its output is not guaranteed to be
