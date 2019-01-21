@@ -18,10 +18,12 @@
 \echo Use "ALTER EXTENSION h3 UPDATE TO '0.3.0'" to load this file. \quit
 
 -- Custom helper functions
-CREATE OR REPLACE FUNCTION h3_haversine_distance(h3index, h3index) RETURNS double precision
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_haversine_distance(h3index, h3index) IS
-    'Returns the haversine distance between the two given indices.';
+
+-- DEPRECATED in v1.0.0
+--CREATE OR REPLACE FUNCTION h3_haversine_distance(h3index, h3index) RETURNS double precision
+--    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--    COMMENT ON FUNCTION h3_haversine_distance(h3index, h3index) IS
+--    'Returns the haversine distance between the two given indices.';
 
 CREATE OR REPLACE FUNCTION h3_basecells() RETURNS SETOF h3index
     AS 'h3', 'h3_get_res_0_indexes' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;

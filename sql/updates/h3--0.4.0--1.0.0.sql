@@ -17,6 +17,8 @@
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
 \echo Use "CREATE EXTENSION h3" to load this file. \quit
 
+DROP FUNCTION IF EXISTS h3_haversine_distance(h3index, h3index);
+
 ALTER FUNCTION h3_basecells() RENAME TO h3_get_res_0_indexes;
 COMMENT ON FUNCTION h3_get_res_0_indexes() IS
 'Get all resolution 0 indexes.';

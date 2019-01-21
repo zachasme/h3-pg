@@ -689,15 +689,3 @@ SELECT h3_basecells();
  80f3fffffffffff
 (122 rows)
 ```
-
-#### haversine_distance(from h3index, to h3index) returns float
-
-Determines the distance between `from_hex` and `to_hex`, based on [Haversine Distance](https://en.wikipedia.org/wiki/Haversine_formula).
-
-```
-SELECT h3_haversine_distance('8f2830828052d25', '8f283082a30e623');
- h3_haversine_distance
---------------------
-   2.25685336707384
-(1 row)
-```
