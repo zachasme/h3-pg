@@ -20,23 +20,23 @@
 -- Declare shell type, allowing us to reference while defining functions
 CREATE TYPE h3index;
 
-CREATE FUNCTION h3index_in(cstring) RETURNS h3index
+CREATE OR REPLACE FUNCTION h3index_in(cstring) RETURNS h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE FUNCTION h3index_out(h3index) RETURNS cstring
+CREATE OR REPLACE FUNCTION h3index_out(h3index) RETURNS cstring
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE FUNCTION h3index_eq(h3index, h3index) RETURNS boolean
+CREATE OR REPLACE FUNCTION h3index_eq(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE FUNCTION h3index_ne(h3index, h3index) RETURNS boolean
+CREATE OR REPLACE FUNCTION h3index_ne(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE FUNCTION h3index_lt(h3index, h3index) RETURNS boolean
+CREATE OR REPLACE FUNCTION h3index_lt(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE FUNCTION h3index_le(h3index, h3index) RETURNS boolean
+CREATE OR REPLACE FUNCTION h3index_le(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE FUNCTION h3index_gt(h3index, h3index) RETURNS boolean
+CREATE OR REPLACE FUNCTION h3index_gt(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE FUNCTION h3index_ge(h3index, h3index) RETURNS boolean
+CREATE OR REPLACE FUNCTION h3index_ge(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE FUNCTION h3index_cmp(h3index, h3index) RETURNS integer
+CREATE OR REPLACE FUNCTION h3index_cmp(h3index, h3index) RETURNS integer
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 -- Finally, we can provide the full definition of the data type

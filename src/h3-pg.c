@@ -15,6 +15,7 @@
  */
 
 #include <math.h> // cos, sin, etc.
+#include <assert.h>
 
 #include <postgres.h>            // Datum, etc.
 #include <fmgr.h>                // PG_FUNCTION_ARGS, etc.
@@ -26,6 +27,11 @@
 
 // should only be in ONE file
 PG_MODULE_MAGIC;
+
+static_assert(
+    H3_VERSION_MAJOR == 3 && H3_VERSION_MINOR >= 3,
+    "Installed H3 must be at least version 3.3.0"
+);
 
 /**
  * Set-Returning-Function assume user fctx contains indices
@@ -90,37 +96,6 @@ Datum srf_return_h3_index_distances_from_user_fctx(PG_FUNCTION_ARGS)
         tuple = heap_form_tuple(tuple_desc, values, nulls);
         result = HeapTupleGetDatum(tuple);
 
-        SRF_RETURN_NEXT(funcctx, result);
-    }
-    else
-    {
-        SRF_RETURN_DONE(funcctx);
-    }
-}
-
-// Custom helper function that returns all basecells
-PG_FUNCTION_INFO_V1(h3_basecells);
-Datum h3_basecells(PG_FUNCTION_ARGS)
-{
-    FuncCallContext *funcctx;
-    int i;
-
-    if (SRF_IS_FIRSTCALL())
-    {
-        SRF_FIRSTCALL_INIT();
-    }
-    funcctx = SRF_PERCALL_SETUP();
-
-    i = funcctx->call_cntr;
-    if (i < 122)
-    {
-        Datum result;
-        H3Index *hex = palloc(sizeof(H3Index));
-
-        *hex = (UINT64_C(576495936675512319));
-        *hex = (*hex & ~((uint64_t)(127) << 45)) | (((uint64_t)(i)) << 45);
-
-        result = PointerGetDatum(hex);
         SRF_RETURN_NEXT(funcctx, result);
     }
     else

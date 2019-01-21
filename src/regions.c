@@ -192,8 +192,8 @@ Datum h3_polyfill(PG_FUNCTION_ARGS)
  *
  * https://stackoverflow.com/questions/51127189/how-to-return-array-into-array-with-custom-type-in-postgres-c-function
  */
-PG_FUNCTION_INFO_V1(h3_h3_set_to_linked_geo);
-Datum h3_h3_set_to_linked_geo(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(h3_set_to_linked_geo);
+Datum h3_set_to_linked_geo(PG_FUNCTION_ARGS)
 {
     FuncCallContext *funcctx;
     TupleDesc tuple_desc;
@@ -212,11 +212,7 @@ Datum h3_h3_set_to_linked_geo(PG_FUNCTION_ARGS)
         funcctx = SRF_FIRSTCALL_INIT();
         oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-        if (get_call_result_type(fcinfo, NULL, &tuple_desc) != TYPEFUNC_COMPOSITE)
-            ereport(ERROR,
-                    (errcode(ERRCODE_FEATURE_NOT_SUPPORTED),
-                     errmsg("function returning record called in context "
-                            "that cannot accept type record")));
+        ENSURE_TYPEFUNC_COMPOSITE(get_call_result_type(fcinfo, NULL, &tuple_desc));
 
         // get function arguments
         array = PG_GETARG_ARRAYTYPE_P(0);

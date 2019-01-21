@@ -24,8 +24,8 @@
 #include "h3-pg.h"
 
 // Returns the parent (coarser) index containing given index
-PG_FUNCTION_INFO_V1(h3_h3_to_parent);
-Datum h3_h3_to_parent(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(h3_to_parent);
+Datum h3_to_parent(PG_FUNCTION_ARGS)
 {
     H3Index *parent;
 
@@ -55,8 +55,8 @@ Datum h3_h3_to_parent(PG_FUNCTION_ARGS)
 }
 
 // Returns children indexes at given resolution (or next resolution if none given)
-PG_FUNCTION_INFO_V1(h3_h3_to_children);
-Datum h3_h3_to_children(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(h3_to_children);
+Datum h3_to_children(PG_FUNCTION_ARGS)
 {
     // stuff done only on the first call of the function
     if (SRF_IS_FIRSTCALL())
@@ -101,7 +101,7 @@ Datum h3_h3_to_children(PG_FUNCTION_ARGS)
             ereport(
                 ERROR,
                 (errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
-                 errmsg("Cannot allocate requested memory. Try using h3_h3_to_children_slow().")));
+                 errmsg("Cannot allocate requested memory. Try using h3_to_children_slow().")));
         }
 
         children = palloc(size);

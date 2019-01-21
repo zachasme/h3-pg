@@ -6,11 +6,11 @@
 \set uniedge '\'1180326b885fffff\'::h3index'
 
 --
--- TEST h3_h3_indexes_are_neighbors
+-- TEST h3_indexes_are_neighbors
 --
 
-SELECT h3_h3_indexes_are_neighbors(:hexagon, :neighbor);
-SELECT NOT h3_h3_indexes_are_neighbors(:hexagon, :hexagon);
+SELECT h3_indexes_are_neighbors(:hexagon, :neighbor);
+SELECT NOT h3_indexes_are_neighbors(:hexagon, :hexagon);
 
 --
 -- TEST h3_get_h3_unidirectional_edge
@@ -19,11 +19,11 @@ SELECT NOT h3_h3_indexes_are_neighbors(:hexagon, :hexagon);
 SELECT h3_get_h3_unidirectional_edge(:hexagon, :neighbor) = :uniedge;
 
 --
--- TEST h3_h3_unidirectional_edge_is_valid
+-- TEST h3_unidirectional_edge_is_valid
 --
 
-SELECT h3_h3_unidirectional_edge_is_valid(:uniedge);
-SELECT NOT h3_h3_unidirectional_edge_is_valid(:hexagon);
+SELECT h3_unidirectional_edge_is_valid(:uniedge);
+SELECT NOT h3_unidirectional_edge_is_valid(:hexagon);
 
 --
 -- TEST h3_get_origin_h3_index_from_unidirectional_edge and

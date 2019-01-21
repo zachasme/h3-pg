@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Build and install H3 (for static linking)
 RUN git clone https://github.com/uber/h3.git /tmp/h3
 WORKDIR /tmp/h3
-RUN cmake -DCMAKE_C_FLAGS=-fPIC .
+RUN cmake -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_PREFIX:PATH=/usr .
 RUN make
 RUN make install
 

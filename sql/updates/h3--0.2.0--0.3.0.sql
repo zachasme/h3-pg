@@ -18,15 +18,17 @@
 \echo Use "ALTER EXTENSION h3 UPDATE TO '0.3.0'" to load this file. \quit
 
 -- Custom helper functions
-CREATE FUNCTION h3_haversine_distance(h3index, h3index) RETURNS double precision
+CREATE OR REPLACE FUNCTION h3_haversine_distance(h3index, h3index) RETURNS double precision
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_haversine_distance(h3index, h3index) IS
     'Returns the haversine distance between the two given indices.';
-CREATE FUNCTION h3_basecells() RETURNS SETOF h3index
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION h3_basecells() RETURNS SETOF h3index
+    AS 'h3', 'h3_get_res_0_indexes' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_basecells() IS
     'Returns all 122 basecells.';
-CREATE FUNCTION __h3_h3_to_children_aux(index h3index, resolution integer, current INTEGER) 
+
+CREATE OR REPLACE FUNCTION __h3_h3_to_children_aux(index h3index, resolution integer, current INTEGER) 
     RETURNS SETOF h3index AS $$
     DECLARE 
         retSet h3index[];
@@ -49,28 +51,28 @@ CREATE FUNCTION __h3_h3_to_children_aux(index h3index, resolution integer, curre
             RETURN NEXT index;
         END IF;
     END;$$ LANGUAGE plpgsql;
-CREATE FUNCTION h3_h3_to_children_slow(index h3index, resolution integer DEFAULT -1) RETURNS SETOF h3index
+CREATE OR REPLACE FUNCTION h3_h3_to_children_slow(index h3index, resolution integer DEFAULT -1) RETURNS SETOF h3index
     AS $$ SELECT __h3_h3_to_children_aux($1, $2, -1) $$ LANGUAGE SQL;
     COMMENT ON FUNCTION h3_h3_to_children_slow(index h3index, resolution integer) IS
     'Slower version of H3ToChildren but allocates less memory';
 
 -- PostGIS
-CREATE FUNCTION h3_geo_to_h3(geometry, resolution integer) RETURNS h3index
+CREATE OR REPLACE FUNCTION h3_geo_to_h3(geometry, resolution integer) RETURNS h3index
     AS $$ SELECT h3_geo_to_h3($1::point, $2); $$ LANGUAGE SQL;
-CREATE FUNCTION h3_geo_to_h3(geography, resolution integer) RETURNS h3index
+CREATE OR REPLACE FUNCTION h3_geo_to_h3(geography, resolution integer) RETURNS h3index
     AS $$ SELECT h3_geo_to_h3($1::geometry, $2); $$ LANGUAGE SQL;
 
-CREATE FUNCTION h3_h3_to_geometry(h3index) RETURNS geometry
+CREATE OR REPLACE FUNCTION h3_h3_to_geometry(h3index) RETURNS geometry
   AS $$ SELECT ST_SetSRID(h3_h3_to_geo($1)::geometry, 4326) $$ LANGUAGE SQL;
-CREATE FUNCTION h3_h3_to_geography(h3index) RETURNS geography
+CREATE OR REPLACE FUNCTION h3_h3_to_geography(h3index) RETURNS geography
   AS $$ SELECT h3_h3_to_geometry($1)::geography $$ LANGUAGE SQL;
 
-CREATE FUNCTION h3_h3_to_geo_boundary_geometry(h3index) RETURNS geometry
+CREATE OR REPLACE FUNCTION h3_h3_to_geo_boundary_geometry(h3index) RETURNS geometry
   AS $$ SELECT ST_SetSRID(h3_h3_to_geo_boundary($1)::geometry, 4326) $$ LANGUAGE SQL;
-CREATE FUNCTION h3_h3_to_geo_boundary_geography(h3index) RETURNS geography
+CREATE OR REPLACE FUNCTION h3_h3_to_geo_boundary_geography(h3index) RETURNS geography
   AS $$ SELECT h3_h3_to_geo_boundary_geometry($1)::geography $$ LANGUAGE SQL;
 
-CREATE FUNCTION h3_polyfill(multi geometry, resolution integer) RETURNS SETOF h3index
+CREATE OR REPLACE FUNCTION h3_polyfill(multi geometry, resolution integer) RETURNS SETOF h3index
     AS $$ SELECT h3_polyfill(exterior, holes, resolution) FROM (
         SELECT 
             -- extract exterior ring of each polygon
@@ -89,7 +91,7 @@ CREATE FUNCTION h3_polyfill(multi geometry, resolution integer) RETURNS SETOF h3
             select (st_dump(multi)).geom as poly
         ) q_poly GROUP BY poly
     ) h3_polyfill; $$ LANGUAGE SQL IMMUTABLE STRICT;
-CREATE FUNCTION h3_polyfill(multi geography, resolution integer) RETURNS SETOF h3index
+CREATE OR REPLACE FUNCTION h3_polyfill(multi geography, resolution integer) RETURNS SETOF h3index
 AS $$ SELECT h3_polyfill($1::geometry, $2) $$ LANGUAGE SQL;
 
 -- Type casts

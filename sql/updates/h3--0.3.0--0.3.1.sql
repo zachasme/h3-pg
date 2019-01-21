@@ -17,15 +17,15 @@
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
 \echo Use "ALTER EXTENSION h3 UPDATE TO '0.3.1'" to load this file. \quit
 
-DROP FUNCTION h3_h3_to_geo_boundary(h3index);
-DROP FUNCTION h3_h3_to_geo_boundary_geometry(h3index);
-DROP FUNCTION h3_h3_to_geo_boundary_geography(h3index);
+DROP FUNCTION IF EXISTS h3_h3_to_geo_boundary(h3index);
+DROP FUNCTION IF EXISTS h3_h3_to_geo_boundary_geometry(h3index);
+DROP FUNCTION IF EXISTS h3_h3_to_geo_boundary_geography(h3index);
 
-CREATE FUNCTION h3_h3_to_geo_boundary(h3index, extend_at_meridian BOOLEAN default FALSE) RETURNS polygon
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+CREATE OR REPLACE FUNCTION h3_h3_to_geo_boundary(h3index, extend_at_meridian BOOLEAN default FALSE) RETURNS polygon
+    AS 'h3', 'h3_to_geo_boundary' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_h3_to_geo_boundary(h3index, boolean) IS
     'Finds the boundary of the index, second argument extends coordinates when crossing 180th meridian to help visualization';
-CREATE FUNCTION h3_h3_to_geo_boundary_geometry(h3index, extend BOOLEAN default FALSE) RETURNS geometry
+CREATE OR REPLACE FUNCTION h3_h3_to_geo_boundary_geometry(h3index, extend BOOLEAN default FALSE) RETURNS geometry
   AS $$ SELECT ST_SetSRID(h3_h3_to_geo_boundary($1, $2)::geometry, 4326) $$ LANGUAGE SQL;
-CREATE FUNCTION h3_h3_to_geo_boundary_geography(h3index, extend BOOLEAN default FALSE) RETURNS geography
+CREATE OR REPLACE FUNCTION h3_h3_to_geo_boundary_geography(h3index, extend BOOLEAN default FALSE) RETURNS geography
   AS $$ SELECT h3_h3_to_geo_boundary_geometry($1, $2)::geography $$ LANGUAGE SQL;

@@ -23,17 +23,10 @@
 #include <h3/h3api.h> // Main H3 include
 #include "h3-pg.h"
 
-PG_FUNCTION_INFO_V1(h3_h3_indexes_are_neighbors);
-PG_FUNCTION_INFO_V1(h3_get_h3_unidirectional_edge);
-PG_FUNCTION_INFO_V1(h3_h3_unidirectional_edge_is_valid);
-PG_FUNCTION_INFO_V1(h3_get_origin_h3_index_from_unidirectional_edge);
-PG_FUNCTION_INFO_V1(h3_get_destination_h3_index_from_unidirectional_edge);
-PG_FUNCTION_INFO_V1(h3_get_h3_indexes_from_unidirectional_edge);
-PG_FUNCTION_INFO_V1(h3_get_h3_unidirectional_edges_from_hexagon);
-PG_FUNCTION_INFO_V1(h3_get_unidirectional_edge_boundary);
 
 /* Returns whether or not the provided H3Indexes are neighbors */
-Datum h3_h3_indexes_are_neighbors(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(h3_indexes_are_neighbors);
+Datum h3_indexes_are_neighbors(PG_FUNCTION_ARGS)
 {
   H3Index *origin = PG_GETARG_H3_INDEX_P(0);
   H3Index *destination = PG_GETARG_H3_INDEX_P(1);
@@ -45,6 +38,7 @@ Datum h3_h3_indexes_are_neighbors(PG_FUNCTION_ARGS)
  * Returns a unidirectional edge H3 index based on the provided origin and
  * destination
  */
+PG_FUNCTION_INFO_V1(h3_get_h3_unidirectional_edge);
 Datum h3_get_h3_unidirectional_edge(PG_FUNCTION_ARGS)
 {
   H3Index *origin = PG_GETARG_H3_INDEX_P(0);
@@ -61,7 +55,8 @@ Datum h3_get_h3_unidirectional_edge(PG_FUNCTION_ARGS)
 }
 
 /* Determines if the provided H3Index is a valid unidirectional edge index */
-Datum h3_h3_unidirectional_edge_is_valid(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(h3_unidirectional_edge_is_valid);
+Datum h3_unidirectional_edge_is_valid(PG_FUNCTION_ARGS)
 {
   H3Index *edge = PG_GETARG_H3_INDEX_P(0);
   bool isValid = h3UnidirectionalEdgeIsValid(*edge);
@@ -69,6 +64,7 @@ Datum h3_h3_unidirectional_edge_is_valid(PG_FUNCTION_ARGS)
 }
 
 /* Returns the origin hexagon from the unidirectional edge H3Index */
+PG_FUNCTION_INFO_V1(h3_get_origin_h3_index_from_unidirectional_edge);
 Datum h3_get_origin_h3_index_from_unidirectional_edge(PG_FUNCTION_ARGS)
 {
   H3Index *edge = PG_GETARG_H3_INDEX_P(0);
@@ -78,6 +74,7 @@ Datum h3_get_origin_h3_index_from_unidirectional_edge(PG_FUNCTION_ARGS)
 }
 
 /* Returns the destination hexagon from the unidirectional edge H3Index */
+PG_FUNCTION_INFO_V1(h3_get_destination_h3_index_from_unidirectional_edge);
 Datum h3_get_destination_h3_index_from_unidirectional_edge(PG_FUNCTION_ARGS)
 {
   H3Index *edge = PG_GETARG_H3_INDEX_P(0);
@@ -87,6 +84,7 @@ Datum h3_get_destination_h3_index_from_unidirectional_edge(PG_FUNCTION_ARGS)
 }
 
 /* Returns the origin, destination pair of hexagon IDs for the given edge ID */
+PG_FUNCTION_INFO_V1(h3_get_h3_indexes_from_unidirectional_edge);
 Datum h3_get_h3_indexes_from_unidirectional_edge(PG_FUNCTION_ARGS)
 {
   TupleDesc tuple_desc;
@@ -112,6 +110,7 @@ Datum h3_get_h3_indexes_from_unidirectional_edge(PG_FUNCTION_ARGS)
 }
 
 /* Provides all of the unidirectional edges from the current H3Index */
+PG_FUNCTION_INFO_V1(h3_get_h3_unidirectional_edges_from_hexagon);
 Datum h3_get_h3_unidirectional_edges_from_hexagon(PG_FUNCTION_ARGS)
 {
   if (SRF_IS_FIRSTCALL())
@@ -134,6 +133,7 @@ Datum h3_get_h3_unidirectional_edges_from_hexagon(PG_FUNCTION_ARGS)
 }
 
 /* Provides the coordinates defining the unidirectional edge */
+PG_FUNCTION_INFO_V1(h3_get_unidirectional_edge_boundary);
 Datum h3_get_unidirectional_edge_boundary(PG_FUNCTION_ARGS)
 {
   H3Index *edge = PG_GETARG_H3_INDEX_P(0);

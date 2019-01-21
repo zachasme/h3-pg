@@ -49,8 +49,8 @@ Datum h3_geo_to_h3(PG_FUNCTION_ARGS)
 }
 
 // Finds the centroid of the index
-PG_FUNCTION_INFO_V1(h3_h3_to_geo);
-Datum h3_h3_to_geo(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(h3_to_geo);
+Datum h3_to_geo(PG_FUNCTION_ARGS)
 {
     H3Index *idx = PG_GETARG_H3_INDEX_P(0);
 
@@ -65,8 +65,8 @@ Datum h3_h3_to_geo(PG_FUNCTION_ARGS)
 }
 
 // Finds the boundary of the index
-PG_FUNCTION_INFO_V1(h3_h3_to_geo_boundary);
-Datum h3_h3_to_geo_boundary(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(h3_to_geo_boundary);
+Datum h3_to_geo_boundary(PG_FUNCTION_ARGS)
 {
     H3Index *idx = PG_GETARG_H3_INDEX_P(0);
     bool extend = PG_GETARG_BOOL(1);

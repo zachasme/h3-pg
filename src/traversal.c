@@ -93,13 +93,7 @@ Datum h3_k_ring_distances(PG_FUNCTION_ARGS)
 
         kRingDistances(*origin, k, user_fctx->indices, user_fctx->distances);
 
-        if (get_call_result_type(fcinfo, NULL, &tuple_desc) != TYPEFUNC_COMPOSITE)
-        {
-            ereport(ERROR,
-                    (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-                     errmsg("Function returning record called in context that cannot "
-                            "accept type record")));
-        }
+        ENSURE_TYPEFUNC_COMPOSITE(get_call_result_type(fcinfo, NULL, &tuple_desc));
 
         funcctx->tuple_desc = BlessTupleDesc(tuple_desc);
         funcctx->max_calls = maxSize;
@@ -206,13 +200,7 @@ Datum h3_hex_range_distances(PG_FUNCTION_ARGS)
                  errhint("Try using k_ring_distances")));
         }
 
-        if (get_call_result_type(fcinfo, NULL, &tuple_desc) != TYPEFUNC_COMPOSITE)
-        {
-            ereport(ERROR,
-                    (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-                     errmsg("Function returning record called in context that cannot "
-                            "accept type record")));
-        }
+        ENSURE_TYPEFUNC_COMPOSITE(get_call_result_type(fcinfo, NULL, &tuple_desc));
 
         user_fctx->indices = indices;
         user_fctx->distances = distances;

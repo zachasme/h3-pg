@@ -48,8 +48,8 @@ Run `psql` and load/use extension in database:
 ```
 CREATE_EXTENSION h3;
 
-SELECT h3_h3_to_children('880326b88dfffff', 9);
-    h3_h3_to_children
+SELECT h3_to_children('880326b88dfffff', 9);
+    h3_to_children
 -----------------
  890326b88c3ffff
  890326b88c7ffff
@@ -89,7 +89,7 @@ denied errors.
 
 ## Usage
 
-Generally all functions have been renamed from camelCase to snake_case with an added `h3_` prefix. This means a few functions will have a double `h3_h3_` prefix, but we chose this for consistency. For example `h3ToChildren` becomes `h3_h3_to_children`.
+Generally all functions have been renamed from camelCase to snake_case with an added `h3_` prefix (except when that would result in a double `h3_` prefix). For example `h3ToChildren` becomes `h3_h3_to_children`.
 
 See [API reference](docs/api.md)
 

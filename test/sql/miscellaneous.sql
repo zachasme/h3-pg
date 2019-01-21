@@ -42,3 +42,9 @@ SELECT h3_edge_length_m(10) = 65.90780749;
 
 SELECT h3_num_hexagons(0) = 122;
 SELECT h3_num_hexagons(15) = 569707381193162;
+
+--
+-- TEST h3_get_res_0_indexes
+--
+
+SELECT COUNT(*) = 122 FROM (SELECT h3_get_res_0_indexes()) q;

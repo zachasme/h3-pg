@@ -11,9 +11,3 @@
 --
 
 SELECT h3_haversine_distance(:hexagon, :pentagon) - :distance < :epsilon;
-
---
--- TEST h3_basecells
---
-
-SELECT COUNT(*) = 122 FROM (SELECT h3_basecells()) q;

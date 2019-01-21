@@ -14,25 +14,25 @@ SELECT h3_geo_to_h3(POINT('64.7498111652365,89.5695822308866'), 8);
 (1 row)
 ```
 
-#### h3_h3_to_geo(h3index) returns point
+#### h3_to_geo(h3index) returns point
 
 Finds the centroid of this hex in native PostgreSQL point type.
 
 ```
-SELECT h3_h3_to_geo('880326b88dfffff');
-            h3_h3_to_geo
+SELECT h3_to_geo('880326b88dfffff');
+            h3_to_geo
 -------------------------------------
  (64.7498111652365,89.5695822308866)
 (1 row)
 ```
 
-#### h3_h3_to_geo_boundary(h3index) returns polygon
+#### h3_to_geo_boundary(h3index) returns polygon
 
 Find the boundary of this hex, in native PostgreSQL polygon type.
 
 ```
-SELECT h3_h3_to_geo_boundary(:hexagon);
-                              h3_h3_to_geo_boundary
+SELECT h3_to_geo_boundary(:hexagon);
+                              h3_to_geo_boundary
 -----------------------------------------------------------------------------
  ((89.5656359347422,64.3352882950961),...,(89.570369702947,64.104106930976))
 (1 row)
@@ -40,25 +40,25 @@ SELECT h3_h3_to_geo_boundary(:hexagon);
 
 ### Index inspection functions
 
-#### h3_h3_get_resolution(h3index) returns integer
+#### h3_get_resolution(h3index) returns integer
 
 Returns the resolution of this hex.
 
 ```
-SELECT h3_h3_get_resolution(:hexagon), h3_h3_get_resolution(:pentagon);
- h3_h3_get_resolution | h3_h3_get_resolution
+SELECT h3_get_resolution(:hexagon), h3_get_resolution(:pentagon);
+ h3_get_resolution | h3_get_resolution
 -------------------+-------------------
                  8 |                 3
 (1 row)
 ```
 
-#### h3_h3_get_base_cell(h3index) returns integer
+#### h3_get_base_cell(h3index) returns integer
 
 Returns the base cell number of the given hex.
 
 ```
-SELECT h3_h3_get_base_cell(:hexagon), h3_h3_get_base_cell(h3_h3_to_parent(:hexagon));
- h3_h3_get_base_cell | h3_h3_get_base_cell
+SELECT h3_get_base_cell(:hexagon), h3_get_base_cell(h3_to_parent(:hexagon));
+ h3_get_base_cell | h3_get_base_cell
 ------------------+------------------
                 2 |                2
 (1 row)
@@ -76,51 +76,51 @@ SELECT h3_string_to_h3('880326b88dfffff);
 (1 row)
 ```
 
-#### h3_h3_to_string(h3index) returns cstring
+#### h3_to_string(h3index) returns cstring
 
 Converts the H3Index representation of the index to the string representation. Not very useful, since the internal representation can already be displayed as text for output, and read as text from input.
 
 ```
-SELECT h3_h3_to_string('880326b88dfffff);
- h3_h3_to_string
+SELECT h3_to_string('880326b88dfffff);
+ h3_to_string
 -----------------
  880326b88dfffff
 (1 row)
 ```
 
-#### h3_h3_is_valid(h3index) returns boolean
+#### h3_is_valid(h3index) returns boolean
 
 Returns whether this is a valid hex.
 
 ```
-SELECT h3_h3_is_valid(:hexagon), h3_h3_is_valid(:pentagon), h3_h3_is_valid(:invalid);
- h3_h3_is_valid | h3_h3_is_valid | h3_h3_is_valid
+SELECT h3_is_valid(:hexagon), h3_is_valid(:pentagon), h3_is_valid(:invalid);
+ h3_is_valid | h3_is_valid | h3_is_valid
 -------------+-------------+-------------
  t           | t           | f
 (1 row)
 
 ```
 
-#### h3_h3_is_res_class_iii(h3index) returns boolean
+#### h3_is_res_class_iii(h3index) returns boolean
 
 Returns true if the resolution of the given index has a class-III rotation,
 returns false if it has a class-II.
 
 ```
-SELECT h3_h3_is_res_class_iii(:hexagon), h3_h3_is_res_class_iii(h3_h3_to_parent(:hexagon));
- h3_h3_is_res_class_iii | h3_h3_is_res_class_iii
+SELECT h3_is_res_class_iii(:hexagon), h3_is_res_class_iii(h3_to_parent(:hexagon));
+ h3_is_res_class_iii | h3_is_res_class_iii
 ---------------------+---------------------
  f                   | t
 (1 row)
 ```
 
-#### h3_h3_is_pentagon(h3index) returns boolean
+#### h3_is_pentagon(h3index) returns boolean
 
 Returns whether this represents a pentagonal cell.
 
 ```
-SELECT h3_h3_is_pentagon(:hexagon), h3_h3_is_pentagon(:pentagon);
- h3_h3_is_pentagon | h3_h3_is_pentagon
+SELECT h3_is_pentagon(:hexagon), h3_is_pentagon(:pentagon);
+ h3_is_pentagon | h3_is_pentagon
 ----------------+----------------
  f              | t
 (1 row)
@@ -281,27 +281,27 @@ EXPERIMENTALS
 
 ### Hierarchical grid functions
 
-#### h3_h3_to_parent(h3index[, parentRes]) returns h3index
+#### h3_to_parent(h3index[, parentRes]) returns h3index
 
 Returns the parent (coarser) hex containing this `hex` at given `parentRes` (if no resolution is given, parent at current resolution minus one is found).
 
 ```
-SELECT h3_h3_to_parent('880326b88dfffff', 5);
-     h3_h3_to_parent
+SELECT h3_to_parent('880326b88dfffff', 5);
+     h3_to_parent
 -----------------
  850326bbfffffff
 (1 row)
 ```
 
-#### h3_h3_to_children(h3index[, childRes]) returns setof h3index
+#### h3_to_children(h3index[, childRes]) returns setof h3index
 
 Returns all hexes contained by `hex` at given `childRes` (if no resolution is given, children at current resolution plus one is found).
 
-May cause problems with too large memory allocations. Please see `h3_h3_to_children_slow`.
+May cause problems with too large memory allocations. Please see `h3_to_children_slow`.
 
 ```
-SELECT h3_h3_to_children('880326b88dfffff', 9);
-    h3_h3_to_children
+SELECT h3_to_children('880326b88dfffff', 9);
+    h3_to_children
 -----------------
  890326b88c3ffff
  890326b88c7ffff
@@ -313,16 +313,16 @@ SELECT h3_h3_to_children('880326b88dfffff', 9);
 (7 rows)
 ```
 
-#### h3_h3_to_children_slow(h3index[, childRes]) returns setof h3index
+#### h3_to_children_slow(h3index[, childRes]) returns setof h3index
 
-This functions does the same as `h3_h3_to_children_slow` but allocates smaller chunks of memory at the cost speed.
+This functions does the same as `h3_to_children_slow` but allocates smaller chunks of memory at the cost speed.
 
 #### h3_compact(h3index[]) returns setof h3index
 
 Returns the compacted version of the input array. I.e. if all children of an hex is included in the array, these will be compacted into the parent hex.
 
 ```
-SELECT h3_compact(array_cat(ARRAY(SELECT h3_h3_to_children('880326b88dfffff')), ARRAY(SELECT h3_h3_to_children('880326b88bfffff'))));
+SELECT h3_compact(array_cat(ARRAY(SELECT h3_to_children('880326b88dfffff')), ARRAY(SELECT h3_to_children('880326b88bfffff'))));
    h3_compact
 -----------------
  880326b88bfffff
@@ -335,7 +335,7 @@ SELECT h3_compact(array_cat(ARRAY(SELECT h3_h3_to_children('880326b88dfffff')), 
 Uncompacts the given hex array at the given resolution. If no resolution it will be chosen to be the highest resolution of the given indexes + 1.
 
 ```
-SELECT h3_uncompact(array_cat(ARRAY(SELECT h3_h3_to_parent('880326b88dfffff')), '{880326b88bfffff}'::h3index[]));
+SELECT h3_uncompact(array_cat(ARRAY(SELECT h3_to_parent('880326b88dfffff')), '{880326b88bfffff}'::h3index[]));
   h3_uncompact
 -----------------
  890326b8803ffff
@@ -406,7 +406,7 @@ Polyfill takes a given exterior native postgres polygon and an array of interior
 ```
 SELECT h3_polyfill(exterior, holes, 1) FROM
 (
- SELECT *  FROM h3_h3_set_to_linked_geo(ARRAY(SELECT h3_h3_to_children('8059fffffffffff, 1)))
+ SELECT *  FROM h3_set_to_linked_geo(ARRAY(SELECT h3_to_children('8059fffffffffff, 1)))
 ) q;
    h3_polyfill
 -----------------
@@ -420,14 +420,14 @@ SELECT h3_polyfill(exterior, holes, 1) FROM
 (7 rows)
 ```
 
-#### h3_h3_set_to_linked_geo(h3index[]) returns SET (exterior polygon, holes polygon[])
+#### h3_set_to_linked_geo(h3index[]) returns SET (exterior polygon, holes polygon[])
 
 Create records of exteriors and holes.
 
 ```
 SELECT h3_polyfill(exterior, holes, 1) FROM
 (
- SELECT *  FROM h3_h3_set_to_linked_geo(ARRAY(SELECT h3_h3_to_children('8059fffffffffff, 1)))
+ SELECT *  FROM h3_set_to_linked_geo(ARRAY(SELECT h3_to_children('8059fffffffffff, 1)))
 ) q;
    h3_polyfill
 -----------------
@@ -445,13 +445,13 @@ SELECT h3_polyfill(exterior, holes, 1) FROM
 
 Unidirectional edges are a form of H3Indexes that denote a unidirectional edge between two neighbouring indexes.
 
-### h3_h3_indexes_are_neighbors(h3index, h3index) returns boolean
+### h3_indexes_are_neighbors(h3index, h3index) returns boolean
 
 Determines whether or not the two indexes are neighbors. Returns true if they are and false if they aren't
 
 ```
-SELECT h3_h3_indexes_are_neighbors(:hexagon, '880326b8ebfffff'), h3_h3_indexes_are_neighbors('880326b881fffff', '880326b8ebfffff');
- h3_h3_indexes_are_neighbors | h3_h3_indexes_are_neighbors
+SELECT h3_indexes_are_neighbors(:hexagon, '880326b8ebfffff'), h3_indexes_are_neighbors('880326b881fffff', '880326b8ebfffff');
+ h3_indexes_are_neighbors | h3_indexes_are_neighbors
 --------------------------+--------------------------
  t                        | f
 (1 row)
@@ -471,13 +471,13 @@ SELECT(h3_get_h3_unidirectional_edge(:hexagon, :neighbour));
 (1 row)
 ```
 
-#### h3_h3_unidirectional_edge_is_valid(h3index) returns boolean
+#### h3_unidirectional_edge_is_valid(h3index) returns boolean
 
 Returns true if the given hex is a valid edge.
 
 ```
-SELECT h3_h3_unidirectional_edge_is_valid(h3_get_h3_unidirectional_edge(:hexagon, :neighbour));
- h3_h3_unidirectional_edge_is_valid
+SELECT h3_unidirectional_edge_is_valid(h3_get_h3_unidirectional_edge(:hexagon, :neighbour));
+ h3_unidirectional_edge_is_valid
 ---------------------------------
  t
 (1 row)
@@ -642,23 +642,23 @@ We provide some simple wrappers for casting to PostGIS types.
 
 The `h3_geo_to_h3` function has been overloaded to support both PostGIS `geometry` and `geography`.
 
-#### h3_h3_to_geometry(h3index) returns geometry
+#### h3_to_geometry(h3index) returns geometry
 
 Finds the centroid of this hex as PostGIS geometry type.
 
 ```
-SELECT h3_h3_to_geometry('8a63a9a99047fff');
-                  h3_h3_to_geometry
+SELECT h3_to_geometry('8a63a9a99047fff');
+                  h3_to_geometry
 ----------------------------------------------------
  0101000020E61000008BE4AED877D54B40C46F27D42B2F2940
 (1 row)
 ```
 
-#### h3_h3_to_geography(h3index) returns geography
+#### h3_to_geography(h3index) returns geography
 
 Same as above, but returns `geography` type.
 
-#### h3_h3_to_geo_boundary_geometry(h3index) returns geometry
+#### h3_to_geo_boundary_geometry(h3index) returns geometry
 
 Find the boundary of this hex, as PostGIS type.
 
@@ -670,7 +670,7 @@ SELECT boundary_geometry('8a63a9a99047fff');
 (1 row)
 ```
 
-#### h3_h3_to_geo_boundary_geography(h3index) returns geography
+#### h3_to_geo_boundary_geography(h3index) returns geography
 
 Same as above, but returns `geography` type.
 

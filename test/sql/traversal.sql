@@ -97,7 +97,7 @@ SELECT ARRAY(SELECT h3_line('841c023ffffffff', '841c025ffffffff'))
 SELECT h3_distance('880326b881fffff', '880326b885fffff') = 1;
 
 -- returns -1 for invalid inputs
-SELECT h3_distance('880326b881fffff', h3_h3_to_parent('880326b885fffff')) = -1;
+SELECT h3_distance('880326b881fffff', h3_to_parent('880326b885fffff')) = -1;
 
 --
 -- TEST h3_experimental_h3_to_local_ij and h3_experimental_local_ij_to_h3

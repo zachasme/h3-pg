@@ -4,12 +4,12 @@
 \set pentagon '\'831c00fffffffff\'::h3index'
 \set uniedge '\'1180326b885fffff\'::h3index'
 --
--- TEST h3_h3_indexes_are_neighbors
+-- TEST h3_indexes_are_neighbors
 --
-SELECT h3_h3_indexes_are_neighbors(:hexagon, :neighbor);
+SELECT h3_indexes_are_neighbors(:hexagon, :neighbor);
  t
 
-SELECT NOT h3_h3_indexes_are_neighbors(:hexagon, :hexagon);
+SELECT NOT h3_indexes_are_neighbors(:hexagon, :hexagon);
  t
 
 --
@@ -19,12 +19,12 @@ SELECT h3_get_h3_unidirectional_edge(:hexagon, :neighbor) = :uniedge;
  t
 
 --
--- TEST h3_h3_unidirectional_edge_is_valid
+-- TEST h3_unidirectional_edge_is_valid
 --
-SELECT h3_h3_unidirectional_edge_is_valid(:uniedge);
+SELECT h3_unidirectional_edge_is_valid(:uniedge);
  t
 
-SELECT NOT h3_h3_unidirectional_edge_is_valid(:hexagon);
+SELECT NOT h3_unidirectional_edge_is_valid(:hexagon);
  t
 
 --
