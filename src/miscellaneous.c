@@ -19,7 +19,7 @@
 #include <funcapi.h>  // Definitions for functions which return sets
 
 #include <h3/h3api.h> // Main H3 include
-#include "h3-pg.h"
+#include "extension.h"
 
 // Converts degrees to radians
 PG_FUNCTION_INFO_V1(h3_degs_to_rads);

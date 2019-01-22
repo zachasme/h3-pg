@@ -19,14 +19,14 @@
 CREATE OR REPLACE FUNCTION h3_geo_to_h3(point, resolution integer) RETURNS h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_geo_to_h3(point, resolution integer) IS
-    'Indexes the location at the specified resolution';
+'Indexes the location at the specified resolution';
 
 CREATE OR REPLACE FUNCTION h3_to_geo(h3index) RETURNS point
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_to_geo(h3index) IS
-    'Finds the centroid of the index';
+'Finds the centroid of the index';
 
 CREATE OR REPLACE FUNCTION h3_to_geo_boundary(h3index, extend_at_meridian BOOLEAN default FALSE) RETURNS polygon
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_to_geo_boundary(h3index, boolean) IS
-    'Finds the boundary of the index, second argument extends coordinates when crossing 180th meridian to help visualization';
+'Finds the boundary of the index, second argument extends coordinates when crossing 180th meridian to help visualization';

@@ -18,7 +18,7 @@
 #include <fmgr.h>     // PG_FUNCTION_ARGS, etc.
 
 #include <h3/h3api.h> // Main H3 include
-#include "h3-pg.h"
+#include "extension.h"
 
 // Returns the resolution of the index
 PG_FUNCTION_INFO_V1(h3_get_resolution);

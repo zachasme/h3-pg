@@ -23,7 +23,7 @@
 #include <access/htup_details.h> // Needed to return HeapTuple
 
 #include <h3/h3api.h> // Main H3 include
-#include "h3-pg.h"
+#include "extension.h"
 
 // should only be in ONE file
 PG_MODULE_MAGIC;

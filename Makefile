@@ -2,11 +2,13 @@ EXTENSION = h3
 EXTVERSION = $(shell grep default_version $(EXTENSION).control | \
 	sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
 
-INSTALL_SQL = sql/$(EXTENSION)--$(EXTVERSION).sql
-UPDATES = $(wildcard sql/updates/${EXTENSION}--*--*.sql)
+INSTALL_FILES = $(wildcard sql/install/*.sql)
+UPDATE_FILES = $(wildcard sql/updates/*.sql)
+FULLINSTALL_SQL = sql/$(EXTENSION)--$(EXTVERSION).sql
+UPDATETEST_SQL = sql/$(EXTENSION)--updatetest.sql
 TESTS = $(wildcard test/sql/*.sql)
 
-DATA = $(UPDATES) $(INSTALL_SQL) sql/$(EXTENSION)--upgradepath.sql
+DATA = $(UPDATES) $(FULLINSTALL_SQL) $(UPDATETEST_SQL)
 OBJS = $(patsubst %.c,%.o,$(wildcard src/*.c))
 MODULE_big = $(EXTENSION)
 SHLIB_LINK += -lh3
@@ -15,25 +17,25 @@ SHLIB_LINK += -lh3
 REGRESS      = $(basename $(notdir $(TESTS)))
 REGRESS_OPTS = --inputdir=test --outputdir=test --load-extension=postgis --load-extension=h3
 
-all: $(INSTALL_SQL) sql/$(EXTENSION)--upgradepath.sql
+all: $(FULLINSTALL_SQL) $(UPDATETEST_SQL)
 
-sql/$(EXTENSION)--upgradepath.sql: $(sort $(UPDATES))
+$(FULLINSTALL_SQL): $(sort $(INSTALL_FILES))
 	cat $^ > $@
 
-$(INSTALL_SQL): $(sort $(wildcard sql/install/*.sql))
+$(UPDATETEST_SQL): $(sort $(UPDATE_FILES))
 	cat $^ > $@
 
 installcheck: test/expected/install.out
 
-test/expected/install.out: $(UPDATES)
+test/expected/install.out: $(UPDATE_FILES)
 	psql -c "CREATE DATABASE pg_regress;"
 	psql -c "CREATE EXTENSION postgis;"
-	psql -c "CREATE EXTENSION h3 VERSION 'upgradepath';"
+	psql -c "CREATE EXTENSION h3 VERSION 'updatetest';"
 	echo "\dx+ h3" > $@
 	psql -c "\dx+ h3" >> $@
 	psql -c "DROP DATABASE pg_regress;"
 
-EXTRA_CLEAN += $(INSTALL_SQL) test/regression.diffs test/regression.out test/results
+EXTRA_CLEAN += $(FULLINSTALL_SQL) $(UPDATETEST_SQL) test/regression.diffs test/regression.out test/results
 
 # PGXS boilerplate
 PG_CONFIG = pg_config

@@ -21,7 +21,7 @@
 #include <utils/memutils.h> // MaxAllocSize
 
 #include <h3/h3api.h> // Main H3 include
-#include "h3-pg.h"
+#include "extension.h"
 
 // Returns the parent (coarser) index containing given index
 PG_FUNCTION_INFO_V1(h3_to_parent);

@@ -21,7 +21,7 @@
 #include <utils/geo_decls.h>     // making native points
 
 #include <h3/h3api.h> // Main H3 include
-#include "h3-pg.h"
+#include "extension.h"
 
 
 /* Returns whether or not the provided H3Indexes are neighbors */

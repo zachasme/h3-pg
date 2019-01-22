@@ -17,6 +17,7 @@
  function h3_geo_to_h3(point,integer)
  function h3_get_base_cell(h3index)
  function h3_get_destination_h3_index_from_unidirectional_edge(h3index)
+ function h3_get_extension_version()
  function h3_get_h3_indexes_from_unidirectional_edge(h3index)
  function h3_get_h3_unidirectional_edge(h3index,h3index)
  function h3_get_h3_unidirectional_edges_from_hexagon(h3index)
@@ -75,5 +76,5 @@
  operator >=(h3index,h3index)
  operator >(h3index,h3index)
  type h3index
-(73 rows)
+(74 rows)
 

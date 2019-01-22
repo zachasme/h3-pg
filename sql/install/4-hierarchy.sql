@@ -19,22 +19,22 @@
 CREATE OR REPLACE FUNCTION h3_to_parent(h3index, resolution integer DEFAULT -1) RETURNS h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_to_parent(h3index, resolution integer) IS
-    'Returns the parent of the given index';
+'Returns the parent of the given index';
 
 CREATE OR REPLACE FUNCTION h3_to_children(h3index, resolution integer DEFAULT -1) RETURNS SETOF h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_to_children(index h3index, resolution integer) IS
-    'Returns the set of children of the given index';
+'Returns the set of children of the given index';
 
 CREATE OR REPLACE FUNCTION h3_compact(h3index[]) RETURNS SETOF h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_compact(h3index[]) IS
-    'Compacts the given array as best as possible';
+'Compacts the given array as best as possible';
 
 CREATE OR REPLACE FUNCTION h3_uncompact(h3index[], resolution integer DEFAULT -1) RETURNS SETOF h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_uncompact(h3index[], resolution integer) IS
-    'Uncompacts the given array at the given resolution. If no resolution is given, then it is chosen as one higher than the highest resolution in the set';
+'Uncompacts the given array at the given resolution. If no resolution is given, then it is chosen as one higher than the highest resolution in the set';
 
 -- Custom functions
 
@@ -65,5 +65,5 @@ CREATE OR REPLACE FUNCTION __h3_to_children_aux(index h3index, resolution intege
 CREATE OR REPLACE FUNCTION h3_to_children_slow(index h3index, resolution integer DEFAULT -1) RETURNS SETOF h3index
     AS $$ SELECT __h3_to_children_aux($1, $2, -1) $$ LANGUAGE SQL;
     COMMENT ON FUNCTION h3_to_children_slow(index h3index, resolution integer) IS
-    'Slower version of H3ToChildren but allocates less memory';
+'Slower version of H3ToChildren but allocates less memory';
 

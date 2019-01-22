@@ -24,7 +24,7 @@
 #include <catalog/pg_type.h>
 
 #include <h3/h3api.h> // Main H3 include
-#include "h3-pg.h"
+#include "extension.h"
 
 /** @struct GeoPolygon
  *  @brief Simplified core of GeoJSON Polygon coordinates definition

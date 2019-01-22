@@ -19,7 +19,7 @@
 #include <utils/geo_decls.h> // making native points
 
 #include <h3/h3api.h> // Main H3 include
-#include "h3-pg.h"
+#include "extension.h"
 
 // Indexes the location at the specified resolution
 PG_FUNCTION_INFO_V1(h3_geo_to_h3);
