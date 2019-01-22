@@ -23,7 +23,7 @@ ALTER FUNCTION h3_basecells() RENAME TO h3_get_res_0_indexes;
 COMMENT ON FUNCTION h3_get_res_0_indexes() IS
 'Get all resolution 0 indexes.';
 
--- rename functios with double (h3_h3_) prefix
+-- rename functions with double (h3_h3_) prefix
 ALTER FUNCTION h3_h3_get_base_cell(h3index) RENAME TO h3_get_base_cell;
 ALTER FUNCTION h3_h3_get_resolution(h3index) RENAME TO h3_get_resolution;
 ALTER FUNCTION h3_h3_is_pentagon(h3index) RENAME TO h3_is_pentagon;
