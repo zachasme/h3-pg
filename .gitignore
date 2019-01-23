@@ -7,9 +7,9 @@
 test/regression.*
 test/results
 
-# Generated SQL files
+# Generated
 sql/*.sql
-sql/install/9-extension.sql
+src/extension.h
 
 # IDEs
 .vscode

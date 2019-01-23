@@ -78,7 +78,7 @@ CREATE OR REPLACE FUNCTION __h3_to_children_aux(index h3index, resolution intege
     END;$$ LANGUAGE plpgsql;
 
 -- version
-CREATE OR REPLACE FUNCTION h3_get_extension_version() RETURNS varchar
-    AS $$ SELECT '1.0.0'::text AS version $$ LANGUAGE SQL;
+CREATE OR REPLACE FUNCTION h3_get_extension_version() RETURNS cstring
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_get_extension_version() IS
 'Get the currently installed version of the extension.';

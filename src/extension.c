@@ -21,6 +21,7 @@
 #include <fmgr.h>                // PG_FUNCTION_ARGS, etc.
 #include <funcapi.h>             // Definitions for functions which return sets
 #include <access/htup_details.h> // Needed to return HeapTuple
+#include <utils/builtins.h>
 
 #include <h3/h3api.h> // Main H3 include
 #include "extension.h"
@@ -32,6 +33,17 @@ static_assert(
     H3_VERSION_MAJOR == 3 && H3_VERSION_MINOR >= 3,
     "Installed H3 must be at least version 3.3.0"
 );
+
+/**
+ * Return version number for this extension (not main h3 lib)
+ */
+PG_FUNCTION_INFO_V1(h3_get_extension_version);
+Datum h3_get_extension_version(PG_FUNCTION_ARGS)
+{
+    char *string = palloc(sizeof(EXTVERSION));
+    strcpy(string, EXTVERSION);
+    PG_RETURN_CSTRING(string);
+}
 
 /**
  * Set-Returning-Function assume user fctx contains indices

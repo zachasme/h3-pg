@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-CREATE OR REPLACE FUNCTION h3_get_extension_version() RETURNS varchar
-    AS $$ SELECT '@EXTVERSION@'::text AS version $$ LANGUAGE SQL;
+CREATE OR REPLACE FUNCTION h3_get_extension_version() RETURNS cstring
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_get_extension_version() IS
 'Get the currently installed version of the extension.';

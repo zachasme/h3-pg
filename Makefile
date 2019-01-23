@@ -17,10 +17,12 @@ SHLIB_LINK += -lh3
 REGRESS      = $(basename $(notdir $(TESTS)))
 REGRESS_OPTS = --inputdir=test --outputdir=test --load-extension=postgis --load-extension=h3
 
-sql/install/9-extension.sql: sql/install/9-extension.sql.in
+# Generate header file
+submake: src/extension.h
+src/extension.h: src/extension.h.in
 	sed s/@EXTVERSION@/${EXTVERSION}/g $< > $@
 
-all: $(FULLINSTALL_SQL) $(UPDATETEST_SQL) sql/install/9-extension.sql
+all: $(FULLINSTALL_SQL) $(UPDATETEST_SQL)
 
 $(FULLINSTALL_SQL): $(sort $(INSTALL_FILES))
 	cat $^ > $@
@@ -34,8 +36,8 @@ test/expected/install.out: $(UPDATE_FILES)
 	psql -c "CREATE DATABASE pg_regress;"
 	psql -c "CREATE EXTENSION postgis;"
 	psql -c "CREATE EXTENSION h3 VERSION 'updatetest';"
-	echo "\dx+ h3" > $@
-	psql -c "\dx+ h3" >> $@
+	echo "\df h3*" > $@
+	psql -c "\df h3*" >> $@
 	psql -c "DROP DATABASE pg_regress;"
 
 EXTRA_CLEAN += $(FULLINSTALL_SQL) $(UPDATETEST_SQL) test/regression.diffs test/regression.out test/results

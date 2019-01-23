@@ -25,6 +25,8 @@ typedef struct
     int *distances;
 } hexDistanceTuple;
 
+#define EXTVERSION "@EXTVERSION@"
+
 /* base type in postgres is Datum, and we cannot fit 8 bytes on all platforms
    so we use pointers */
 #define PG_RETURN_H3_INDEX_P(x) PG_RETURN_POINTER(x)
