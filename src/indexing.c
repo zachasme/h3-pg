@@ -34,16 +34,7 @@ Datum h3_geo_to_h3(PG_FUNCTION_ARGS)
     location.lat = degsToRads(geo->y);
 
     *idx = geoToH3(&location, resolution);
-
-    if (*idx == 0)
-    {
-        ereport(
-            ERROR,
-            (errcode(ERRCODE_EXTERNAL_ROUTINE_EXCEPTION),
-             errmsg("Indexing failed"),
-             errdetail("GeoCoord could not be indexed at specified resolution."),
-             errhint("Reduce resolution.")));
-    }
+    ASSERT_EXTERNAL(*idx, "Indexing failed at specified resolution.");
 
     PG_RETURN_H3_INDEX_P(idx);
 }

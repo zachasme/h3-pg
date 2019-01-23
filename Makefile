@@ -13,25 +13,23 @@ OBJS = $(patsubst %.c,%.o,$(wildcard src/*.c))
 MODULE_big = $(EXTENSION)
 SHLIB_LINK += -lh3
 
-# Testing
+# testing
 REGRESS      = $(basename $(notdir $(TESTS)))
 REGRESS_OPTS = --inputdir=test --outputdir=test --load-extension=postgis --load-extension=h3
 
-# Generate header file
-submake: src/extension.h
+# generate header file
 src/extension.h: src/extension.in.h
 	sed s/@EXTVERSION@/${EXTVERSION}/g $< > $@
+$(OBJS): src/extension.h
 
-all: $(FULLINSTALL_SQL) $(UPDATETEST_SQL)
-
+# generate full install sql file
 $(FULLINSTALL_SQL): $(sort $(INSTALL_FILES))
 	cat $^ > $@
+install: $(FULLINSTALL_SQL)
 
+# rules for testing the update path against full install
 $(UPDATETEST_SQL): $(sort $(UPDATE_FILES))
 	cat $^ > $@
-
-installcheck: test/expected/install.out
-
 test/expected/install.out: $(UPDATE_FILES)
 	psql -c "CREATE DATABASE pg_regress;"
 	psql -c "CREATE EXTENSION postgis;"
@@ -39,7 +37,9 @@ test/expected/install.out: $(UPDATE_FILES)
 	echo "\df h3*" > $@
 	psql -c "\df h3*" >> $@
 	psql -c "DROP DATABASE pg_regress;"
+installcheck: test/expected/install.out $(UPDATETEST_SQL)
 
+# cleanup
 EXTRA_CLEAN += $(FULLINSTALL_SQL) $(UPDATETEST_SQL) test/regression.diffs test/regression.out test/results
 
 # PGXS boilerplate

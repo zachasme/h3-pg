@@ -45,12 +45,8 @@ Datum h3_get_h3_unidirectional_edge(PG_FUNCTION_ARGS)
   H3Index *destination = PG_GETARG_H3_INDEX_P(1);
   H3Index *edge = palloc(sizeof(H3Index));
   *edge = getH3UnidirectionalEdge(*origin, *destination);
-  if (*edge == 0)
-  {
-    ereport(ERROR, (
-                       errcode(ERRCODE_EXTERNAL_ROUTINE_EXCEPTION),
-                       errmsg("Can only create edges between neighbouring indexes")));
-  }
+  ASSERT_EXTERNAL(*edge, "Can only create edges between neighbouring indexes");
+
   PG_RETURN_H3_INDEX_P(edge);
 }
 

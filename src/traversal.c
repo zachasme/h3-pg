@@ -135,15 +135,8 @@ Datum h3_hex_range(PG_FUNCTION_ARGS)
         int maxSize = maxKringSize(k);
         H3Index *indices = palloc(maxSize * sizeof(H3Index));
 
-        if (hexRange(*origin, k, indices) != 0)
-        {
-            ereport(
-                ERROR,
-                (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-                 errmsg("Pentagon encountered"),
-                 errdetail("This method is undefined when it encounters pentagons"),
-                 errhint("Try using k_ring")));
-        }
+        int result = hexRange(*origin, k, indices);
+        ASSERT_EXTERNAL(result == 0, "Pentagonal distortion encountered, this method is undefined when it encounters pentagons. Try using k_ring");
 
         funcctx->user_fctx = indices;
         funcctx->max_calls = maxSize;
@@ -190,15 +183,8 @@ Datum h3_hex_range_distances(PG_FUNCTION_ARGS)
         int *distances = palloc(maxSize * sizeof(int));
         hexDistanceTuple *user_fctx = palloc(sizeof(hexDistanceTuple));
 
-        if (hexRangeDistances(*origin, k, indices, distances) != 0)
-        {
-            ereport(
-                ERROR,
-                (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-                 errmsg("Pentagon encountered"),
-                 errdetail("This method is undefined when it encounters pentagons"),
-                 errhint("Try using k_ring_distances")));
-        }
+        int result = hexRangeDistances(*origin, k, indices, distances);
+        ASSERT_EXTERNAL(result == 0, "Pentagonal distortion encountered, this method is undefined when it encounters pentagons. Try using k_ring_distances");
 
         ENSURE_TYPEFUNC_COMPOSITE(get_call_result_type(fcinfo, NULL, &tuple_desc));
 
@@ -226,6 +212,7 @@ Datum h3_hex_ranges(PG_FUNCTION_ARGS)
 {
     if (SRF_IS_FIRSTCALL())
     {
+        int result;
         FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
         MemoryContext oldcontext =
             MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
@@ -247,15 +234,8 @@ Datum h3_hex_ranges(PG_FUNCTION_ARGS)
             idx++;
         }
 
-        if (hexRanges(h3Set, length, k, indices) != 0)
-        {
-            ereport(
-                ERROR,
-                (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-                 errmsg("Pentagon encountered"),
-                 errdetail("This method is undefined when it encounters pentagons"),
-                 errhint("Try using k_ring")));
-        }
+        result = hexRanges(h3Set, length, k, indices);
+        ASSERT_EXTERNAL(result == 0, "Pentagonal distortion encountered, this method is undefined when it encounters pentagons");
 
         funcctx->user_fctx = indices;
         funcctx->max_calls = maxSize;
@@ -275,6 +255,7 @@ Datum h3_hex_ring(PG_FUNCTION_ARGS)
 {
     if (SRF_IS_FIRSTCALL())
     {
+        int result;
         FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
         MemoryContext oldcontext =
             MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
@@ -294,14 +275,8 @@ Datum h3_hex_ring(PG_FUNCTION_ARGS)
         }
         indices = palloc(maxSize * sizeof(H3Index));
 
-        if (hexRing(*origin, k, indices) != 0)
-        {
-            ereport(
-                ERROR,
-                (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-                 errmsg("Pentagon encountered"),
-                 errdetail("This method is undefined when it encounters pentagons")));
-        }
+        result = hexRing(*origin, k, indices);
+        ASSERT_EXTERNAL(result == 0, "Pentagonal distortion encountered, this method is undefined when it encounters pentagons");
 
         funcctx->user_fctx = indices;
         funcctx->max_calls = maxSize;
@@ -354,13 +329,8 @@ Datum h3_line(PG_FUNCTION_ARGS)
         int size = h3LineSize(*start, *end);
         H3Index *indices = palloc(size * sizeof(H3Index));
 
-        if (h3Line(*start, *end, indices) != 0)
-        {
-            ereport(
-                ERROR,
-                (errcode(ERRCODE_EXTERNAL_ROUTINE_EXCEPTION),
-                 errmsg("Failed to get line")));
-        }
+        int result = h3Line(*start, *end, indices);
+        ASSERT_EXTERNAL(result == 0, "Failed to generate line");
 
         funcctx->user_fctx = indices;
         funcctx->max_calls = size;

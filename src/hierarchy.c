@@ -31,25 +31,23 @@ Datum h3_to_parent(PG_FUNCTION_ARGS)
 
     // get function arguments
     H3Index *origin = PG_GETARG_H3_INDEX_P(0);
-    int resolution = PG_GETARG_INT32(1);
-    if (resolution == -1)
+    int parentRes = PG_GETARG_INT32(1);
+    int childRes = h3GetResolution(*origin);
+    if (parentRes == -1)
     { // resolution parameter not set
-        resolution = h3GetResolution(*origin) - 1;
+        parentRes = childRes - 1;
     }
+    ASSERT(
+        parentRes <= childRes,
+        ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE,
+        "Requested parent resolution %d is finer than input index resolution %d",
+        parentRes, childRes
+    );
 
     // get parent
     parent = palloc(sizeof(H3Index));
-    *parent = h3ToParent(*origin, resolution);
-    if (!*parent)
-    {
-        ereport(
-            ERROR,
-            (errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
-             errmsg("Invalid resolution %d.", resolution),
-             errdetail(
-                 "Current backend only has 16 resolutions numbered 0 through 15."),
-             errhint("Choose valid resolution.")));
-    }
+    *parent = h3ToParent(*origin, parentRes);
+    ASSERT_EXTERNAL(*parent, "Could not generate parent");
 
     PG_RETURN_H3_INDEX_P(parent);
 }
@@ -81,31 +79,23 @@ Datum h3_to_children(PG_FUNCTION_ARGS)
         { // resolution parameter not set
             resolution = h3GetResolution(*origin) + 1;
         }
-
-        if (resolution > 15)
-        {
-            ereport(
-                ERROR,
-                (errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
-                 errmsg("Maximum resolution exceeded."),
-                 errdetail(
-                     "Current backend only has 16 resolutions numbered 0 through 15."),
-                 errhint("Reduce resolution.")));
-        }
+        ASSERT(
+            resolution <= MAX_H3_RES,
+            ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE,
+            "Maximum resolution exceeded"
+        );
 
         maxSize = maxH3ToChildrenSize(*origin, resolution);
         size = maxSize * sizeof(H3Index);
-
-        if (size > MaxAllocSize)
-        {
-            ereport(
-                ERROR,
-                (errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
-                 errmsg("Cannot allocate requested memory. Try using h3_to_children_slow().")));
-        }
+        ASSERT(
+            size <= MaxAllocSize,
+            ERRCODE_OUT_OF_MEMORY,
+            "Cannot allocate necessary amount memory, try using h3_to_children_slow()"
+        );
 
         children = palloc(size);
         h3ToChildren(*origin, resolution, children);
+        ASSERT_EXTERNAL(*children, "Could not generate children");
 
         funcctx->user_fctx = children;
         funcctx->max_calls = maxSize;
@@ -123,6 +113,7 @@ Datum h3_compact(PG_FUNCTION_ARGS)
 {
     if (SRF_IS_FIRSTCALL())
     {
+        int result;
         FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
         MemoryContext oldcontext =
             MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
@@ -143,10 +134,8 @@ Datum h3_compact(PG_FUNCTION_ARGS)
             idx++;
         }
 
-        if (compact(h3set, compactedSet, arrayLength) != 0)
-        {
-            elog(ERROR, "Something went wrong during compacting");
-        }
+        result = compact(h3set, compactedSet, arrayLength);
+        ASSERT_EXTERNAL(result == 0, "Could not compact input array");
 
         funcctx->user_fctx = compactedSet;
         funcctx->max_calls = maxSize;
@@ -161,6 +150,7 @@ Datum h3_uncompact(PG_FUNCTION_ARGS)
 {
     if (SRF_IS_FIRSTCALL())
     {
+        int result;
         int maxSize;
         H3Index *uncompactedSet;
 
@@ -202,16 +192,10 @@ Datum h3_uncompact(PG_FUNCTION_ARGS)
         maxSize = maxUncompactSize(h3set, arrayLength, resolution);
         uncompactedSet = palloc0(maxSize * sizeof(H3Index));
 
-        if (uncompact(h3set, arrayLength, uncompactedSet, maxSize, resolution) !=
-            0)
-        {
-            ereport(ERROR,
-                    (errcode(ERRCODE_NUMERIC_VALUE_OUT_OF_RANGE),
-                     errmsg("Something went wrong during uncompacting"),
-                     errdetail("This may be caused by choosing a lower resolution "
-                               "than some of the indexes"),
-                     errhint("Check that it is called with the proper resolution")));
-        }
+        result = uncompact(h3set, arrayLength, uncompactedSet, maxSize, resolution);
+        ASSERT_EXTERNAL(result == 0,
+            "Could not uncompact input array. This may be caused by choosing a lower resolution than some of the indexes"
+        );
 
         funcctx->user_fctx = uncompactedSet;
         funcctx->max_calls = maxSize;
