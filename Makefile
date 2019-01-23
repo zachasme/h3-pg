@@ -19,7 +19,7 @@ REGRESS_OPTS = --inputdir=test --outputdir=test --load-extension=postgis --load-
 
 # Generate header file
 submake: src/extension.h
-src/extension.h: src/extension.h.in
+src/extension.h: src/extension.in.h
 	sed s/@EXTVERSION@/${EXTVERSION}/g $< > $@
 
 all: $(FULLINSTALL_SQL) $(UPDATETEST_SQL)
