@@ -8,8 +8,8 @@ test/regression.*
 test/results
 
 # Generated SQL files
-sql/h3--*.sql
-!sql/h3--?.?.?--*.sql
+sql/*.sql
+sql/install/9-extension.sql
 
 # IDEs
 .vscode

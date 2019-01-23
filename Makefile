@@ -17,7 +17,10 @@ SHLIB_LINK += -lh3
 REGRESS      = $(basename $(notdir $(TESTS)))
 REGRESS_OPTS = --inputdir=test --outputdir=test --load-extension=postgis --load-extension=h3
 
-all: $(FULLINSTALL_SQL) $(UPDATETEST_SQL)
+sql/install/9-extension.sql: sql/install/9-extension.sql.in
+	sed s/@EXTVERSION@/${EXTVERSION}/g $< > $@
+
+all: $(FULLINSTALL_SQL) $(UPDATETEST_SQL) sql/install/9-extension.sql
 
 $(FULLINSTALL_SQL): $(sort $(INSTALL_FILES))
 	cat $^ > $@
