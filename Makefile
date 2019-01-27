@@ -68,6 +68,10 @@ test/expected/install.out: $(UPDATE_FILES)
 install: $(UPDATETEST_SQL)
 installcheck: test/expected/install.out
 
+# zip up for distribution
+distribute: clean
+	git archive --format zip --prefix=h3-${EXTVERSION}/ --output h3-${EXTVERSION}.zip master
+
 # cleanup
 EXTRA_CLEAN += \
 	${LIBH3_DIR} \
