@@ -2,7 +2,10 @@ EXTENSION = h3
 EXTVERSION = $(shell grep default_version $(EXTENSION).control | \
 	sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
 
-LIBH3_VERSION = v3.4.0
+LIBH3_REQUIRED_MAJOR = 3
+LIBH3_REQUIRED_MINOR = 4
+LIBH3_REQUIRED_PATCH = 0
+LIBH3_VERSION = v${LIBH3_REQUIRED_MAJOR}.${LIBH3_REQUIRED_MINOR}.${LIBH3_REQUIRED_PATCH}
 LIBH3_DIR = libh3-${LIBH3_VERSION}
 
 INSTALL_FILES = $(wildcard sql/install/*.sql)
@@ -40,7 +43,11 @@ $(OBJS): h3.a
 
 # generate header file
 src/extension.h: src/extension.in.h
-	sed s/@EXTVERSION@/${EXTVERSION}/g $< > $@
+	sed -e 's/@EXTVERSION@/${EXTVERSION}/g' \
+		-e 's/@LIBH3_REQUIRED_MAJOR@/${LIBH3_REQUIRED_MAJOR}/g' \
+		-e 's/@LIBH3_REQUIRED_MINOR@/${LIBH3_REQUIRED_MINOR}/g' \
+		-e 's/@LIBH3_REQUIRED_PATCH@/${LIBH3_REQUIRED_PATCH}/g' \
+		$< > $@
 $(OBJS): src/extension.h
 
 # generate full install sql file

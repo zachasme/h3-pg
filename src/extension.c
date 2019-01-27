@@ -30,7 +30,7 @@
 PG_MODULE_MAGIC;
 
 static_assert(
-    H3_VERSION_MAJOR == 3 && H3_VERSION_MINOR >= 3,
+    H3_VERSION_MAJOR == LIBH3_REQUIRED_MAJOR && H3_VERSION_MINOR >= LIBH3_REQUIRED_MINOR,
     "Installed H3 must be at least version 3.3.0"
 );
 
