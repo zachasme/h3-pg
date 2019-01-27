@@ -24,3 +24,12 @@ docker run --rm -it -v "$PWD":/tmp/h3-pg h3-pg
 It will mount the code as a volume, and also mount the test output directory,
 so output can be inspected. The chmod might be needed if you get permission
 denied errors.
+
+## Distribution on PGXN
+
+Zip it up
+```
+git archive --format zip --prefix=h3-x.x.x/ --output h3-x.x.x.zip master
+```
+
+Upload it on https://manager.pgxn.org/

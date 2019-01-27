@@ -116,6 +116,7 @@ CREATE OPERATOR CLASS btree_h3index_ops DEFAULT FOR TYPE h3index
         OPERATOR        5       >  ,
         FUNCTION        1       h3index_cmp(h3index, h3index);
 
+-- hash operator class needed for WHERE IN
 CREATE OPERATOR CLASS hash_h3index_ops DEFAULT FOR TYPE h3index
     USING hash AS
         OPERATOR        1       = ,

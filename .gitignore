@@ -12,6 +12,7 @@ sql/*.sql
 src/extension.h
 test/expected/install.out
 libh3-*/
+h3-*.zip
 
 # IDEs
 .vscode
