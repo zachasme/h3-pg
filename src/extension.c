@@ -40,9 +40,7 @@ static_assert(
 PG_FUNCTION_INFO_V1(h3_get_extension_version);
 Datum h3_get_extension_version(PG_FUNCTION_ARGS)
 {
-    char *string = palloc(sizeof(EXTVERSION));
-    strcpy(string, EXTVERSION);
-    PG_RETURN_CSTRING(string);
+    PG_RETURN_TEXT_P(cstring_to_text(EXTVERSION));
 }
 
 /**
