@@ -59,11 +59,12 @@ install: $(FULLINSTALL_SQL)
 $(UPDATETEST_SQL): $(sort $(UPDATE_FILES))
 	cat $^ > $@
 test/expected/install.out: $(UPDATE_FILES)
+	psql -c "DROP DATABASE IF EXISTS pg_regress;"
 	psql -c "CREATE DATABASE pg_regress;"
-	psql -c "CREATE EXTENSION postgis;"
-	psql -c "CREATE EXTENSION h3 VERSION 'updatetest';"
+	psql -d pg_regress -c "CREATE EXTENSION postgis;"
+	psql -d pg_regress -c "CREATE EXTENSION h3 VERSION 'updatetest';"
 	echo "\df h3*" > $@
-	psql -c "\df h3*" >> $@
+	psql -d pg_regress -c "\df h3*" >> $@
 	psql -c "DROP DATABASE pg_regress;"
 install: $(UPDATETEST_SQL)
 installcheck: test/expected/install.out
@@ -79,7 +80,8 @@ EXTRA_CLEAN += \
 	$(UPDATETEST_SQL) \
 	src/extension.h \
 	test/expected/install.out \
-	test/regression.diffs test/regression.out test/results
+	test/regression.diffs test/regression.out test/results \
+	h3-*.zip
 
 # PGXS boilerplate
 PG_CONFIG = pg_config
