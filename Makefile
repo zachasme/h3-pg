@@ -70,7 +70,11 @@ installcheck: test/expected/install.out
 
 # zip up for distribution
 distribute: clean
+ifeq ($(shell git describe --abbrev=0 --tags),v${EXTVERSION})
 	git archive --format zip --prefix=h3-${EXTVERSION}/ --output h3-${EXTVERSION}.zip master
+else
+	$(error Current EXTVERSION v${EXTVERSION} does not equal latest tag ${shell git describe --abbrev=0 --tags})
+endif
 
 # cleanup
 EXTRA_CLEAN += \
