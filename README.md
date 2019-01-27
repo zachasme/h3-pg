@@ -26,38 +26,15 @@ $ psql -d mydb
 (1 row)
 ```
 
-## Development
-
-We provide a Dockerfile for development without installation of H3 and Postgres. The following requires that your system has `docker` installed.
-
-First, build the docker image:
-
-```
-docker build -t h3-pg .
-```
-
-Then, build the extension and run the test suite:
-
-```
-docker run --rm h3-pg
-```
-
-Afterwards, to quickly build and test changes, run:
-
-```
-chmod -R 777 .
-docker run --rm -it -v "$PWD":/tmp/h3-pg h3-pg
-```
-
-It will mount the code as a volume, and also mount the test output directory,
-so output can be inspected. The chmod might be needed if you get permission
-denied errors.
-
 ## Usage
 
 Generally, all functions have been renamed from camelCase in H3 to snake_case in SQL with an added `h3_` prefix (except when that would result in a double `h3_` prefix). For example `geoToH3` becomes `h3_geo_to_h3` and `h3ToChildren` becomes `h3_to_children`.
 
-See [API reference](docs/api.md)
+See [API reference](docs/api.md) for all provided functions.
+
+## For developers
+
+See [Development](docs/development.md).
 
 ## License
 
