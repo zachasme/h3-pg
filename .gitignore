@@ -10,6 +10,7 @@ test/results
 # Generated
 sql/*.sql
 src/extension.h
+test/expected/install.out
 
 # IDEs
 .vscode
