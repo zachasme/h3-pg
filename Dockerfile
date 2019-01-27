@@ -10,13 +10,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     postgresql-server-dev-$VERSION
 
-# Build and install H3 (for static linking)
-RUN git clone https://github.com/uber/h3.git /tmp/h3
-WORKDIR /tmp/h3
-RUN cmake -DBUILD_SHARED_LIBS=1 -DCMAKE_INSTALL_PREFIX:PATH=/usr .
-RUN make
-RUN make install
-
 # hacky solution to non-root user in entrypoint.sh
 RUN chmod -R a+w \
     /usr/share/postgresql/${VERSION} \

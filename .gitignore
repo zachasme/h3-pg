@@ -11,6 +11,7 @@ test/results
 sql/*.sql
 src/extension.h
 test/expected/install.out
+libh3-*/
 
 # IDEs
 .vscode

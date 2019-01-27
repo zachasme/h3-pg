@@ -9,7 +9,7 @@ Developed in collaboration with [Scandinavian Highlands](http://www.scandinavian
 * PostgreSQL 9.6 or higher (*including server headers*). It might work with earlier versions, we have not tested earlier than 9.6.
 * C compiler (e.g., gcc)
 * GNU Make
-* H3
+* Git & CMake (for libh3)
 
 ## Quick Overview
 
@@ -20,44 +20,10 @@ $ pgxn install h3
 $ pgxn load -d mydb h3
 $ psql -d mydb
 =# SELECT h3_geo_to_h3(POINT('37.3615593,-122.0553238'), 5);
-```
-
-## Manual Installation
-
-First, you must build [H3](https://uber.github.io/h3).
-
-```
-git clone https://github.com/uber/h3.git
-cd h3
-cmake -DCMAKE_C_FLAGS=-fPIC .
-make
-sudo make install
-```
-
-Then build h3-pg:
-
-```
-git clone ...
-cd h3-pg
-make
-sudo make install
-```
-
-Run `psql` and load/use extension in database:
-
-```
-CREATE_EXTENSION h3;
-
-SELECT h3_to_children('880326b88dfffff', 9);
-    h3_to_children
+  h3_geo_to_h3   
 -----------------
- 890326b88c3ffff
- 890326b88c7ffff
- 890326b88cbffff
- 890326b88cfffff
- 890326b88d3ffff
- 890326b88d7ffff
- 890326b88dbffff
+ 85e35e73fffffff
+(1 row)
 ```
 
 ## Development
@@ -89,7 +55,7 @@ denied errors.
 
 ## Usage
 
-Generally all functions have been renamed from camelCase to snake_case with an added `h3_` prefix (except when that would result in a double `h3_` prefix). For example `h3ToChildren` becomes `h3_h3_to_children`.
+Generally, all functions have been renamed from camelCase in H3 to snake_case in SQL with an added `h3_` prefix (except when that would result in a double `h3_` prefix). For example `geoToH3` becomes `h3_geo_to_h3` and `h3ToChildren` becomes `h3_to_children`.
 
 See [API reference](docs/api.md)
 

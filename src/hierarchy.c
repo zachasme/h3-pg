@@ -88,7 +88,7 @@ Datum h3_to_children(PG_FUNCTION_ARGS)
         maxSize = maxH3ToChildrenSize(*origin, resolution);
         size = maxSize * sizeof(H3Index);
         ASSERT(
-            size <= MaxAllocSize,
+            AllocSizeIsValid(size),
             ERRCODE_OUT_OF_MEMORY,
             "Cannot allocate necessary amount memory, try using h3_to_children_slow()"
         );
