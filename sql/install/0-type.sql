@@ -38,6 +38,8 @@ CREATE OR REPLACE FUNCTION h3index_ge(h3index, h3index) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 CREATE OR REPLACE FUNCTION h3index_cmp(h3index, h3index) RETURNS integer
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+CREATE OR REPLACE FUNCTION h3index_hash(h3index) RETURNS integer
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 -- finally, we can provide the full definition of the data type
 CREATE TYPE h3index (
@@ -104,7 +106,7 @@ CREATE OPERATOR >= (
   JOIN = scalargtjoinsel
 );
 
--- operator class
+-- operator classes
 CREATE OPERATOR CLASS btree_h3index_ops DEFAULT FOR TYPE h3index
     USING btree AS
         OPERATOR        1       <  ,
@@ -113,3 +115,8 @@ CREATE OPERATOR CLASS btree_h3index_ops DEFAULT FOR TYPE h3index
         OPERATOR        4       >= ,
         OPERATOR        5       >  ,
         FUNCTION        1       h3index_cmp(h3index, h3index);
+
+CREATE OPERATOR CLASS hash_h3index_ops DEFAULT FOR TYPE h3index
+    USING hash AS
+        OPERATOR        1       = ,
+        FUNCTION        1       h3index_hash(h3index);

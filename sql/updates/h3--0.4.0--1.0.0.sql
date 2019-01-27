@@ -82,3 +82,11 @@ CREATE OR REPLACE FUNCTION h3_get_extension_version() RETURNS cstring
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_get_extension_version() IS
 'Get the currently installed version of the extension.';
+
+-- hash operators
+CREATE OR REPLACE FUNCTION h3index_hash(h3index) RETURNS integer
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+CREATE OPERATOR CLASS hash_h3index_ops DEFAULT FOR TYPE h3index
+    USING hash AS
+        OPERATOR        1       = ,
+        FUNCTION        1       h3index_hash(h3index);

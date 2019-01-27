@@ -17,6 +17,7 @@
 #include <postgres.h>        // Datum, etc.
 #include <fmgr.h>            // PG_FUNCTION_ARGS, etc.
 #include <utils/geo_decls.h> // making native points
+#include <access/hash.h>     // hash_any
 
 #include <h3/h3api.h> // Main H3 include
 #include "extension.h"
@@ -103,4 +104,14 @@ Datum h3index_cmp(PG_FUNCTION_ARGS)
     {
         PG_RETURN_INT32(-1);
     }
+}
+
+PG_FUNCTION_INFO_V1(h3index_hash);
+Datum h3index_hash(PG_FUNCTION_ARGS)
+{
+    H3Index *index = PG_GETARG_H3_INDEX_P(0);
+
+    uint32 hash = hash_any((unsigned char *) index, sizeof(H3Index));
+
+    PG_RETURN_INT32(hash);
 }
