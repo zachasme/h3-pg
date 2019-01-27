@@ -49,7 +49,7 @@ Datum srf_return_h3_index_distances_from_user_fctx(PG_FUNCTION_ARGS);
     return srf_return_h3_index_distances_from_user_fctx(fcinfo)
 
 #define ASSERT(condition, code, msg, ...)      \
-    if (FALSE == (condition)) ereport(ERROR, ( \
+    if (0 == (condition)) ereport(ERROR, ( \
         errcode(code),                         \
         errmsg(msg, ##__VA_ARGS__)             \
     ))
