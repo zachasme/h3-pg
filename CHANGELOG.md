@@ -8,19 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added `h3_get_extension_version()`.
 - Added test ensuring upgrade path has same result as fresh install.
+- Added hash operator class, now `WHERE IN` works.
+- Makefile now builds and links `libh3.a` locally instead of using system installation.
 ### Changed
 - Renamed `h3_basecells` to `h3_get_res_0_indexes`.
 - Renamed all functions with double `h3_h3_` prefix to use single `h3_` prefix.
 
 ## [0.4.0] - 2019-01-12
 ### Added
-- Added h3_line (binding for h3Line)
+- Added `h3_line` (binding for h3Line)
 ### Fixed
-- Fixed h3_h3_to_children_slow
+- Fixed `h3_h3_to_children_slow`
 
 ## [0.3.2] - 2019-01-08
 ### Fixed
-- Fixed B-Tree operators, now indexing works.
+- Fixed B-Tree operator class, now indexing works.
 
 ## [0.3.1] - 2018-12-17
 ### Changed
