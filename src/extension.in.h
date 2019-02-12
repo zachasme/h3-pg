@@ -48,10 +48,10 @@ Datum srf_return_h3_index_distances_from_user_fctx(PG_FUNCTION_ARGS);
 #define SRF_RETURN_H3_INDEX_DISTANCES_FROM_USER_FCTX() \
     return srf_return_h3_index_distances_from_user_fctx(fcinfo)
 
-#define ASSERT(condition, code, msg, ...)      \
+#define ASSERT(condition, code, msg, ...)  \
     if (0 == (condition)) ereport(ERROR, ( \
-        errcode(code),                         \
-        errmsg(msg, ##__VA_ARGS__)             \
+        errcode(code),                     \
+        errmsg(msg, ##__VA_ARGS__)         \
     ))
 
 #define ASSERT_EXTERNAL(condition, msg, ...) \
@@ -64,5 +64,10 @@ Datum srf_return_h3_index_distances_from_user_fctx(PG_FUNCTION_ARGS);
         "Function returning record called in context " \
         "that cannot accept type record"               \
     )
+
+#define DEBUG(msg, ...)            \
+    ereport(DEBUG1, (              \
+        errmsg(msg, ##__VA_ARGS__) \
+    ))
 
 #endif

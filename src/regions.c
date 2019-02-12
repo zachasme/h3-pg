@@ -21,6 +21,7 @@
 #include <utils/array.h>         // using arrays
 #include <utils/geo_decls.h>     // making native points
 #include <utils/lsyscache.h>
+#include <utils/memutils.h>
 #include <catalog/pg_type.h>
 
 #include <h3/h3api.h> // Main H3 include
@@ -133,36 +134,37 @@ Datum h3_polyfill(PG_FUNCTION_ARGS)
         int maxSize;
         H3Index *indices;
         ArrayType *holes;
-        int *dim;
-        int ndim = 0;
+        int nelems = 0;
         int resolution;
         GeoPolygon polygon;
+        Datum value;
+        bool isnull;
 
         // get function arguments
         POLYGON *exterior = PG_GETARG_POLYGON_P(0);
         if (!PG_ARGISNULL(1))
         {
             holes = PG_GETARG_ARRAYTYPE_P(1);
-            dim = ARR_DIMS(holes);
-            ndim = ARR_NDIM(holes);
+            nelems = ArrayGetNItems(ARR_NDIM(holes), ARR_DIMS(holes));
         }
         resolution = PG_GETARG_INT32(2);
 
         // build polygon
         polygonToGeofence(exterior, &(polygon.geofence));
-
-        if (ndim == 1)
+        
+        if (nelems)
         {
-            POLYGON *hole = (POLYGON *)ARR_DATA_PTR(holes);
+            int i = 0;
+            ArrayIterator iterator = array_create_iterator(holes, 0, NULL);
 
-            // build holes
-            polygon.numHoles = dim[0];
+            polygon.numHoles = nelems;
             polygon.holes = (Geofence *)palloc(polygon.numHoles * sizeof(Geofence));
 
-            for (int i = 0; i < polygon.numHoles; i++)
+            while( array_iterate(iterator, &value, &isnull) )
             {
+                POLYGON *hole = DatumGetPolygonP(value);
                 polygonToGeofence(hole, &(polygon.holes[i]));
-                hole++;
+                i++;
             }
         }
         else
@@ -172,9 +174,6 @@ Datum h3_polyfill(PG_FUNCTION_ARGS)
 
         // produce hexagons into allocated memory
         maxSize = maxPolyfillSize(&polygon, resolution);
-
-        // LOG_DEBUG("MAXSIZE %i", maxSize * sizeof(H3Index));
-
         indices = palloc0(maxSize * sizeof(H3Index));
         polyfill(&polygon, resolution, indices);
 
