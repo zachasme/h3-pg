@@ -14,7 +14,7 @@ FULLINSTALL_SQL = sql/$(EXTENSION)--$(EXTVERSION).sql
 UPDATETEST_SQL = sql/$(EXTENSION)--updatetest.sql
 TESTS = $(wildcard test/sql/*.sql)
 
-DATA = $(UPDATES) $(FULLINSTALL_SQL) $(UPDATETEST_SQL)
+DATA = $(UPDATE_FILES) $(FULLINSTALL_SQL) $(UPDATETEST_SQL)
 OBJS = $(patsubst %.c,%.o,$(wildcard src/*.c))
 MODULE_big = $(EXTENSION)
 SHLIB_LINK += -lh3 -L${LIBH3_DIR}/install/lib
