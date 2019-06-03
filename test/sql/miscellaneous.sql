@@ -4,15 +4,6 @@
 \set epsilon 0.0000000000001
 
 --
--- TEST h3_degs_to_rads and h3_rads_to_degs
---
-
-SELECT h3_degs_to_rads(:degs) - :rads < :epsilon;
-SELECT h3_degs_to_rads(:rads) - :degs < :epsilon;
-SELECT h3_rads_to_degs(h3_degs_to_rads(:degs)) = :degs;
-SELECT h3_degs_to_rads(h3_rads_to_degs(:rads)) = :rads;
-
---
 -- TEST h3_hex_area_km2
 --
 

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Removed
+- Removed degree/radian conversion helpers, recommend postgres built-in RADIANS/DEGREES instead.
+
 ## [1.0.6] - 2019-06-03
 ### Changed
 - Bump H3 to 3.4.4
@@ -56,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First public release.
 
+[Unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v1.0.6...HEAD
 [1.0.6]: https://github.com/bytesandbrains/h3-pg/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/bytesandbrains/h3-pg/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/bytesandbrains/h3-pg/compare/v1.0.3...v1.0.4

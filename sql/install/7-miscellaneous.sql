@@ -16,16 +16,6 @@
 
 -- Miscellaneous H3 functions (miscellaneous.c)
 
-CREATE OR REPLACE FUNCTION h3_degs_to_rads(float) RETURNS float
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_degs_to_rads(float) IS
-'Converts degrees to radians';
-
-CREATE OR REPLACE FUNCTION h3_rads_to_degs(float) RETURNS float
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_rads_to_degs(float) IS
-'Converts radians to degrees.';
-
 CREATE OR REPLACE FUNCTION h3_hex_area_km2(resolution integer) RETURNS float
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_hex_area_km2(resolution integer) IS

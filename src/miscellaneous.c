@@ -21,24 +21,6 @@
 #include <h3/h3api.h> // Main H3 include
 #include "extension.h"
 
-// Converts degrees to radians
-PG_FUNCTION_INFO_V1(h3_degs_to_rads);
-Datum h3_degs_to_rads(PG_FUNCTION_ARGS)
-{
-    double degrees = PG_GETARG_FLOAT8(0);
-    double radians = degsToRads(degrees);
-    PG_RETURN_FLOAT8(radians);
-}
-
-// Converts radians to degrees
-PG_FUNCTION_INFO_V1(h3_rads_to_degs);
-Datum h3_rads_to_degs(PG_FUNCTION_ARGS)
-{
-    double radians = PG_GETARG_FLOAT8(0);
-    double degrees = radsToDegs(radians);
-    PG_RETURN_FLOAT8(degrees);
-}
-
 // Average hexagon area in square kilometers at the given resolution
 PG_FUNCTION_INFO_V1(h3_hex_area_km2);
 Datum h3_hex_area_km2(PG_FUNCTION_ARGS)
