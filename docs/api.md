@@ -1,8 +1,17 @@
-# API reference
+# API Reference
 
-### Indexing functions
+- [Indexing](#indexing-functions)
+- [Inspection](#index-inspection-functions)
+- [Traversal](#grid-traversal-functions)
+- [Hierarchy](#hierarchical-grid-functions)
+- [Regions](#region-functions)
+- [Unidirectional Edges](#unidirectional-edge-functions)
+- [Miscellaneous](#miscellaneous-h3-functions)
+- [PostGIS](#postgis-integration)
 
-#### h3_geo_to_h3(point, resolution) returns h3index
+## Indexing functions
+
+### h3_geo_to_h3(`point`, resolution `int`) ⇒ `h3index`
 
 Converts native PostgreSQL point to hex at given resolution.
 
@@ -14,7 +23,7 @@ SELECT h3_geo_to_h3(POINT('64.7498111652365,89.5695822308866'), 8);
 (1 row)
 ```
 
-#### h3_to_geo(h3index) returns point
+### h3_to_geo(`h3index`) ⇒ `point`
 
 Finds the centroid of this hex in native PostgreSQL point type.
 
@@ -26,7 +35,7 @@ SELECT h3_to_geo('880326b88dfffff');
 (1 row)
 ```
 
-#### h3_to_geo_boundary(h3index) returns polygon
+### h3_to_geo_boundary(`h3index`) ⇒ `polygon`
 
 Find the boundary of this hex, in native PostgreSQL polygon type.
 
@@ -38,9 +47,9 @@ SELECT h3_to_geo_boundary(:hexagon);
 (1 row)
 ```
 
-### Index inspection functions
+## Index inspection functions
 
-#### h3_get_resolution(h3index) returns integer
+### h3_get_resolution(`h3index`) ⇒ `integer`
 
 Returns the resolution of this hex.
 
@@ -52,7 +61,7 @@ SELECT h3_get_resolution(:hexagon), h3_get_resolution(:pentagon);
 (1 row)
 ```
 
-#### h3_get_base_cell(h3index) returns integer
+### h3_get_base_cell(`h3index`) ⇒ `integer`
 
 Returns the base cell number of the given hex.
 
@@ -64,7 +73,7 @@ SELECT h3_get_base_cell(:hexagon), h3_get_base_cell(h3_to_parent(:hexagon));
 (1 row)
 ```
 
-#### h3_string_to_h3(cstring) returns h3index
+### h3_string_to_h3(`cstring`) ⇒ `h3index`
 
 Converts the string representation to H3Index representation. Not very useful, since the internal representation can already be displayed as text for output, and read as text from input.
 
@@ -76,7 +85,7 @@ SELECT h3_string_to_h3('880326b88dfffff);
 (1 row)
 ```
 
-#### h3_to_string(h3index) returns cstring
+### h3_to_string(`h3index`) ⇒ `cstring`
 
 Converts the H3Index representation of the index to the string representation. Not very useful, since the internal representation can already be displayed as text for output, and read as text from input.
 
@@ -88,7 +97,7 @@ SELECT h3_to_string('880326b88dfffff);
 (1 row)
 ```
 
-#### h3_is_valid(h3index) returns boolean
+### h3_is_valid(`h3index`) ⇒ `boolean`
 
 Returns whether this is a valid hex.
 
@@ -101,7 +110,7 @@ SELECT h3_is_valid(:hexagon), h3_is_valid(:pentagon), h3_is_valid(:invalid);
 
 ```
 
-#### h3_is_res_class_iii(h3index) returns boolean
+### h3_is_res_class_iii(`h3index`) ⇒ `boolean`
 
 Returns true if the resolution of the given index has a class-III rotation,
 returns false if it has a class-II.
@@ -114,7 +123,7 @@ SELECT h3_is_res_class_iii(:hexagon), h3_is_res_class_iii(h3_to_parent(:hexagon)
 (1 row)
 ```
 
-#### h3_is_pentagon(h3index) returns boolean
+### h3_is_pentagon(`h3index`) ⇒ `boolean`
 
 Returns whether this represents a pentagonal cell.
 
@@ -126,9 +135,9 @@ SELECT h3_is_pentagon(:hexagon), h3_is_pentagon(:pentagon);
 (1 row)
 ```
 
-### Grid traversal functions
+## Grid traversal functions
 
-#### h3_k_ring(h3index[, k]) returns setof h3index
+### h3_k_ring(`h3index`, k `integer default 1`) ⇒ `setof`(`h3index`)
 
 Returns all hexes within `k` (default 1) distance of the origin `hex`, including itself.
 
@@ -150,7 +159,7 @@ SELECT h3_k_ring('880326b88dfffff');
 (7 rows)
 ```
 
-#### h3_k_ring_distances(h3index[, k]) returns setof h3indexDistance
+### h3_k_ring_distances(`h3index`, k `integer default 1`) ⇒ `setof`(index `h3index`, distance `integer`)
 
 Finds the set of all hexes within `k` (default 1) distance of the origin `hex` and their respective distances, including itself.
 
@@ -170,7 +179,7 @@ SELECT * FROM h3_k_ring_distances(:hexagon);
 (7 rows)
 ```
 
-#### h3_hex_range(h3index[, k]) returns setof h3index
+### h3_hex_range(`h3index`, k `integer default 1`) ⇒ `setof`(`h3index`)
 
 Returns all hexes within `k` (default 1) distance of the origin `hex`, including itself.
 
@@ -191,7 +200,7 @@ SELECT h3_hex_range(:hexagon);
 (7 rows)
 ```
 
-#### h3_hex_range_distances(h3index[, k]) returns setof h3indexDistance
+### h3_hex_range_distances(`h3index`, k `integer default 1`) ⇒ `setof`(index` h3index`, distance `integer`)
 
 Finds the set of all hexes within `k` (default 1) distance of the origin `hex` and their respective distances, including itself.
 
@@ -212,7 +221,7 @@ SELECT * FROM h3_hex_range_distances(:hexagon);
 (7 rows)
 ```
 
-#### h3_hex_ranges(ARRAY h3index[, k]) returns setof h3index
+### h3_hex_ranges(`h3index[]`, k `integer default 1`) ⇒ `setof`(`h3index`)
 
 Returns all hexes within `k` (default 1) distance of every hex in the given array, including themselves.
 
@@ -240,7 +249,7 @@ SELECT h3_hex_range(:hexagon), h3_hex_range('880326b8ebfffff'), h3_hex_ranges('{
 (14 rows)
 ```
 
-#### h3_hex_ring(h3index[, k]) returns setof h3index
+### h3_hex_ring(h3index[, k]) ⇒ `setof`(`h3index`)
 
 Returns the hollow ring of hexes with `k` (default 1) distance of the origin `hex`.
 
@@ -265,7 +274,7 @@ SELECT h3_hex_ring(:hexagon, 2);
 (12 rows)
 ```
 
-#### h3_distance(h3index, h3index) returns int
+### h3_distance(h3index, h3index) ⇒ `integer`
 
 Determines the distance in grid cells between the two given indices.
 
@@ -279,9 +288,9 @@ SELECT h3_distance('880326b881fffff', '880326b885fffff');
 
 EXPERIMENTALS
 
-### Hierarchical grid functions
+## Hierarchical grid functions
 
-#### h3_to_parent(h3index[, parentRes]) returns h3index
+### h3_to_parent(h3index[, parentRes]) ⇒ `h3index`
 
 Returns the parent (coarser) hex containing this `hex` at given `parentRes` (if no resolution is given, parent at current resolution minus one is found).
 
@@ -293,7 +302,7 @@ SELECT h3_to_parent('880326b88dfffff', 5);
 (1 row)
 ```
 
-#### h3_to_children(h3index[, childRes]) returns setof h3index
+### h3_to_children(h3index[, childRes]) ⇒ `setof`(`h3index`)
 
 Returns all hexes contained by `hex` at given `childRes` (if no resolution is given, children at current resolution plus one is found).
 
@@ -313,11 +322,11 @@ SELECT h3_to_children('880326b88dfffff', 9);
 (7 rows)
 ```
 
-#### h3_to_children_slow(h3index[, childRes]) returns setof h3index
+### h3_to_children_slow(h3index[, childRes]) ⇒ `setof`(`h3index`)
 
 This functions does the same as `h3_to_children_slow` but allocates smaller chunks of memory at the cost speed.
 
-#### h3_compact(h3index[]) returns setof h3index
+### h3_compact(h3index[]) ⇒ `setof`(`h3index`)
 
 Returns the compacted version of the input array. I.e. if all children of an hex is included in the array, these will be compacted into the parent hex.
 
@@ -330,7 +339,7 @@ SELECT h3_compact(array_cat(ARRAY(SELECT h3_to_children('880326b88dfffff')), ARR
 (2 rows)
 ```
 
-#### h3_uncompact(ARRAY h3index[, resolution]) returns setof h3index
+### h3_uncompact(`h3index[]` resolution `integer default -1`) ⇒ `setof`(`h3index`)
 
 Uncompacts the given hex array at the given resolution. If no resolution it will be chosen to be the highest resolution of the given indexes + 1.
 
@@ -339,67 +348,14 @@ SELECT h3_uncompact(array_cat(ARRAY(SELECT h3_to_parent('880326b88dfffff')), '{8
   h3_uncompact
 -----------------
  890326b8803ffff
- 890326b8807ffff
- 890326b880bffff
- 890326b880fffff
- 890326b8813ffff
- 890326b8817ffff
- 890326b881bffff
- 890326b8823ffff
- 890326b8827ffff
- 890326b882bffff
- 890326b882fffff
- 890326b8833ffff
- 890326b8837ffff
- 890326b883bffff
- 890326b8843ffff
- 890326b8847ffff
- 890326b884bffff
- 890326b884fffff
- 890326b8853ffff
- 890326b8857ffff
- 890326b885bffff
- 890326b8863ffff
- 890326b8867ffff
- 890326b886bffff
- 890326b886fffff
- 890326b8873ffff
- 890326b8877ffff
- 890326b887bffff
- 890326b8883ffff
- 890326b8887ffff
- 890326b888bffff
- 890326b888fffff
- 890326b8893ffff
- 890326b8897ffff
- 890326b889bffff
- 890326b88a3ffff
- 890326b88a7ffff
- 890326b88abffff
- 890326b88afffff
- 890326b88b3ffff
- 890326b88b7ffff
- 890326b88bbffff
- 890326b88c3ffff
- 890326b88c7ffff
- 890326b88cbffff
- 890326b88cfffff
- 890326b88d3ffff
- 890326b88d7ffff
- 890326b88dbffff
- 890326b88a3ffff
- 890326b88a7ffff
- 890326b88abffff
- 890326b88afffff
- 890326b88b3ffff
- 890326b88b7ffff
+ ...
  890326b88bbffff
 (56 rows)
 ```
 
-### Region functions
+## Region functions
 
-#### h3_polyfill(exterior polygon, holes polygon[], resolution integer) returns setof h3index
+### h3_polyfill(exterior `polygon`, holes `polygon[]`, resolution `integer`) ⇒ `setof`(`h3index`)
 
 Polyfill takes a given exterior native postgres polygon and an array of interior holes (also native polygons), along with a resolutions and fills it with hexagons that are contained.
 
@@ -420,7 +376,7 @@ SELECT h3_polyfill(exterior, holes, 1) FROM
 (7 rows)
 ```
 
-#### h3_set_to_linked_geo(h3index[]) returns SET (exterior polygon, holes polygon[])
+### h3_set_to_linked_geo(`h3index[]`) ⇒ `setof`(exterior `polygon`, holes `polygon[]`)
 
 Create records of exteriors and holes.
 
@@ -432,20 +388,16 @@ SELECT h3_polyfill(exterior, holes, 1) FROM
    h3_polyfill
 -----------------
  8158fffffffffff
- 8159bffffffffff
- 8158bffffffffff
- 81597ffffffffff
- 81587ffffffffff
- 81593ffffffffff
+ ...
  81583ffffffffff
 (7 rows)
 ```
 
-### Unidirectional Edges
+## Unidirectional edge functions
 
 Unidirectional edges are a form of H3Indexes that denote a unidirectional edge between two neighbouring indexes.
 
-### h3_indexes_are_neighbors(h3index, h3index) returns boolean
+### h3_indexes_are_neighbors(`h3index`, `h3index`) ⇒ `boolean`
 
 Determines whether or not the two indexes are neighbors. Returns true if they are and false if they aren't
 
@@ -457,7 +409,7 @@ SELECT h3_indexes_are_neighbors(:hexagon, '880326b8ebfffff'), h3_indexes_are_nei
 (1 row)
 ```
 
-#### h3_get_h3_unidirectional_edge(origin h3index, destination h3index) returns h3index
+### h3_get_h3_unidirectional_edge(origin `h3index`, destination `h3index`) ⇒ `h3index`
 
 Returns the edge from origin to destination
 
@@ -471,7 +423,7 @@ SELECT(h3_get_h3_unidirectional_edge(:hexagon, :neighbour));
 (1 row)
 ```
 
-#### h3_unidirectional_edge_is_valid(h3index) returns boolean
+### h3_unidirectional_edge_is_valid(`h3index`) ⇒ `boolean`
 
 Returns true if the given hex is a valid edge.
 
@@ -483,7 +435,7 @@ SELECT h3_unidirectional_edge_is_valid(h3_get_h3_unidirectional_edge(:hexagon, :
 (1 row)
 ```
 
-#### h3_get_origin_h3_index_from_unidirectional_edge(h3index) returns h3index
+### h3_get_origin_h3_index_from_unidirectional_edge(`h3index`) ⇒ `h3index`
 
 Returns the origin index from the given edge
 
@@ -495,7 +447,7 @@ SELECT h3_get_origin_h3_index_from_unidirectional_edge(h3_get_h3_unidirectional_
 (1 row)
 ```
 
-#### h3_get_destination_h3_index_from_unidirectional_edge(h3index) returns h3index
+### h3_get_destination_h3_index_from_unidirectional_edge(`h3index`) ⇒ `h3index`
 
 Returns the destination index from the given edge
 
@@ -507,7 +459,7 @@ SELECT h3_get_destination_h3_index_from_unidirectional_edge(h3_get_h3_unidirecti
 (1 row)
 ```
 
-#### h3_get_h3_indexes_from_unidirectional_edge(h3index) returns edgeIndexes (origin h3index, destination h3index)
+### h3_get_h3_indexes_from_unidirectional_edge(`h3index`) ⇒ (origin `h3index`, destination `h3index`)
 
 Returns both the origin and destination indexes from the given edge
 
@@ -519,7 +471,7 @@ SELECT * FROM h3_get_h3_indexes_from_unidirectional_edge(h3_get_h3_unidirectiona
 (1 row)
 ```
 
-#### h3_get_h3_unidirectional_edges_from_hexagon(h3index) returns setof h3index
+### h3_get_h3_unidirectional_edges_from_hexagon(`h3index`) ⇒ `setof`(`h3index`)
 
 Returns the set of all valid unidirectional edges with the given origin
 
@@ -536,7 +488,7 @@ SELECT h3_get_h3_unidirectional_edges_from_hexagon(:hexagon);
 (6 rows)
 ```
 
-#### h3_get_h3_unidirectional_edge_boundary(h3index) returns polygon
+### h3_get_h3_unidirectional_edge_boundary(`h3index`) ⇒ `polygon`
 
 Find the boundary of this edge, in native PostgreSQL polygon type.
 
@@ -548,33 +500,9 @@ SELECT h3_get_unidirectional_edge_boundary(h3_get_h3_unidirectional_edge(:hexago
 (1 row)
 ```
 
-### Miscellaneous
+## Miscellaneous H3 functions
 
-#### h3_degs_to_rads(float) returns float
-
-Converts degrees to radians.
-
-```
-SELECT h3_rads_to_degs(degs_to_rads(90.45));
- h3_rads_to_degs
---------------
-        90.45
-(1 row)
-```
-
-#### h3_rads_to_degs(float) returns float
-
-Converts radians to degrees.
-
-```
-SELECT h3_rads_to_degs(degs_to_rads(90.45));
- h3_rads_to_degs
---------------
-        90.45
-(1 row)
-```
-
-#### h3_hex_area_km2(resolution integer) returns float
+### h3_hex_area_km2(resolution `integer`) ⇒ `float`
 
 Returns the area of an hex in square kilometers at the given resolution.
 
@@ -586,7 +514,7 @@ SELECT h3_hex_area_km2(10);
 (1 row)
 ```
 
-#### h3_hex_area_m2(resolution integer) retuns float
+### h3_hex_area_m2(resolution `integer`) ⇒ `float`
 
 Returns the area of an hex in square meters at the given resolution.
 
@@ -598,7 +526,7 @@ SELECT h3_hex_area_m2(10);
 (1 row)
 ```
 
-#### h3_edge_length_km(resolution integer) returns float
+### h3_edge_length_km(resolution `integer`) ⇒ `float`
 
 Returns the length of the edges of an hex in kilometers at the given resolution.
 
@@ -610,7 +538,7 @@ SELECT h3_edge_length_km(10);
 (1 row)
 ```
 
-#### h3_edge_length_m(resolution integer) returns float
+### h3_edge_length_m(resolution `integer`) ⇒ `float`
 
 Returns the length of the edges of an hex in meters at the given resolution.
 
@@ -622,7 +550,7 @@ SELECT h3_edge_length_m(10);
 (1 row)
 ```
 
-#### h3_num_hexagons(resolution integer) returns bigint
+### h3_num_hexagons(resolution `integer`) ⇒ `bigint`
 
 Returns the number of unique indexes at the given resolution
 
@@ -634,15 +562,27 @@ SELECT h3_num_hexagons(15);
 (1 row)
 ```
 
-### PostGIS integration
+### h3_get_res_0_indexes() ⇒ `setof`(`h3index`)
+
+Returns all 122 basecells.
+
+```
+SELECT h3_get_res_0_indexes();
+  h3_get_res_0_indexes
+-----------------
+ ...
+(122 rows)
+```
+
+## PostGIS integration
 
 We provide some simple wrappers for casting to PostGIS types.
 
-#### h3_geo_to_h3(geometry / geography, resolution)
+### h3_geo_to_h3(geometry / geography, resolution) ⇒ `h3index`
 
 The `h3_geo_to_h3` function has been overloaded to support both PostGIS `geometry` and `geography`.
 
-#### h3_to_geometry(h3index) returns geometry
+### h3_to_geometry(`h3index`) ⇒ `geometry`
 
 Finds the centroid of this hex as PostGIS geometry type.
 
@@ -654,11 +594,11 @@ SELECT h3_to_geometry('8a63a9a99047fff');
 (1 row)
 ```
 
-#### h3_to_geography(h3index) returns geography
+### h3_to_geography(`h3index`) ⇒ `geography`
 
 Same as above, but returns `geography` type.
 
-#### h3_to_geo_boundary_geometry(h3index) returns geometry
+### h3_to_geo_boundary_geometry(`h3index`) ⇒ `geometry`
 
 Find the boundary of this hex, as PostGIS type.
 
@@ -670,22 +610,13 @@ SELECT boundary_geometry('8a63a9a99047fff');
 (1 row)
 ```
 
-#### h3_to_geo_boundary_geography(h3index) returns geography
+### h3_to_geo_boundary_geography(`h3index`) ⇒ `geography`
 
 Same as above, but returns `geography` type.
 
-### Custom functions
+## Functions without bindings
 
-#### h3_basecells() returns setof h3index
+Some functions does not have bindings:
 
-Returns all hexes at coarsest resolution.
-
-```
-SELECT h3_basecells();
-    h3_basecells
------------------
- 8001fffffffffff
- ...
- 80f3fffffffffff
-(122 rows)
-```
+* `degsToRads`/`radsToDegs`: Use postgres built-ins `RADIANS()` and `DEGREES()` instead.
+* Memory handling functions: `maxKringSize`, `h3LineSize`, `maxH3ToChildrenSize`, `maxUncompactSize`, `maxPolyfillSize`, `destroyLinkedPolygon`. Memory is handled by the extensnion.
