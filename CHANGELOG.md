@@ -1,10 +1,24 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
-## [Unreleased]
+## Versioning
+The H3 core library adheres to [Semantic Versioning](http://semver.org/).
+H3-pg has a `major.minor.patch` version scheme. The major and minor version
+numbers of H3-pg are the major and minor version of the bound core library,
+respectively. The patch version is incremented independently of the core
+library.
+
+Because H3-pg is versioned in lockstep with the H3 core library, please
+avoid adding features or APIs which do not map onto the
+[H3 core API](https://uber.github.io/h3/#/documentation/api-reference/).
+
+## [3.4.0] - 2019-06-13
+### Changed
+- Use same versioning scheme as python and java bindings, which is to lock major and minor to h3 core, and incrementing patch independently.
+### Fixed
+- Remove explicit type specifier :PATH from install prefix.
 ### Removed
 - Removed degree/radian conversion helpers, recommend postgres built-in RADIANS/DEGREES instead.
 
@@ -60,7 +74,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - First public release.
 
-[Unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v1.0.6...HEAD
+[Unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.4.0...HEAD
+[3.4.0]: https://github.com/bytesandbrains/h3-pg/compare/v1.0.5...v1.0.6
 [1.0.6]: https://github.com/bytesandbrains/h3-pg/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/bytesandbrains/h3-pg/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/bytesandbrains/h3-pg/compare/v1.0.3...v1.0.4

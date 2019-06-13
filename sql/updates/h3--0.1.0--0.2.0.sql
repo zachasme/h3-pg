@@ -165,12 +165,12 @@ CREATE OR REPLACE FUNCTION h3_get_unidirectional_edge_boundary(edge h3index) RET
     'Provides the coordinates defining the unidirectional edge.';
 
 -- Miscellaneous H3 functions (miscellaneous.c)
--- DEPRECATED in v2.0.0
+-- DEPRECATED in v3.4.0
 -- CREATE OR REPLACE FUNCTION h3_degs_to_rads(float) RETURNS float
 --     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 --     COMMENT ON FUNCTION h3_degs_to_rads(float) IS
 --     'Converts degrees to radians';
--- DEPRECATED in v2.0.0
+-- DEPRECATED in v3.4.0
 -- CREATE OR REPLACE FUNCTION h3_rads_to_degs(float) RETURNS float
 --     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 --     COMMENT ON FUNCTION h3_rads_to_degs(float) IS

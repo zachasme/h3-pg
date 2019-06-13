@@ -15,7 +15,7 @@
  */
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "ALTER EXTENSION h3 UPDATE TO '2.0.0'" to load this file. \quit
+\echo Use "ALTER EXTENSION h3 UPDATE TO '3.4.0'" to load this file. \quit
 
 DROP FUNCTION IF EXISTS h3_degs_to_rads(float);
 DROP FUNCTION IF EXISTS h3_rads_to_degs(float);
