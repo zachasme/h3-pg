@@ -86,7 +86,7 @@ Datum h3_to_geo_boundary(PG_FUNCTION_ARGS)
         lon = boundary.verts[v].lon;
         lat = boundary.verts[v].lat;
 
-        if (extend && abs(lon - firstLon) > M_PI) // check if different sign
+        if (extend && fabs(lon - firstLon) > M_PI) // check if different sign
           lon = lon + delta;
 
         polygon->p[v].x = radsToDegs(lon);

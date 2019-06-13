@@ -2,10 +2,10 @@ EXTENSION = h3
 EXTVERSION = $(shell grep default_version $(EXTENSION).control | \
 	sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
 
+LIBH3_VERSION = v3.4.4
 LIBH3_REQUIRED_MAJOR = 3
 LIBH3_REQUIRED_MINOR = 4
-LIBH3_REQUIRED_PATCH = 4
-LIBH3_VERSION = v${LIBH3_REQUIRED_MAJOR}.${LIBH3_REQUIRED_MINOR}.${LIBH3_REQUIRED_PATCH}
+LIBH3_REQUIRED_PATCH = 0
 LIBH3_DIR = libh3-${LIBH3_VERSION}
 
 INSTALL_FILES = $(wildcard sql/install/*.sql)
