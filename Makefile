@@ -31,7 +31,7 @@ h3.a: ${LIBH3_DIR}
 	$(info Building H3 locally and linking statically)
 	cd ${LIBH3_DIR} && cmake \
 			-DCMAKE_C_FLAGS=-fPIC \
-			-DCMAKE_INSTALL_PREFIX:PATH=./install \
+			-DCMAKE_INSTALL_PREFIX=./install \
 			-DBUILD_TESTING=OFF \
 			-DENABLE_COVERAGE=OFF \
 			-DENABLE_DOCS=OFF \
