@@ -14,6 +14,12 @@ Because H3-pg is versioned in lockstep with the H3 core library, please
 avoid adding features or APIs which do not map onto the
 [H3 core API](https://uber.github.io/h3/#/documentation/api-reference/).
 
+## [3.4.1] - 2019-06-14
+### Added
+- Added more docker test utilities.
+### Fixed
+- Fix `abs` warning.
+
 ## [3.4.0] - 2019-06-13
 ### Changed
 - Use same versioning scheme as python and java bindings, which is to lock major and minor to h3 core, and incrementing patch independently.
@@ -74,7 +80,8 @@ avoid adding features or APIs which do not map onto the
 ### Added
 - First public release.
 
-[Unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.4.0...HEAD
+[Unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.4.1...HEAD
+[3.4.1]: https://github.com/bytesandbrains/h3-pg/compare/v3.4.0...v3.4.1
 [3.4.0]: https://github.com/bytesandbrains/h3-pg/compare/v1.0.6...v3.4.0
 [1.0.6]: https://github.com/bytesandbrains/h3-pg/compare/v1.0.5...v1.0.6
 [1.0.5]: https://github.com/bytesandbrains/h3-pg/compare/v1.0.4...v1.0.5
