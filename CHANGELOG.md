@@ -14,6 +14,14 @@ Because H3-pg is versioned in lockstep with the H3 core library, please
 avoid adding features or APIs which do not map onto the
 [H3 core API](https://uber.github.io/h3/#/documentation/api-reference/).
 
+## [Unreleased]
+### Added
+- `h3_get_faces` function to find icosahedron faces for an index.
+### Changed
+- Bump `h3` to `3.5.0`.
+### Fixed
+- Fix build for PostgreSQL 12 (#4, thanks @Komzpa)
+
 ## [3.4.1] - 2019-06-14
 ### Added
 - Added more docker test utilities.

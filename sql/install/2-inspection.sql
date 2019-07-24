@@ -50,3 +50,8 @@ CREATE OR REPLACE FUNCTION h3_is_pentagon(h3index) RETURNS bool
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_is_pentagon(h3index) IS
 'Returns true if this index represents a pentagonal cell';
+
+CREATE OR REPLACE FUNCTION h3_get_faces(h3index) RETURNS integer[]
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    COMMENT ON FUNCTION h3_get_faces(h3index) IS
+'Find all icosahedron faces intersected by a given H3 index';

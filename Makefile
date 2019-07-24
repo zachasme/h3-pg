@@ -2,10 +2,13 @@ EXTENSION = h3
 EXTVERSION = $(shell grep default_version $(EXTENSION).control | \
 	sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
 
-LIBH3_VERSION = v3.4.4
+# the version to clone
+LIBH3_VERSION = v3.5.0
+# the minimum version to check for in extension
 LIBH3_REQUIRED_MAJOR = 3
-LIBH3_REQUIRED_MINOR = 4
+LIBH3_REQUIRED_MINOR = 5
 LIBH3_REQUIRED_PATCH = 0
+# where to store cloned repo
 LIBH3_DIR = libh3-${LIBH3_VERSION}
 
 INSTALL_FILES = $(wildcard sql/install/*.sql)

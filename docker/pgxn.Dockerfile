@@ -3,7 +3,7 @@ FROM h3-pg:base-${UBUNTU}
 ARG UBUNTU
 ARG POSTGRESQL
 ARG POSTGIS
-ARG PGXN=3.4.1
+ARG PGXN=3.5.0
 
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \

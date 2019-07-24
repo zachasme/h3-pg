@@ -135,6 +135,18 @@ SELECT h3_is_pentagon(:hexagon), h3_is_pentagon(:pentagon);
 (1 row)
 ```
 
+### h3_get_faces(`h3index`) ⇒ `integer[]`
+
+Find all icosahedron faces intersected by a given H3 index.
+
+```
+SELECT h3_get_faces('851c0047fffffff');
+ h3_get_faces
+--------------
+ {11,6}
+(1 row)
+```
+
 ## Grid traversal functions
 
 ### h3_k_ring(`h3index`, k `integer default 1`) ⇒ `setof`(`h3index`)

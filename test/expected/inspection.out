@@ -42,3 +42,12 @@ SELECT h3_is_res_class_iii(:pentagon) AND NOT h3_is_res_class_iii(h3_to_parent(:
 SELECT h3_is_pentagon(:pentagon) AND NOT h3_is_pentagon(:hexagon);
  t
 
+--
+-- TEST h3_get_faces
+--
+SELECT h3_get_faces('851c0047fffffff') = ARRAY[11,6];
+ t
+
+SELECT h3_get_faces('851c004bfffffff') = ARRAY[6];
+ t
+

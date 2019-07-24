@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-#include <postgres.h> // Datum, etc.
-#include <fmgr.h>     // PG_FUNCTION_ARGS, etc.
+#include <postgres.h>        // Datum, etc.
+#include <fmgr.h>            // PG_FUNCTION_ARGS, etc.
+#include <utils/array.h>     // Arrays
+#include <utils/lsyscache.h> // get_typlenbyvalalign
+#include <catalog/pg_type.h>
 
 #include <h3/h3api.h> // Main H3 include
 #include "extension.h"
@@ -90,3 +93,39 @@ Datum h3_is_pentagon(PG_FUNCTION_ARGS)
     bool isPentagon = h3IsPentagon(*hex);
     PG_RETURN_BOOL(isPentagon);
 }
+
+// Find all icosahedron faces intersected by a given H3 index
+PG_FUNCTION_INFO_V1(h3_get_faces);
+Datum h3_get_faces(PG_FUNCTION_ARGS)
+{
+    Oid elmtype = INT4OID;
+    int16 elmlen;
+    bool elmbyval;
+    char elmalign;
+
+    H3Index *hex = PG_GETARG_H3_INDEX_P(0);
+    int maxFaces = maxFaceCount(*hex);
+
+    ArrayType *result;
+    Datum elements[maxFaces];
+    int nelems = 0;
+
+    // get the faces
+    int *faces = palloc(maxFaces * sizeof(int));
+    h3GetFaces(*hex, faces);
+
+    for (int i = 0; i < maxFaces; i++) {
+        int face = faces[i];
+        // add any valid face to result array
+        if (face > -1) {
+            elements[nelems++] = Int32GetDatum(face);
+        }
+    }
+
+    // build the array
+    get_typlenbyvalalign(elmtype, &elmlen, &elmbyval, &elmalign);
+    result = construct_array(elements, nelems, elmtype, elmlen, elmbyval, elmalign);
+
+    PG_RETURN_ARRAYTYPE_P(result);
+}
+
