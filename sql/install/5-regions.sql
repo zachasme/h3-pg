@@ -21,7 +21,7 @@ CREATE OR REPLACE FUNCTION h3_polyfill(exterior polygon, holes polygon[], resolu
     COMMENT ON FUNCTION h3_polyfill(exterior polygon, holes polygon[], resolution integer) IS
 'Takes an exterior polygon [and a set of hole polygon] and returns the set of hexagons that best fit the structure';
 
-CREATE OR REPLACE FUNCTION h3_set_to_linked_geo(h3index[], OUT exterior polygon, OUT holes polygon[]) RETURNS SETOF record
+CREATE OR REPLACE FUNCTION h3_set_to_multi_polygon(h3index[], OUT exterior polygon, OUT holes polygon[]) RETURNS SETOF record
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_set_to_linked_geo(h3index[]) IS
+    COMMENT ON FUNCTION h3_set_to_multi_polygon(h3index[]) IS
 'Create a LinkedGeoPolygon describing the outline(s) of a set of hexagons. Polygon outlines will follow GeoJSON MultiPolygon order: Each polygon will have one outer loop, which is first in the list, followed by any holes';

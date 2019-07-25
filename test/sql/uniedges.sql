@@ -51,8 +51,8 @@ SELECT array_length(array_agg(edge), 1) = 5 expected FROM (
 ) q;
 
 --
--- TEST h3_get_unidirectional_edge_boundary
+-- TEST h3_get_h3_unidirectional_edge_boundary
 --
 
-SELECT h3_get_unidirectional_edge_boundary(:uniedge)
+SELECT h3_get_h3_unidirectional_edge_boundary(:uniedge)
 	~= polygon '((89.5830164946548,64.7146398954916),(89.5790678021742,64.2872231517217))'

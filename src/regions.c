@@ -191,8 +191,8 @@ Datum h3_polyfill(PG_FUNCTION_ARGS)
  *
  * https://stackoverflow.com/questions/51127189/how-to-return-array-into-array-with-custom-type-in-postgres-c-function
  */
-PG_FUNCTION_INFO_V1(h3_set_to_linked_geo);
-Datum h3_set_to_linked_geo(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(h3_set_to_multi_polygon);
+Datum h3_set_to_multi_polygon(PG_FUNCTION_ARGS)
 {
     FuncCallContext *funcctx;
     TupleDesc tuple_desc;

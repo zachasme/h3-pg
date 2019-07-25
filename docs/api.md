@@ -505,8 +505,8 @@ SELECT h3_get_h3_unidirectional_edges_from_hexagon(:hexagon);
 Find the boundary of this edge, in native PostgreSQL polygon type.
 
 ```
-SELECT h3_get_unidirectional_edge_boundary(h3_get_h3_unidirectional_edge(:hexagon, :neighbour));
-                     h3_get_unidirectional_edge_boundary
+SELECT h3_get_h3_unidirectional_edge_boundary(h3_get_h3_unidirectional_edge(:hexagon, :neighbour));
+                     h3_get_h3_unidirectional_edge_boundary
 ---------------------------------------------------------------------------
  ((89.5830164946548,64.7146398954916),(89.5790678021742,64.2872231517217))
 (1 row)

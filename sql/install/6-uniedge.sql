@@ -51,7 +51,7 @@ CREATE OR REPLACE FUNCTION h3_get_h3_unidirectional_edges_from_hexagon(h3index) 
     COMMENT ON FUNCTION h3_get_h3_unidirectional_edges_from_hexagon(h3index) IS
 'Returns all unidirectional edges with the given index as origin';
 
-CREATE OR REPLACE FUNCTION h3_get_unidirectional_edge_boundary(edge h3index) RETURNS polygon
+CREATE OR REPLACE FUNCTION h3_get_h3_unidirectional_edge_boundary(edge h3index) RETURNS polygon
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_get_unidirectional_edge_boundary(edge h3index) IS
+    COMMENT ON FUNCTION h3_get_h3_unidirectional_edge_boundary(edge h3index) IS
 'Provides the coordinates defining the unidirectional edge.';

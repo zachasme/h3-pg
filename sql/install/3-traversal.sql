@@ -25,22 +25,6 @@ CREATE OR REPLACE FUNCTION h3_k_ring_distances(h3index, k integer DEFAULT 1, OUT
     COMMENT ON FUNCTION h3_k_ring_distances(h3index, k integer) IS
 'Produces indices within "k" distance of the origin index paired with their distance to the origin';
 
-CREATE OR REPLACE FUNCTION h3_hex_range(h3index, k integer DEFAULT 1) RETURNS SETOF h3index
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_hex_range(h3index, k integer) IS
-'Produces indices within "k" distance of the origin index sorted by distance. Errors if a pentagon is encountered';
-
-CREATE OR REPLACE FUNCTION h3_hex_range_distances(h3index, k integer DEFAULT 1, OUT index h3index, OUT distance int) RETURNS SETOF record
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_hex_range_distances(h3index, k integer) IS
-'Produces indices within "k" distance of the origin index paired with their distance to the origin.
-Sorted by increasing distance. Errors if a pentagon is encountered';    
-
-CREATE OR REPLACE FUNCTION h3_hex_ranges(h3index[], k integer DEFAULT 1) RETURNS SETOF h3index
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_hex_ranges(h3index[], k integer) IS
-'Returns the hex-range of the entire given array. Errors if a pentagon is encountered';    
-
 CREATE OR REPLACE FUNCTION h3_hex_ring(h3index, k integer DEFAULT 1) RETURNS SETOF h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_hex_ring(h3index, k integer) IS

@@ -19,12 +19,6 @@
 
 -- Custom helper functions
 
--- DEPRECATED in v1.0.0
---CREATE OR REPLACE FUNCTION h3_haversine_distance(h3index, h3index) RETURNS double precision
---    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
---    COMMENT ON FUNCTION h3_haversine_distance(h3index, h3index) IS
---    'Returns the haversine distance between the two given indices.';
-
 CREATE OR REPLACE FUNCTION h3_basecells() RETURNS SETOF h3index
     AS 'h3', 'h3_get_res_0_indexes' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_basecells() IS
@@ -100,3 +94,7 @@ AS $$ SELECT h3_polyfill($1::geometry, $2) $$ LANGUAGE SQL;
 CREATE CAST (h3index AS point) WITH FUNCTION h3_h3_to_geo(h3index);
 CREATE CAST (h3index AS geometry) WITH FUNCTION h3_h3_to_geometry(h3index);
 CREATE CAST (h3index AS geography) WITH FUNCTION h3_h3_to_geography(h3index);
+
+-- DEPRECATED in v1.0.0
+CREATE OR REPLACE FUNCTION h3_haversine_distance(h3index, h3index) RETURNS double precision
+    AS 'h3', 'h3index_eq' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;

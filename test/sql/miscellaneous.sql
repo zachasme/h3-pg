@@ -4,28 +4,18 @@
 \set epsilon 0.0000000000001
 
 --
--- TEST h3_hex_area_km2
+-- TEST h3_hex_area
 --
 
-SELECT h3_hex_area_km2(10) = 0.0150475;
+SELECT h3_hex_area(10) = 15047.5;
+SELECT h3_hex_area(10, true) = 0.0150475;
 
 --
--- TEST h3_hex_area_m2
+-- TEST h3_edge_length
 --
 
-SELECT h3_hex_area_m2(10) = 15047.5;
-
---
--- TEST h3_edge_length_km
---
-
-SELECT h3_edge_length_km(10) = 0.065907807;
-
---
--- TEST h3_edge_length_m
---
-
-SELECT h3_edge_length_m(10) = 65.90780749;
+SELECT h3_edge_length(10) = 65.90780749;
+SELECT h3_edge_length(10, true) = 0.065907807;
 
 --
 -- TEST h3_num_hexagons

@@ -70,19 +70,6 @@ CREATE OR REPLACE FUNCTION h3_k_ring_distances(h3index, k integer DEFAULT 1, OUT
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_k_ring_distances(h3index, k integer) IS
     'Produces indices within "k" distance of the origin index paired with their distance to the origin';
-CREATE OR REPLACE FUNCTION h3_hex_range(h3index, k integer DEFAULT 1) RETURNS SETOF h3index
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_hex_range(h3index, k integer) IS
-    'Produces indices within "k" distance of the origin index sorted by distance. Errors if a pentagon is encountered';
-CREATE OR REPLACE FUNCTION h3_hex_range_distances(h3index, k integer DEFAULT 1, OUT index h3index, OUT distance int) RETURNS SETOF record
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_hex_range_distances(h3index, k integer) IS
-    'Produces indices within "k" distance of the origin index paired with their distance to the origin.
-     Sorted by increasing distance. Errors if a pentagon is encountered';    
-CREATE OR REPLACE FUNCTION h3_hex_ranges(h3index[], k integer DEFAULT 1) RETURNS SETOF h3index
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_hex_ranges(h3index[], k integer) IS
-    'Returns the hex-range of the entire given array. Errors if a pentagon is encountered';    
 CREATE OR REPLACE FUNCTION h3_hex_ring(h3index, k integer DEFAULT 1) RETURNS SETOF h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_hex_ring(h3index, k integer) IS
@@ -126,7 +113,7 @@ CREATE OR REPLACE FUNCTION h3_polyfill(exterior polygon, holes polygon[], resolu
     COMMENT ON FUNCTION h3_polyfill(exterior polygon, holes polygon[], resolution integer) IS
     'Takes an exterior polygon [and a set of hole polygon] and returns the set of hexagons that best fit the structure';
 CREATE OR REPLACE FUNCTION h3_h3_set_to_linked_geo(h3index[], OUT exterior polygon, OUT holes polygon[]) RETURNS SETOF record
-    AS 'h3', 'h3_set_to_linked_geo' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    AS 'h3', 'h3_set_to_multi_polygon' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_h3_set_to_linked_geo(h3index[]) IS
     'Create a LinkedGeoPolygon describing the outline(s) of a set of hexagons. Polygon outlines will follow GeoJSON MultiPolygon order: Each polygon will have one outer loop, which is first in the list, followed by any holes';
 
@@ -160,38 +147,33 @@ CREATE OR REPLACE FUNCTION h3_get_h3_unidirectional_edges_from_hexagon(h3index) 
     COMMENT ON FUNCTION h3_get_h3_unidirectional_edges_from_hexagon(h3index) IS
     'Returns all unidirectional edges with the given index as origin';
 CREATE OR REPLACE FUNCTION h3_get_unidirectional_edge_boundary(edge h3index) RETURNS polygon
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    AS 'h3', 'h3_get_h3_unidirectional_edge_boundary' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_get_unidirectional_edge_boundary(edge h3index) IS
     'Provides the coordinates defining the unidirectional edge.';
 
 -- Miscellaneous H3 functions (miscellaneous.c)
--- DEPRECATED in v3.4.0
--- CREATE OR REPLACE FUNCTION h3_degs_to_rads(float) RETURNS float
---     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
---     COMMENT ON FUNCTION h3_degs_to_rads(float) IS
---     'Converts degrees to radians';
--- DEPRECATED in v3.4.0
--- CREATE OR REPLACE FUNCTION h3_rads_to_degs(float) RETURNS float
---     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
---     COMMENT ON FUNCTION h3_rads_to_degs(float) IS
---     'Converts radians to degrees.';
-CREATE OR REPLACE FUNCTION h3_hex_area_km2(resolution integer) RETURNS float
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_hex_area_km2(resolution integer) IS
-    'Average hexagon area in square kilometers at the given resolution.';
-CREATE OR REPLACE FUNCTION h3_hex_area_m2(resolution integer) RETURNS float
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_hex_area_m2(resolution integer) IS
-    'Average hexagon area in square meters at the given resolution.';
-CREATE OR REPLACE FUNCTION h3_edge_length_km(resolution integer) RETURNS float
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_edge_length_km(resolution integer) IS
-    'Average hexagon edge length in kilometers at the given resolution.';
-CREATE OR REPLACE FUNCTION h3_edge_length_m(resolution integer) RETURNS float
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_edge_length_m(resolution integer) IS
-    'Average hexagon edge length in meters at the given resolution.';
 CREATE OR REPLACE FUNCTION h3_num_hexagons(resolution integer) RETURNS bigint
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_num_hexagons(resolution integer) IS
     'Number of unique H3 indexes at the given resolution.';
+
+-- DEPRECATED in v3.4.0
+CREATE OR REPLACE FUNCTION h3_degs_to_rads(float) RETURNS float
+    AS 'h3', 'h3index_eq' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+CREATE OR REPLACE FUNCTION h3_rads_to_degs(float) RETURNS float
+    AS 'h3', 'h3index_eq' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+-- DEPRECATED in v3.5.0
+CREATE OR REPLACE FUNCTION h3_hex_area_km2(integer) RETURNS float
+    AS 'h3', 'h3index_eq' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+CREATE OR REPLACE FUNCTION h3_hex_area_m2(integer) RETURNS float
+    AS 'h3', 'h3index_eq' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+CREATE OR REPLACE FUNCTION h3_edge_length_km(integer) RETURNS float
+    AS 'h3', 'h3index_eq' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+CREATE OR REPLACE FUNCTION h3_edge_length_m(integer) RETURNS float
+    AS 'h3', 'h3index_eq' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+CREATE OR REPLACE FUNCTION h3_hex_range(h3index, k integer) RETURNS SETOF h3index
+    AS 'h3', 'h3index_eq' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+CREATE OR REPLACE FUNCTION h3_hex_range_distances(h3index, k integer, OUT h3index, OUT int) RETURNS SETOF record
+    AS 'h3', 'h3index_eq' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+CREATE OR REPLACE FUNCTION h3_hex_ranges(h3index[], k integer) RETURNS SETOF h3index
+    AS 'h3', 'h3index_eq' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;

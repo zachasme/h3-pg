@@ -16,29 +16,19 @@
 
 -- Miscellaneous H3 functions (miscellaneous.c)
 
-CREATE OR REPLACE FUNCTION h3_hex_area_km2(resolution integer) RETURNS float
+CREATE OR REPLACE FUNCTION h3_hex_area(resolution integer, km boolean DEFAULT FALSE) RETURNS float
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_hex_area_km2(resolution integer) IS
-'Average hexagon area in square kilometers at the given resolution.';
+    COMMENT ON FUNCTION h3_hex_area(integer, boolean) IS
+'Average hexagon area in square (kilo)meters at the given resolution.';
 
-CREATE OR REPLACE FUNCTION h3_hex_area_m2(resolution integer) RETURNS float
+CREATE OR REPLACE FUNCTION h3_edge_length(resolution integer, km boolean DEFAULT FALSE) RETURNS float
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_hex_area_m2(resolution integer) IS
-'Average hexagon area in square meters at the given resolution.';
-
-CREATE OR REPLACE FUNCTION h3_edge_length_km(resolution integer) RETURNS float
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_edge_length_km(resolution integer) IS
-'Average hexagon edge length in kilometers at the given resolution.';
-
-CREATE OR REPLACE FUNCTION h3_edge_length_m(resolution integer) RETURNS float
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_edge_length_m(resolution integer) IS
-'Average hexagon edge length in meters at the given resolution.';
+    COMMENT ON FUNCTION h3_edge_length(integer, boolean) IS
+'Average hexagon edge length in (kilo)meters at the given resolution.';
 
 CREATE OR REPLACE FUNCTION h3_num_hexagons(resolution integer) RETURNS bigint
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_num_hexagons(resolution integer) IS
+    COMMENT ON FUNCTION h3_num_hexagons(integer) IS
 'Number of unique H3 indexes at the given resolution.';
 
 CREATE OR REPLACE FUNCTION h3_get_res_0_indexes() RETURNS SETOF h3index

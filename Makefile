@@ -42,6 +42,7 @@ h3.a: ${LIBH3_DIR}
 			-DENABLE_LINTING=OFF \
 			.
 	cmake --build ${LIBH3_DIR} --target install
+	cmake --build ${LIBH3_DIR} --target binding-functions
 $(OBJS): h3.a
 
 # generate header file
@@ -70,7 +71,9 @@ test/expected/install.out: $(UPDATE_FILES)
 	psql -d pg_regress -c "\df h3*" >> $@
 	psql -c "DROP DATABASE pg_regress;"
 install: $(UPDATETEST_SQL)
-installcheck: test/expected/install.out
+installcheck: test/expected/install.out checkbindings
+checkbindings: test/expected/install.out
+	scripts/check-bindings.sh ${LIBH3_DIR}
 
 # zip up for distribution
 distribute: clean

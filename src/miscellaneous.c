@@ -21,41 +21,37 @@
 #include <h3/h3api.h> // Main H3 include
 #include "extension.h"
 
-// Average hexagon area in square kilometers at the given resolution
-PG_FUNCTION_INFO_V1(h3_hex_area_km2);
-Datum h3_hex_area_km2(PG_FUNCTION_ARGS)
+// Average hexagon area in square (kilo)meters at the given resolution
+PG_FUNCTION_INFO_V1(h3_hex_area);
+Datum h3_hex_area(PG_FUNCTION_ARGS)
 {
     int resolution = PG_GETARG_INT32(0);
-    double area = hexAreaKm2(resolution);
+    int km = PG_GETARG_BOOL(1);
+    double area;
+    if (km) {
+        area = hexAreaKm2(resolution);
+    } else {
+        area = hexAreaM2(resolution);
+    }
     PG_RETURN_FLOAT8(area);
 }
 
-// Average hexagon area in square meters at the given resolution
-PG_FUNCTION_INFO_V1(h3_hex_area_m2);
-Datum h3_hex_area_m2(PG_FUNCTION_ARGS)
-{
-    int resolution = PG_GETARG_INT32(0);
-    double area = hexAreaM2(resolution);
-    PG_RETURN_FLOAT8(area);
-}
 
-// Average hexagon edge length in kilometers at the given resolution
-PG_FUNCTION_INFO_V1(h3_edge_length_km);
-Datum h3_edge_length_km(PG_FUNCTION_ARGS)
+// Average hexagon edge length in (kilo)meters at the given resolution
+PG_FUNCTION_INFO_V1(h3_edge_length);
+Datum h3_edge_length(PG_FUNCTION_ARGS)
 {
     int resolution = PG_GETARG_INT32(0);
-    double length = edgeLengthKm(resolution);
+    bool km = PG_GETARG_BOOL(1);
+    double length;
+    if (km) {
+        length = edgeLengthKm(resolution);
+    } else {
+        length = edgeLengthM(resolution);
+    }
     PG_RETURN_FLOAT8(length);
 }
 
-// Average hexagon edge length in meters at the given resolution
-PG_FUNCTION_INFO_V1(h3_edge_length_m);
-Datum h3_edge_length_m(PG_FUNCTION_ARGS)
-{
-    int resolution = PG_GETARG_INT32(0);
-    double length = edgeLengthM(resolution);
-    PG_RETURN_FLOAT8(length);
-}
 
 // Number of unique H3 indexes at the given resolution
 PG_FUNCTION_INFO_V1(h3_num_hexagons);

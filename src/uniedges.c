@@ -129,8 +129,8 @@ Datum h3_get_h3_unidirectional_edges_from_hexagon(PG_FUNCTION_ARGS)
 }
 
 /* Provides the coordinates defining the unidirectional edge */
-PG_FUNCTION_INFO_V1(h3_get_unidirectional_edge_boundary);
-Datum h3_get_unidirectional_edge_boundary(PG_FUNCTION_ARGS)
+PG_FUNCTION_INFO_V1(h3_get_h3_unidirectional_edge_boundary);
+Datum h3_get_h3_unidirectional_edge_boundary(PG_FUNCTION_ARGS)
 {
   H3Index *edge = PG_GETARG_H3_INDEX_P(0);
 

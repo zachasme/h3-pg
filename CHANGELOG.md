@@ -17,10 +17,16 @@ avoid adding features or APIs which do not map onto the
 ## [Unreleased]
 ### Added
 - `h3_get_faces` function to find icosahedron faces for an index.
+- `h3_hex_area` replacing `h3_hex_area_m2` and `h3_hex_area_km2`.
+- `h3_edge_length` replacing `h3_edge_length_m` and `h3_edge_length_km`.
+- Check bindings against `binding-functions` exported by H3.
 ### Changed
 - Bump `h3` to `3.5.0`.
 ### Fixed
 - Fix build for PostgreSQL 12 (#4, thanks @Komzpa)
+### Removed
+- Removed `h3_hex_area_m2`, `h3_hex_area_km2`, `h3_edge_length_m` and `h3_edge_length_km` in favor of `h3_hex_area` and `h3_edge_length`.
+- Removed `hex_range`, `hex_ranges` and `hex_range_distances` to align with `binding-functions`.
 
 ## [3.4.1] - 2019-06-14
 ### Added

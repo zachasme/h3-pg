@@ -21,3 +21,26 @@ CREATE OR REPLACE FUNCTION h3_get_faces(h3index) RETURNS integer[]
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_get_faces(h3index) IS
 'Find all icosahedron faces intersected by a given H3 index';
+
+ALTER FUNCTION h3_get_unidirectional_edge_boundary(h3index) RENAME TO h3_get_h3_unidirectional_edge_boundary;
+
+-- replace separate length functions with single function
+DROP FUNCTION IF EXISTS h3_edge_length_km(integer);
+DROP FUNCTION IF EXISTS h3_edge_length_m(integer);
+CREATE OR REPLACE FUNCTION h3_edge_length(resolution integer, km boolean DEFAULT FALSE) RETURNS float
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    COMMENT ON FUNCTION h3_edge_length(integer, boolean) IS
+'Average hexagon edge length in (kilo)meters at the given resolution.';
+-- replace separate area functions with single function
+DROP FUNCTION IF EXISTS h3_hex_area_km2(integer);
+DROP FUNCTION IF EXISTS h3_hex_area_m2(integer);
+CREATE OR REPLACE FUNCTION h3_hex_area(resolution integer, km boolean DEFAULT FALSE) RETURNS float
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    COMMENT ON FUNCTION h3_hex_area(integer, boolean) IS
+'Average hexagon area in square (kilo)meters at the given resolution.';
+
+DROP FUNCTION IF EXISTS h3_hex_range(h3index, integer);
+DROP FUNCTION IF EXISTS h3_hex_range_distances(h3index, integer);
+DROP FUNCTION IF EXISTS h3_hex_ranges(h3index[], integer);
+
+ALTER FUNCTION h3_set_to_linked_geo(h3index[]) RENAME TO h3_set_to_multi_polygon;
