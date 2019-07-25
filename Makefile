@@ -4,10 +4,6 @@ EXTVERSION = $(shell grep default_version $(EXTENSION).control | \
 
 # the version to clone
 LIBH3_VERSION = v3.5.0
-# the minimum version to check for in extension
-LIBH3_REQUIRED_MAJOR = 3
-LIBH3_REQUIRED_MINOR = 5
-LIBH3_REQUIRED_PATCH = 0
 # where to store cloned repo
 LIBH3_DIR = libh3-${LIBH3_VERSION}
 
@@ -30,8 +26,7 @@ REGRESS_OPTS = --inputdir=test --outputdir=test --load-extension=postgis --load-
 # build and compile h3 as static lib if not already installed
 ${LIBH3_DIR}:
 	git clone --branch ${LIBH3_VERSION} --depth 1 https://github.com/uber/h3 ${LIBH3_DIR}
-h3.a: ${LIBH3_DIR}
-	$(info Building H3 locally and linking statically)
+${LIBH3_DIR}/cmake: ${LIBH3_DIR}
 	cd ${LIBH3_DIR} && cmake \
 			-DCMAKE_C_FLAGS=-fPIC \
 			-DCMAKE_INSTALL_PREFIX=./install \
@@ -41,16 +36,13 @@ h3.a: ${LIBH3_DIR}
 			-DENABLE_FORMAT=OFF \
 			-DENABLE_LINTING=OFF \
 			.
+${LIBH3_DIR}/install/lib/h3.a: ${LIBH3_DIR}/cmake
 	cmake --build ${LIBH3_DIR} --target install
-	cmake --build ${LIBH3_DIR} --target binding-functions
-$(OBJS): h3.a
+$(OBJS): ${LIBH3_DIR}/install/lib/h3.a
 
 # generate header file
 src/extension.h: src/extension.in.h
 	sed -e 's/@EXTVERSION@/${EXTVERSION}/g' \
-		-e 's/@LIBH3_REQUIRED_MAJOR@/${LIBH3_REQUIRED_MAJOR}/g' \
-		-e 's/@LIBH3_REQUIRED_MINOR@/${LIBH3_REQUIRED_MINOR}/g' \
-		-e 's/@LIBH3_REQUIRED_PATCH@/${LIBH3_REQUIRED_PATCH}/g' \
 		$< > $@
 $(OBJS): src/extension.h
 
@@ -71,9 +63,24 @@ test/expected/install.out: $(UPDATE_FILES)
 	psql -d pg_regress -c "\df h3*" >> $@
 	psql -c "DROP DATABASE pg_regress;"
 install: $(UPDATETEST_SQL)
-installcheck: test/expected/install.out checkbindings
-checkbindings: test/expected/install.out
-	scripts/check-bindings.sh ${LIBH3_DIR}
+installcheck: test/expected/install.out
+
+# rules for checking we have the correct bindings
+${LIBH3_DIR}/binding-functions: ${LIBH3_DIR}/cmake
+	cmake --build ${LIBH3_DIR} --target binding-functions
+$(OBJS): ${LIBH3_DIR}/binding-functions
+test/expected/binding-functions.out: ${LIBH3_DIR}/binding-functions scripts/excluded-functions
+	psql -c "DROP DATABASE IF EXISTS pg_regress;"
+	psql -c "CREATE DATABASE pg_regress;"
+	echo "\echo '$(shell scripts/binding-functions.sh ${LIBH3_DIR})'" > $@
+	psql -d pg_regress -c "\echo '$(shell scripts/binding-functions.sh ${LIBH3_DIR})'" >> $@
+	psql -c "DROP DATABASE pg_regress;"
+test/sql/binding-functions.sql: test/expected/install.out scripts/extra-functions
+	psql -c "DROP DATABASE IF EXISTS pg_regress;"
+	psql -c "CREATE DATABASE pg_regress;"
+	echo "\echo '$(shell scripts/binding-functions.sh)'" > $@
+	psql -c "DROP DATABASE pg_regress;"
+installcheck: test/sql/binding-functions.sql test/expected/binding-functions.out
 
 # zip up for distribution
 distribute: clean
@@ -86,6 +93,8 @@ EXTRA_CLEAN += \
 	$(UPDATETEST_SQL) \
 	src/extension.h \
 	test/expected/install.out \
+	test/expected/bindings-functions.out \
+	test/sql/bindings-functions.sql \
 	test/regression.diffs test/regression.out test/results \
 	h3-*.zip
 

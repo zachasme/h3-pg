@@ -11,6 +11,8 @@ test/results
 sql/*.sql
 src/extension.h
 test/expected/install.out
+test/expected/binding-functions.out
+test/sql/binding-functions.sql
 libh3-*/
 h3-*.zip
 
