@@ -29,11 +29,6 @@
 // should only be in ONE file
 PG_MODULE_MAGIC;
 
-static_assert(
-    H3_VERSION_MAJOR == LIBH3_REQUIRED_MAJOR && H3_VERSION_MINOR >= LIBH3_REQUIRED_MINOR && H3_VERSION_PATCH >= LIBH3_REQUIRED_PATCH,
-    "Installed H3 must be at least version " LIBH3_REQUIRED_VERSION_STRING
-);
-
 /**
  * Return version number for this extension (not main h3 lib)
  */

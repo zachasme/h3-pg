@@ -29,10 +29,6 @@ typedef struct
 
 // configure extension version in makefile
 #define EXTVERSION "@EXTVERSION@"
-#define LIBH3_REQUIRED_MAJOR @LIBH3_REQUIRED_MAJOR@
-#define LIBH3_REQUIRED_MINOR @LIBH3_REQUIRED_MINOR@
-#define LIBH3_REQUIRED_PATCH @LIBH3_REQUIRED_PATCH@
-#define LIBH3_REQUIRED_VERSION_STRING "@LIBH3_REQUIRED_MAJOR@.@LIBH3_REQUIRED_MINOR@.@LIBH3_REQUIRED_PATCH@"
 
 /* base type in postgres is Datum, and we cannot fit 8 bytes on all platforms
    so we use pointers */
