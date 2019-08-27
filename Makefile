@@ -79,33 +79,33 @@ $(OBJS): src/extension.h
 # rules for testing the update path against full install
 $(SQL_UPDATETEST): $(sort $(SQL_UPDATES))
 	cat $^ > $@
-test/expected/install.out: $(SQL_UPDATES)
-	psql -c "DROP DATABASE IF EXISTS pg_regress;"
-	psql -c "CREATE DATABASE pg_regress;"
-	psql -d pg_regress -c "CREATE EXTENSION postgis;"
-	psql -d pg_regress -c "CREATE EXTENSION h3 VERSION 'updatetest';"
-	echo "\df h3*" > $@
-	psql -d pg_regress -c "\df h3*" >> $@
-	psql -c "DROP DATABASE pg_regress;"
+#test/expected/install.out: $(SQL_UPDATES)
+#	psql -c "DROP DATABASE IF EXISTS pg_regress;"
+#	psql -c "CREATE DATABASE pg_regress;"
+#	psql -d pg_regress -c "CREATE EXTENSION postgis;"
+#	psql -d pg_regress -c "CREATE EXTENSION h3 VERSION 'updatetest';"
+#	echo "\df h3*" > $@
+#	psql -d pg_regress -c "\df h3*" >> $@
+#	psql -c "DROP DATABASE pg_regress;"
 install: $(SQL_UPDATETEST)
-installcheck: test/expected/install.out
+#installcheck: test/expected/install.out
 
 # rules for checking we have the correct bindings
-$(LIBH3_DIR)/binding-functions: $(LIBH3_DIR)/cmake
-	cmake --build $(LIBH3_DIR) --target binding-functions
-test/expected/binding-functions.out: $(LIBH3_DIR)/binding-functions
-	psql -c "DROP DATABASE IF EXISTS pg_regress;"
-	psql -c "CREATE DATABASE pg_regress;"
-	echo "\echo '$(shell scripts/binding-functions.sh $(LIBH3_DIR))'" > $@
-	psql -d pg_regress -c "\echo '$(shell scripts/binding-functions.sh $(LIBH3_DIR))'" >> $@
-	psql -c "DROP DATABASE pg_regress;"
-test/sql/binding-functions.sql: test/expected/install.out scripts/extra-functions
-	psql -c "DROP DATABASE IF EXISTS pg_regress;"
-	psql -c "CREATE DATABASE pg_regress;"
-	echo "\echo '$(shell scripts/binding-functions.sh)'" > $@
-	psql -c "DROP DATABASE pg_regress;"
-installcheck: test/sql/binding-functions.sql test/expected/binding-functions.out
-$(OBJS): $(LIBH3_DIR)/binding-functions
+#$(LIBH3_DIR)/binding-functions: $(LIBH3_DIR)/cmake
+#	cmake --build $(LIBH3_DIR) --target binding-functions
+#test/expected/binding-functions.out: $(LIBH3_DIR)/binding-functions
+#	psql -c "DROP DATABASE IF EXISTS pg_regress;"
+#	psql -c "CREATE DATABASE pg_regress;"
+#	echo "\echo '$(shell scripts/binding-functions.sh $(LIBH3_DIR))'" > $@
+#	psql -d pg_regress -c "\echo '$(shell scripts/binding-functions.sh $(LIBH3_DIR))'" >> $@
+#	psql -c "DROP DATABASE pg_regress;"
+#test/sql/binding-functions.sql: test/expected/install.out scripts/extra-functions
+#	psql -c "DROP DATABASE IF EXISTS pg_regress;"
+#	psql -c "CREATE DATABASE pg_regress;"
+#	echo "\echo '$(shell scripts/binding-functions.sh)'" > $@
+#	psql -c "DROP DATABASE pg_regress;"
+#installcheck: test/sql/binding-functions.sql test/expected/binding-functions.out
+#$(OBJS): $(LIBH3_DIR)/binding-functions
 
 # zip up for distribution
 distribute: clean
