@@ -17,6 +17,8 @@ avoid adding features or APIs which do not map onto the
 ## [Unreleased]
 ### Added
 - Add operators `&&`, `@>` and `<@` for overlap, contains and contained by respectively.
+### Fixed
+- Fixed PostgreSQL 12 build error (#17, thanks @Komzpa)
 
 ## [3.6.0] - 2019-10-07
 ### Added

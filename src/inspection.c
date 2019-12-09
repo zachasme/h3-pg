@@ -93,12 +93,12 @@ h3_get_faces(PG_FUNCTION_ARGS)
 	int			maxFaces = maxFaceCount(*hex);
 
 	ArrayType  *result;
-	
+
 	int			nelems = 0;
 
 	/* get the faces */
 	int		   *faces = palloc(maxFaces * sizeof(int));
-	Datum		*elements = palloc(maxFaces * sizeof(Datum));
+	Datum	   *elements = palloc(maxFaces * sizeof(Datum));
 
 	h3GetFaces(*hex, faces);
 
