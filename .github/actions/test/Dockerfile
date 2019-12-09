@@ -13,8 +13,8 @@ RUN apt-get update && apt-get install -y \
 RUN apt-key adv --fetch-keys https://www.postgresql.org/media/keys/ACCC4CF8.asc
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ ${UBUNTU}-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 
-ARG POSTGRESQL=11
-ARG POSTGIS=2.5
+ARG POSTGRESQL=12
+ARG POSTGIS=3
 
 RUN apt-get update && apt-get install -y \
     postgresql-${POSTGRESQL}-postgis-${POSTGIS}-scripts \
