@@ -15,10 +15,14 @@ avoid adding features or APIs which do not map onto the
 [H3 core API](https://uber.github.io/h3/#/documentation/api-reference/).
 
 ## [Unreleased]
+
+## [3.6.1] - 2019-12-09
 ### Added
 - Add operators `&&`, `@>` and `<@` for overlap, contains and contained by respectively.
 ### Fixed
 - Fixed PostgreSQL 12 build error (#17, thanks @Komzpa)
+### Changed
+- Bump `h3` to `3.6.1`.
 
 ## [3.6.0] - 2019-10-07
 ### Added
@@ -110,7 +114,8 @@ avoid adding features or APIs which do not map onto the
 ### Added
 - First public release.
 
-[Unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.0...HEAD
+[Unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.1...HEAD
+[3.6.1]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.0...v3.6.1
 [3.6.0]: https://github.com/bytesandbrains/h3-pg/compare/v3.5.0...v3.6.0
 [3.5.0]: https://github.com/bytesandbrains/h3-pg/compare/v3.4.1...v3.5.0
 [3.4.1]: https://github.com/bytesandbrains/h3-pg/compare/v3.4.0...v3.4.1

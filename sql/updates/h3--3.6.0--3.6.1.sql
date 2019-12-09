@@ -15,7 +15,7 @@
  */
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
+\echo Use "ALTER EXTENSION h3 UPDATE TO '3.6.1'" to load this file. \quit
 
 -- add R-tree operators
 CREATE OR REPLACE FUNCTION h3index_overlaps(h3index, h3index) RETURNS boolean
