@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
+Critical bugfixes or breaking changes are marked using a warning symbol: ⚠️
+
 _The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)._
 
 ## Versioning
@@ -24,7 +26,7 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
-- Add parallel safety flags to PostGIS functions (see #19, thanks @Komzpa)
+- Add parallel safety flags to PostGIS functions (see [#19], thanks @komzpa)
 - Update `h3` core library to `v3.6.3`
 
 </details>
@@ -32,12 +34,12 @@ avoid adding features or APIs which do not map onto the
 ## [3.6.1] - 2019-12-09
 
 - Add `&&`, `@>` and `<@` operators for overlaps, contains and contained by respectively
-- Fix PostgreSQL 12 build (see #17, thanks @Komzpa)
+- Fix PostgreSQL 12 build (see [#18], thanks [@komzpa])
 - Update `h3` core library to `v3.6.1`
 
 ## [3.6.0] - 2019-10-07
 
-- Add support for `bigint` cast (see #9, thanks @kmacdough)
+- Add support for `bigint` cast (see [#9], thanks [@kmacdough])
 - Add `h3_to_center_child` binding
 - Add `h3_get_pentagon_indexes` binding
 - Update `h3` core library to `v3.6.0`.
@@ -48,8 +50,8 @@ avoid adding features or APIs which do not map onto the
 - ⚠️ Replace `h3_hex_area_m2` and `h3_hex_area_km2` with `h3_hex_area`
 - ⚠️ Replace `h3_edge_length_m` and `h3_edge_length_km` with `h3_edge_length`
 - ⚠️ Remove `hex_range`, `hex_ranges` and `hex_range_distances`
-- ⚠️ Remove `h3` core library version check, since we know which version we are linking
-- Fix PostgreSQL 12 build (see #4, thanks @Komzpa)
+- Remove `h3` core library version check, since we know which version we are linking
+- Fix PostgreSQL 12 build (see [#4], thanks [@komzpa])
 - Update `h3` core library to `v3.5.0`
 
 ## [3.4.1] - 2019-06-14
@@ -90,6 +92,7 @@ avoid adding features or APIs which do not map onto the
 - Add hash operator class, now `WHERE IN` works
 - ⚠️ Replace `h3_basecells` with `h3_get_res_0_indexes`
 - ⚠️ Rename all functions with double `h3_h3_` prefix to use single `h3_` prefix
+- ⚠️ Remove `h3_haversine_distance` function
 - ⚠️ Change Makefile such that the `h3` core library is cloned, built and statically linked
 - Test that upgrade path has same result as fresh install
 
@@ -100,7 +103,7 @@ avoid adding features or APIs which do not map onto the
 
 ## [0.3.2] - 2019-01-08
 
-- Fix `btree` operator class indexing
+- ⚠️ Fix `btree` operator class indexing
 
 ## [0.3.1] - 2018-12-17
 
@@ -108,7 +111,7 @@ avoid adding features or APIs which do not map onto the
 
 ## 0.3.0 - 2018-12-11
 
-- First public release
+- Initial public release
 
 [unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.1...HEAD
 [3.6.1]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.0...v3.6.1
@@ -126,3 +129,9 @@ avoid adding features or APIs which do not map onto the
 [0.4.0]: https://github.com/bytesandbrains/h3-pg/compare/v0.3.2...v0.4.0
 [0.3.2]: https://github.com/bytesandbrains/h3-pg/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/bytesandbrains/h3-pg/compare/v0.3.0...v0.3.1
+[#4]: https://github.com/bytesandbrains/h3-pg/pull/4
+[#9]: https://github.com/bytesandbrains/h3-pg/pull/9
+[#18]: https://github.com/bytesandbrains/h3-pg/pull/18
+[#19]: https://github.com/bytesandbrains/h3-pg/pull/19
+[@komzpa]: https://github.com/Komzpa
+[@kmacdough]: https://github.com/kmacdough
