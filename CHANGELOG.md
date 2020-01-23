@@ -1,9 +1,11 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+_The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)._
 
 ## Versioning
+
 The H3 core library adheres to [Semantic Versioning](http://semver.org/).
 H3-pg has a `major.minor.patch` version scheme. The major and minor version
 numbers of H3-pg are the major and minor version of the bound core library,
@@ -16,105 +18,98 @@ avoid adding features or APIs which do not map onto the
 
 ## [Unreleased]
 
+<details>
+  <summary>
+    Changes that have landed in master but are not yet released.
+    Click to see more.
+  </summary>
+
+- Add parallel safety flags to PostGIS functions (see #19, thanks @Komzpa)
+
+</details>
+
 ## [3.6.1] - 2019-12-09
-### Added
-- Add operators `&&`, `@>` and `<@` for overlap, contains and contained by respectively.
-### Fixed
-- Fixed PostgreSQL 12 build error (#17, thanks @Komzpa)
-### Changed
-- Bump `h3` to `3.6.1`.
+
+- Add `&&`, `@>` and `<@` operators for overlaps, contains and contained by respectively
+- Fix PostgreSQL 12 build (see #17, thanks @Komzpa)
+- Update `h3` core library to `v3.6.1`
 
 ## [3.6.0] - 2019-10-07
-### Added
-- `h3_to_center_child` function to find center child at given resolution.
-- `h3_get_pentagon_indexes` function to find pentagons at given resolution.
-- Casting to and from `bigint` (#9, thanks @kmacdough).
-- Make target for `pgindent` (used for formatting c our code)
-### Changed
-- Bump `h3` to `3.6.0`.
+
+- Add support for `bigint` cast (see #9, thanks @kmacdough)
+- Add `h3_to_center_child` binding
+- Add `h3_get_pentagon_indexes` binding
+- Update `h3` core library to `v3.6.0`.
 
 ## [3.5.0] - 2019-08-01
-### Added
-- `h3_get_faces` function to find icosahedron faces for an index.
-- `h3_hex_area` replacing `h3_hex_area_m2` and `h3_hex_area_km2`.
-- `h3_edge_length` replacing `h3_edge_length_m` and `h3_edge_length_km`.
-- Check bindings against `binding-functions` exported by H3.
-### Changed
-- Bump `h3` to `3.5.0`.
-### Fixed
-- Fix build for PostgreSQL 12 (#4, thanks @Komzpa)
-### Removed
-- Removed H3 core library version check, since we know which version we are linking.
-- Removed `h3_hex_area_m2`, `h3_hex_area_km2`, `h3_edge_length_m` and `h3_edge_length_km` in favor of `h3_hex_area` and `h3_edge_length`.
-- Removed `hex_range`, `hex_ranges` and `hex_range_distances` to align with `binding-functions`.
+
+- Add `h3_get_faces` binding
+- ⚠️ Replace `h3_hex_area_m2` and `h3_hex_area_km2` with `h3_hex_area`
+- ⚠️ Replace `h3_edge_length_m` and `h3_edge_length_km` with `h3_edge_length`
+- ⚠️ Remove `hex_range`, `hex_ranges` and `hex_range_distances`
+- ⚠️ Remove `h3` core library version check, since we know which version we are linking
+- Fix PostgreSQL 12 build (see #4, thanks @Komzpa)
+- Update `h3` core library to `v3.5.0`
 
 ## [3.4.1] - 2019-06-14
-### Added
-- Added more docker test utilities.
-### Fixed
-- Fix `abs` warning.
+
+- Fix `abs` warning
 
 ## [3.4.0] - 2019-06-13
-### Changed
-- Use same versioning scheme as python and java bindings, which is to lock major and minor to h3 core, and incrementing patch independently.
-### Fixed
-- Remove explicit type specifier :PATH from install prefix.
-### Removed
-- Removed degree/radian conversion helpers, recommend postgres built-in RADIANS/DEGREES instead.
+
+- ⚠️ Remove degree/radian conversion helpers (in favor of built-in RADIANS/DEGREES)
 
 ## [1.0.6] - 2019-06-03
-### Changed
-- Bump H3 to 3.4.4
+
+- Update `h3` core library to `v3.4.4`
 
 ## [1.0.5] - 2019-02-15
-### Fixed
-- Regression: Remember to add all update files on install
+
+- Fix update path
 
 ## [1.0.4] - 2019-02-15
-### Fixed
-- Fix polyfill for polygon with multiple holes.
+
+- Fix `polyfill` for polygon with multiple holes
 
 ## [1.0.3] - 2019-01-27
-### Fixed
-- Fix updatepath makefile target.
+
+- Fix update path
 
 ## [1.0.2] - 2019-01-27
-### Removed
-- Removed git tag check in `distribute` makefile target, since it causes error on pgxn install.
+
+- Remove git tag check in `distribute` makefile target, since it causes error on pgxn install
 
 ## [1.0.1] - 2019-01-27
-### Fixed
-- Removed usage of `FALSE` instead of 0 in conditional in `ASSERT` macro.
+
+- Remove usage of `FALSE` instead of 0 in conditional in `ASSERT` macro
 
 ## [1.0.0] - 2019-01-27
-### Added
-- Added `h3_get_extension_version()`.
-- Added test ensuring upgrade path has same result as fresh install.
-- Added hash operator class, now `WHERE IN` works.
-- Makefile now builds and links `libh3.a` locally instead of using system installation.
-### Changed
-- Renamed `h3_basecells` to `h3_get_res_0_indexes`.
-- Renamed all functions with double `h3_h3_` prefix to use single `h3_` prefix.
+
+- Add `h3_get_extension_version()`
+- Add hash operator class, now `WHERE IN` works
+- ⚠️ Replace `h3_basecells` with `h3_get_res_0_indexes`
+- ⚠️ Rename all functions with double `h3_h3_` prefix to use single `h3_` prefix
+- ⚠️ Change Makefile such that the `h3` core library is cloned, built and statically linked
+- Test that upgrade path has same result as fresh install
 
 ## [0.4.0] - 2019-01-12
-### Added
-- Added `h3_line` (binding for h3Line)
-### Fixed
-- Fixed `h3_h3_to_children_slow`
+
+- Add `h3_line` binding
+- Fix `h3_h3_to_children_slow`
 
 ## [0.3.2] - 2019-01-08
-### Fixed
-- Fixed B-Tree operator class, now indexing works.
+
+- Fix `btree` operator class indexing
 
 ## [0.3.1] - 2018-12-17
-### Changed
-- Added flag `extend` such that polygons returned by `h3_h3_to_geo_boundary` are not wrapped at 180th meridian.
+
+- Add `extend` flag to `h3_h3_to_geo_boundary` such that polygons are not wrapped at antimeridian
 
 ## 0.3.0 - 2018-12-11
-### Added
-- First public release.
 
-[Unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.1...HEAD
+- First public release
+
+[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.1...HEAD
 [3.6.1]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.0...v3.6.1
 [3.6.0]: https://github.com/bytesandbrains/h3-pg/compare/v3.5.0...v3.6.0
 [3.5.0]: https://github.com/bytesandbrains/h3-pg/compare/v3.4.1...v3.5.0
