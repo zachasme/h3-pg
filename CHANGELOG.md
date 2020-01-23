@@ -25,6 +25,7 @@ avoid adding features or APIs which do not map onto the
   </summary>
 
 - Add parallel safety flags to PostGIS functions (see #19, thanks @Komzpa)
+- Update `h3` core library to `v3.6.3`
 
 </details>
 
