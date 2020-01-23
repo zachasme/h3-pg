@@ -26,7 +26,7 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
-- Add parallel safety flags to PostGIS functions (see [#19], thanks @komzpa)
+- Add parallel safety flags to PostGIS functions (see [#19], thanks [@komzpa])
 - Update `h3` core library to `v3.6.3`
 
 </details>
@@ -42,7 +42,7 @@ avoid adding features or APIs which do not map onto the
 - Add support for `bigint` cast (see [#9], thanks [@kmacdough])
 - Add `h3_to_center_child` binding
 - Add `h3_get_pentagon_indexes` binding
-- Update `h3` core library to `v3.6.0`.
+- Update `h3` core library to `v3.6.0`
 
 ## [3.5.0] - 2019-08-01
 
