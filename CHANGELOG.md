@@ -135,5 +135,7 @@ avoid adding features or APIs which do not map onto the
 [#9]: https://github.com/bytesandbrains/h3-pg/pull/9
 [#18]: https://github.com/bytesandbrains/h3-pg/pull/18
 [#19]: https://github.com/bytesandbrains/h3-pg/pull/19
+[#22]: https://github.com/bytesandbrains/h3-pg/pull/22
+[#24]: https://github.com/bytesandbrains/h3-pg/pull/24
 [@komzpa]: https://github.com/Komzpa
 [@kmacdough]: https://github.com/kmacdough
