@@ -27,6 +27,8 @@ avoid adding features or APIs which do not map onto the
   </summary>
 
 - Add parallel safety flags to PostGIS functions (see [#19], thanks [@komzpa])
+- Free `PF_GETARG` pointers if copy (see [#22], thanks [@komzpa])
+- Add B-Tree sort support function (see [#24], thanks [@komzpa])
 - Update `h3` core library to `v3.6.3`
 
 </details>
