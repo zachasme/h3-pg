@@ -155,6 +155,6 @@ avoid adding features or APIs which do not map onto the
 [#24]: https://github.com/bytesandbrains/h3-pg/pull/24
 [#26]: https://github.com/bytesandbrains/h3-pg/pull/26
 [#38]: https://github.com/bytesandbrains/h3-pg/issues/38
-[@abelvm]: https://github.com/AbemVM
+[@abelvm]: https://github.com/AbelVM
 [@komzpa]: https://github.com/Komzpa
 [@kmacdough]: https://github.com/kmacdough
