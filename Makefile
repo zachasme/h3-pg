@@ -135,12 +135,14 @@ EXTRA_BINDING_FUNCTIONS = \
 
 PRINT_TYPES_SQL = "SELECT typname, typlen, typbyval, typalign FROM pg_type WHERE typname LIKE '%h3index' ORDER BY typname;"
 PRINT_FUNCTIONS_SQL = "\df *h3*"
+PRINT_FUNCFLAGS_SQL = "SELECT proname, proisstrict, provolatile, proparallel FROM pg_proc WHERE proname LIKE '%h3%' ORDER BY proname;"
 PRINT_OPERATORS_SQL = "\do"
 
 # rules for testing the update path against full install
 test/sql/ci-install.sql: $(SQL_FULLINSTALL)
 	echo $(PRINT_TYPES_SQL) > $@
 	echo $(PRINT_FUNCTIONS_SQL) >> $@
+	echo $(PRINT_FUNCFLAGS_SQL) >> $@
 	echo $(PRINT_OPERATORS_SQL) >> $@
 test/expected/ci-install.out: $(SQL_UPDATES)
 	psql -c "DROP DATABASE IF EXISTS pg_regress;"
@@ -152,6 +154,8 @@ test/expected/ci-install.out: $(SQL_UPDATES)
 	psql -d pg_regress -c $(PRINT_TYPES_SQL) >> $@
 	echo $(PRINT_FUNCTIONS_SQL) >> $@
 	psql -d pg_regress -c $(PRINT_FUNCTIONS_SQL) >> $@
+	echo $(PRINT_FUNCFLAGS_SQL) >> $@
+	psql -d pg_regress -c $(PRINT_FUNCFLAGS_SQL) >> $@
 	echo $(PRINT_OPERATORS_SQL) >> $@
 	psql -d pg_regress -c $(PRINT_OPERATORS_SQL) >> $@
 	psql -c "DROP DATABASE pg_regress;"

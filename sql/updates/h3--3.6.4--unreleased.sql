@@ -17,4 +17,21 @@
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
 \echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
 
--- no unreleased changes yet
+ALTER FUNCTION h3_get_h3_unidirectional_edge_boundary(h3index)
+    IMMUTABLE STRICT PARALLEL SAFE;
+ALTER FUNCTION h3_geo_to_h3(geometry, integer)
+    IMMUTABLE STRICT PARALLEL SAFE;
+ALTER FUNCTION h3_geo_to_h3(geography, integer)
+    IMMUTABLE STRICT PARALLEL SAFE;
+ALTER FUNCTION h3_to_geometry(h3index)
+    IMMUTABLE STRICT PARALLEL SAFE;
+ALTER FUNCTION h3_to_geography(h3index)
+    IMMUTABLE STRICT PARALLEL SAFE;
+ALTER FUNCTION h3_to_geo_boundary_geometry(h3index, boolean)
+    IMMUTABLE STRICT PARALLEL SAFE;
+ALTER FUNCTION h3_to_geo_boundary_geography(h3index, boolean)
+    IMMUTABLE STRICT PARALLEL SAFE;
+ALTER FUNCTION h3_polyfill(geometry, integer)
+    IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
+ALTER FUNCTION h3_polyfill(geography, integer)
+    IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
