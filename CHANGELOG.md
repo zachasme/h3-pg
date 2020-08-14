@@ -26,6 +26,7 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Add support for partitioning by hash (see [#37], thanks [@abelvm])
 - Fix difference in function flags between fresh install and upgrades (see [#38], thanks [@abelvm])
 
 </details>
@@ -154,6 +155,7 @@ avoid adding features or APIs which do not map onto the
 [#23]: https://github.com/bytesandbrains/h3-pg/issues/23
 [#24]: https://github.com/bytesandbrains/h3-pg/pull/24
 [#26]: https://github.com/bytesandbrains/h3-pg/pull/26
+[#37]: https://github.com/bytesandbrains/h3-pg/issues/37
 [#38]: https://github.com/bytesandbrains/h3-pg/issues/38
 [@abelvm]: https://github.com/AbelVM
 [@komzpa]: https://github.com/Komzpa

@@ -17,6 +17,7 @@
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
 \echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
 
+-- Fix function flags which were previously only changed in install files
 ALTER FUNCTION h3_get_h3_unidirectional_edge_boundary(h3index)
     IMMUTABLE STRICT PARALLEL SAFE;
 ALTER FUNCTION h3_geo_to_h3(geometry, integer)
@@ -35,3 +36,10 @@ ALTER FUNCTION h3_polyfill(geometry, integer)
     IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
 ALTER FUNCTION h3_polyfill(geography, integer)
     IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
+
+-- Add second support function for hash opclass
+CREATE OR REPLACE FUNCTION h3index_hash_extended(h3index, int8) RETURNS int8
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+ALTER OPERATOR FAMILY hash_h3index_ops USING hash ADD
+    FUNCTION  2  h3index_hash_extended(h3index, int8);
