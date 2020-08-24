@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Add distance operator `<->`
+
 </details>
 
 ## [3.6.5] - 2020-08-14

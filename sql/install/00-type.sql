@@ -18,7 +18,7 @@
 \echo Use "CREATE EXTENSION h3" to load this file. \quit
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
--- Custom Type
+-- Custom Type (type.c)
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- declare shell type, allowing us to reference while defining functions
@@ -40,10 +40,6 @@ CREATE TYPE h3index (
   LIKE           = int8
 );
 
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
--- Bigint Cast
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
-
 -- Availability: 3.6.0
 CREATE OR REPLACE FUNCTION h3index_to_bigint(h3index) RETURNS bigint
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
@@ -53,120 +49,3 @@ CREATE CAST (h3index AS bigint) WITH FUNCTION h3index_to_bigint(h3index);
 CREATE OR REPLACE FUNCTION bigint_to_h3index(bigint) RETURNS h3index
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 CREATE CAST (bigint AS h3index) WITH FUNCTION bigint_to_h3index(bigint);
-
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
--- B-tree Support Functions
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
-
--- Availability: 0.1.0
-CREATE OR REPLACE FUNCTION h3index_eq(h3index, h3index) RETURNS boolean
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE OPERATOR = (
-  LEFTARG = h3index,
-  RIGHTARG = h3index,
-  PROCEDURE = h3index_eq,
-  COMMUTATOR = '=',
-  NEGATOR = '<>',
-  RESTRICT = eqsel,
-  JOIN = eqjoinsel,
-  HASHES, MERGES
-);
-
--- Availability: 0.1.0
-CREATE OR REPLACE FUNCTION h3index_ne(h3index, h3index) RETURNS boolean
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE OPERATOR <> (
-  LEFTARG = h3index,
-  RIGHTARG = h3index,
-  PROCEDURE = h3index_ne,
-  COMMUTATOR = '<>',
-  NEGATOR = '=',
-  RESTRICT = neqsel,
-  JOIN = neqjoinsel
-);
-
--- Availability: 3.6.1
-CREATE OR REPLACE FUNCTION h3index_lt(h3index, h3index) RETURNS boolean
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE OPERATOR < (
-  LEFTARG = h3index,
-  RIGHTARG = h3index,
-  PROCEDURE = h3index_lt,
-  COMMUTATOR = > ,
-  NEGATOR = >= ,
-  RESTRICT = scalarltsel,
-  JOIN = scalarltjoinsel
-);
-
--- Availability: 3.6.1
-CREATE OR REPLACE FUNCTION h3index_le(h3index, h3index) RETURNS boolean
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE OPERATOR <= (
-  LEFTARG = h3index,
-  RIGHTARG = h3index,
-  PROCEDURE = h3index_le,
-  COMMUTATOR = >= ,
-  NEGATOR = > ,
-  RESTRICT = scalarltsel,
-  JOIN = scalarltjoinsel
-);
-
--- Availability: 3.6.1
-CREATE OR REPLACE FUNCTION h3index_gt(h3index, h3index) RETURNS boolean
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE OPERATOR > (
-  LEFTARG = h3index,
-  RIGHTARG = h3index,
-  PROCEDURE = h3index_gt,
-  COMMUTATOR = < ,
-  NEGATOR = <= ,
-  RESTRICT = scalargtsel,
-  JOIN = scalargtjoinsel
-);
-
--- Availability: 3.6.1
-CREATE OR REPLACE FUNCTION h3index_ge(h3index, h3index) RETURNS boolean
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE OPERATOR >= (
-  LEFTARG = h3index,
-  RIGHTARG = h3index,
-  PROCEDURE = h3index_ge,
-  COMMUTATOR = <= ,
-  NEGATOR = < ,
-  RESTRICT = scalargtsel,
-  JOIN = scalargtjoinsel
-);
-
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
--- R-tree Support Functions
--- ---------- ---------- ---------- ---------- ---------- ---------- ----------
-
--- Availability: 3.6.1
-CREATE OR REPLACE FUNCTION h3index_overlaps(h3index, h3index) RETURNS boolean
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE OPERATOR && (
-	PROCEDURE = h3index_overlaps,
-	LEFTARG = h3index, RIGHTARG = h3index,
-	COMMUTATOR = &&,
-    RESTRICT = contsel, JOIN = contjoinsel
-);
-
--- Availability: 3.6.1
-CREATE OR REPLACE FUNCTION h3index_contains(h3index, h3index) RETURNS boolean
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE OPERATOR @> (
-    PROCEDURE = h3index_contains,
-    LEFTARG = h3index, RIGHTARG = h3index,
-    COMMUTATOR = <@,
-    RESTRICT = contsel, JOIN = contjoinsel
-);
-
--- Availability: 3.6.1
-CREATE OR REPLACE FUNCTION h3index_contained_by(h3index, h3index) RETURNS boolean
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-CREATE OPERATOR <@ (
-    PROCEDURE = h3index_contained_by,
-    LEFTARG = h3index, RIGHTARG = h3index,
-    COMMUTATOR = @>,
-    RESTRICT = contsel, JOIN = contjoinsel
-);

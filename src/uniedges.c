@@ -17,7 +17,7 @@
 #include <postgres.h>			 // Datum, etc.
 #include <fmgr.h>				 // PG_FUNCTION_ARGS, etc.
 #include <funcapi.h>			 // Needed to return HeapTuple
-#include <access/htup_details.h> //Needed to return HeapTuple
+#include <access/htup_details.h> // Needed to return HeapTuple
 #include <utils/geo_decls.h>	 // making native points
 
 #include <h3api.h> // Main H3 include
