@@ -135,7 +135,7 @@ EXTRA_BINDING_FUNCTIONS = \
 
 PRINT_TYPES_SQL = "SELECT typname, typlen, typbyval, typalign FROM pg_type WHERE typname LIKE '%h3index' ORDER BY typname;"
 PRINT_FUNCTIONS_SQL = "\df *h3*"
-PRINT_FUNCFLAGS_SQL = "SELECT proname, proisstrict, provolatile, proparallel FROM pg_proc WHERE proname LIKE '%h3%' ORDER BY proname;"
+PRINT_FUNCFLAGS_SQL = "SELECT proname, proisstrict, provolatile, proparallel, prosrc FROM pg_proc WHERE proname LIKE '%h3%' ORDER BY proname, prosrc;"
 PRINT_OPERATORS_SQL = "\do"
 
 # rules for testing the update path against full install
@@ -203,8 +203,8 @@ test/expected/ci-bindings.out: $(LIBH3_BUILD)/binding-functions /tmp/excluded-fu
 test/sql/ci-bindings.sql: test/expected/ci-install.out /tmp/extra-functions
 	echo "\\\echo '$(shell \
 		cat test/expected/ci-install.out \
-		| grep -o '\bh3_\w*' \
-		| sed -r 's/\bh3_//g' \
+		| grep -o '^ h3_\w*' \
+		| sed -r 's/ \bh3_//g' \
 		| grep -v -x -F -f /tmp/extra-functions \
 		| sort | uniq \
 	)'" > $@

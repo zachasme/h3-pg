@@ -26,27 +26,6 @@ PG_FUNCTION_INFO_V1(h3index_out);
 PG_FUNCTION_INFO_V1(h3index_to_bigint);
 PG_FUNCTION_INFO_V1(bigint_to_h3index);
 
-/* static helpers */
-static int
-containment(H3Index a, H3Index b)
-{
-	int			aRes = h3GetResolution(a);
-	int			bRes = h3GetResolution(b);
-	H3Index		aParent = h3ToParent(a, bRes);
-	H3Index		bParent = h3ToParent(b, aRes);
-
-	/* a contains b */
-	if (a == bParent)
-		return 1;
-
-	/* a contained by b */
-	if (b == aParent)
-		return -1;
-
-	/* no overlap */
-	return 0;
-}
-
 /* textual input/output functions */
 Datum
 h3index_in(PG_FUNCTION_ARGS)

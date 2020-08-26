@@ -23,3 +23,9 @@ CREATE OPERATOR <-> (
   PROCEDURE = h3_distance,
   COMMUTATOR = <->
 );
+
+-- Broken since 1.0.0 on update path
+CREATE OR REPLACE FUNCTION h3_to_geometry(h3index) RETURNS geometry
+  AS $$ SELECT ST_SetSRID(h3_to_geo($1)::geometry, 4326) $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+CREATE OR REPLACE FUNCTION h3_to_geography(h3index) RETURNS geography
+  AS $$ SELECT h3_to_geometry($1)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
