@@ -48,6 +48,8 @@ avoid adding features or APIs which do not map onto the
 
 ## [3.6.2] - 2020-04-07
 
+**This update might corrupt your h3indexes (see [#31]).**
+
 - Add parallel safety flags to PostGIS functions (see [#19], thanks [@komzpa])
 - Add B-Tree sort support (see [#24], thanks [@komzpa])
 - ⚠️ Make type `h3index` pass-by-value on supported systems (see [#22], [#26], thanks [@komzpa])
@@ -163,6 +165,7 @@ avoid adding features or APIs which do not map onto the
 [#23]: https://github.com/bytesandbrains/h3-pg/issues/23
 [#24]: https://github.com/bytesandbrains/h3-pg/pull/24
 [#26]: https://github.com/bytesandbrains/h3-pg/pull/26
+[#31]: https://github.com/bytesandbrains/h3-pg/pull/31
 [#37]: https://github.com/bytesandbrains/h3-pg/issues/37
 [#38]: https://github.com/bytesandbrains/h3-pg/issues/38
 [#41]: https://github.com/bytesandbrains/h3-pg/issues/41
