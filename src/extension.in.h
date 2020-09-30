@@ -19,6 +19,8 @@
 
 #include <h3api.h> // Main H3 include
 
+extern bool h3_guc_strict;
+
 typedef struct
 {
 	H3Index    *indices;

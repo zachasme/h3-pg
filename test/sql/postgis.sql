@@ -20,14 +20,16 @@ SELECT ST_NPoints( h3_to_geo_boundary_geometry(:hexagon)) = 7;
 CREATE FUNCTION h3_test_postgis_nounit() RETURNS boolean LANGUAGE PLPGSQL
     AS $$
         BEGIN
-            PERFORM h3_geo_to_h3(POINT(360, 2.592131261648213), 1, true);
+            PERFORM h3_geo_to_h3(POINT(360, 2.592131261648213), 1);
             RETURN false;
         EXCEPTION WHEN OTHERS THEN
             RETURN true;
         END;
     $$;
 
+SET h3.strict TO true;
 SELECT h3_test_postgis_nounit();
+SET h3.strict TO false;
 
 -- Test wraparound
 \set lon 55.6677199224442

@@ -28,10 +28,10 @@ avoid adding features or APIs which do not map onto the
 
 - Add distance operator `<->`
 - Fix `h3_to_geography` and `h3_to_geometry` refering to removed functions if extension was upgraded from pre-1.0
+- Add optional input validation in geoToH3 (see [#41], thanks [@trylinka])
 
 </details>
 
-- Add input validation in geoToH3 (see [#41], thanks [@trylinka])
 
 ## [3.6.5] - 2020-08-14
 
