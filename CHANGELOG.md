@@ -26,12 +26,15 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- ⚠️ Default unit for `h3_hex_area` and `h3_edge_length` changed to kilometers
+- Update `h3` core library to `v3.7.0`
+- Add `h3_point_dist` and `h3_exact_edge_length` bindings
 - Add distance operator `<->`
 - Fix `h3_to_geography` and `h3_to_geometry` refering to removed functions if extension was upgraded from pre-1.0
 - Add optional input validation in geoToH3 (see [#41], thanks [@trylinka])
+- Support unit as string argument in `h3_hex_area` and `h3_edge_length` (and flag previous version for deprecation)
 
 </details>
-
 
 ## [3.6.5] - 2020-08-14
 

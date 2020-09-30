@@ -19,6 +19,7 @@
 
 #include <h3api.h> // Main H3 include
 
+void		_PG_init(void);
 extern bool h3_guc_strict;
 
 typedef struct

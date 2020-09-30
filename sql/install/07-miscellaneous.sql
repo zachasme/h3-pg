@@ -18,17 +18,36 @@
 -- Miscellaneous H3 Functions (miscellaneous.c)
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
--- Availability: 3.5.0
-CREATE OR REPLACE FUNCTION h3_hex_area(resolution integer, km boolean DEFAULT FALSE) RETURNS float
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION h3_point_dist(a point, b point, unit text DEFAULT 'km') RETURNS float
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_hex_area(integer, boolean) IS
-'Average hexagon area in square (kilo)meters at the given resolution.';
+    COMMENT ON FUNCTION h3_point_dist(point, point, text) IS
+'The great circle distance in radians between two spherical coordinates.';
 
 -- Availability: 3.5.0
-CREATE OR REPLACE FUNCTION h3_edge_length(resolution integer, km boolean DEFAULT FALSE) RETURNS float
+CREATE OR REPLACE FUNCTION h3_hex_area(resolution integer, unit text DEFAULT 'km') RETURNS float
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_edge_length(integer, boolean) IS
+    COMMENT ON FUNCTION h3_hex_area(integer, text) IS
+'Average hexagon area in square (kilo)meters at the given resolution.';
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION h3_cell_area(cell h3index, unit text DEFAULT 'km^2') RETURNS float
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    COMMENT ON FUNCTION h3_cell_area(h3index, text) IS
+'Exact area for a specific cell (hexagon or pentagon).';
+
+-- Availability: 3.5.0
+CREATE OR REPLACE FUNCTION h3_edge_length(resolution integer, unit text DEFAULT 'km') RETURNS float
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    COMMENT ON FUNCTION h3_edge_length(integer, text) IS
 'Average hexagon edge length in (kilo)meters at the given resolution.';
+
+-- Availability: 3.7.0
+CREATE OR REPLACE FUNCTION h3_exact_edge_length(edge h3index, unit text DEFAULT 'km') RETURNS float
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    COMMENT ON FUNCTION h3_exact_edge_length(h3index, text) IS
+'Exact length for a specific unidirectional edge.';
+
 
 -- Availability: 0.2.0
 CREATE OR REPLACE FUNCTION h3_num_hexagons(resolution integer) RETURNS bigint

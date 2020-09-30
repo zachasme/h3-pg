@@ -21,7 +21,7 @@
 #include <fmgr.h>				 // PG_FUNCTION_ARGS, etc.
 #include <funcapi.h>			 // Definitions for functions which return sets
 #include <access/htup_details.h> // Needed to return HeapTuple
-#include <utils/guc.h> 	         // for GetConfigOption*
+#include <utils/guc.h>			 // for GetConfigOption*
 #include <utils/builtins.h>
 
 #include <h3api.h> // Main H3 include
@@ -39,20 +39,21 @@ h3_get_extension_version(PG_FUNCTION_ARGS)
 	PG_RETURN_TEXT_P(cstring_to_text(EXTVERSION));
 }
 
-bool h3_guc_strict = false;
+bool		h3_guc_strict = false;
 
-void _PG_init(void)
+void
+_PG_init(void)
 {
 	DefineCustomBoolVariable("h3.strict",
-		"Enable strict indexing (fail on invalid lng/lat).",
-		NULL,
-		&h3_guc_strict,
-		false,
-		PGC_USERSET,
-		0,
-		NULL,
-		NULL,
-		NULL);
+						 "Enable strict indexing (fail on invalid lng/lat).",
+							 NULL,
+							 &h3_guc_strict,
+							 false,
+							 PGC_USERSET,
+							 0,
+							 NULL,
+							 NULL,
+							 NULL);
 }
 
 
