@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Update `h3` core library to `v3.7.1`
+
 </details>
 
 ## [3.7.0] - 2020-09-30
