@@ -15,22 +15,4 @@
  */
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "ALTER EXTENSION h3 UPDATE TO '3.7.1'" to load this file. \quit
-
-COMMENT ON OPERATOR && (h3index, h3index) IS
-  'Returns true if the two H3 indexes intersect';
-
-COMMENT ON OPERATOR @> (h3index, h3index) IS
-  'Returns true if A containts B';
-
-COMMENT ON OPERATOR <@ (h3index, h3index) IS
-  'Returns true if A is contained by B';
-
-COMMENT ON OPERATOR = (h3index, h3index) IS
-  'Returns true if two indexes are the same';
-
-COMMENT ON FUNCTION h3_hex_area(integer, boolean) IS
-  NULL;
-
-COMMENT ON FUNCTION h3_edge_length(integer, boolean) IS
-  NULL;
+\echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
