@@ -28,7 +28,7 @@ LIBH3_BUILD = $(LIBH3_SOURCE)/build
 SQL_INSTALLS = $(wildcard h3/sql/install/*.sql)
 SQL_UPDATES = $(wildcard h3/sql/updates/*.sql)
 SQL_TESTS = $(wildcard h3/test/sql/*.sql)
-SQL_FULLINSTALL = h3/sql/$(EXTENSION)--$(EXTVERSION).sql
+SQL_FULLINSTALL = $(EXTENSION)--$(EXTVERSION).sql
 
 # a shared library to build from multiple source files
 MODULE_big = $(EXTENSION)
@@ -101,8 +101,8 @@ $(SQL_FULLINSTALL): $(sort $(SQL_INSTALLS))
 	cat $^ > $@
 
 # package for distribution
-dist:
-	git archive --prefix=h3-$(EXTVERSION)/ --output h3-dist.zip HEAD
+dist: $(SQL_FULLINSTALL)
+	git archive --prefix=h3-$(EXTVERSION)/ --output h3-${EXTVERSION}.zip --add-file=$(SQL_FULLINSTALL) HEAD
 
 ###########################################################################
 # Extra CI testing targets
