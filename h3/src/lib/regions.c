@@ -130,7 +130,8 @@ h3_polyfill(PG_FUNCTION_ARGS)
 
 		/* produce hexagons into allocated memory */
 		maxSize = maxPolyfillSize(&polygon, resolution);
-		indices = palloc0(maxSize * sizeof(H3Index));
+		indices = palloc_extended(maxSize * sizeof(H3Index),
+								  MCXT_ALLOC_HUGE | MCXT_ALLOC_ZERO);
 		polyfill(&polygon, resolution, indices);
 
 		funcctx->user_fctx = indices;
