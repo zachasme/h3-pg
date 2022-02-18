@@ -26,6 +26,7 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Allow >1Gb memory allocations for `h3_polyfill` (see [#65], thanks [@mngr777])
 </details>
 
 ## [3.7.1] - 2021-06-23
@@ -179,7 +180,9 @@ avoid adding features or APIs which do not map onto the
 [#37]: https://github.com/bytesandbrains/h3-pg/issues/37
 [#38]: https://github.com/bytesandbrains/h3-pg/issues/38
 [#41]: https://github.com/bytesandbrains/h3-pg/issues/41
+[#65]: https://github.com/bytesandbrains/h3-pg/pull/65
 [@abelvm]: https://github.com/AbelVM
 [@komzpa]: https://github.com/Komzpa
 [@kmacdough]: https://github.com/kmacdough
 [@trylinka]: https://github.com/trylinka
+[@mngr777]: https://github.com/mngr777
