@@ -34,3 +34,10 @@ SELECT array_agg(result) is null FROM (
 SELECT COUNT(*) = 48 FROM (
     SELECT h3_polyfill(:with2holes, 10)
 ) q;
+
+-- h3_polygon_to_cells handles NULL value in holes
+SELECT COUNT(*) > 1 FROM (
+    SELECT h3_polyfill(exterior, ARRAY[NULL, NULL, NULL]::POLYGON[], 1) result FROM (
+        SELECT exterior, holes FROM h3_set_to_multi_polygon(:hollow)
+    ) qq
+) q;

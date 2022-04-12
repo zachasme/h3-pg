@@ -26,6 +26,7 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Allow `NULL` in `holes` array for `h3_polyfill` (see [#64], thanks [@mngr777])
 - Allow >1Gb memory allocations for `h3_polyfill` (see [#65], thanks [@mngr777])
 </details>
 
@@ -180,6 +181,7 @@ avoid adding features or APIs which do not map onto the
 [#37]: https://github.com/bytesandbrains/h3-pg/issues/37
 [#38]: https://github.com/bytesandbrains/h3-pg/issues/38
 [#41]: https://github.com/bytesandbrains/h3-pg/issues/41
+[#64]: https://github.com/bytesandbrains/h3-pg/issues/64
 [#65]: https://github.com/bytesandbrains/h3-pg/pull/65
 [@abelvm]: https://github.com/AbelVM
 [@komzpa]: https://github.com/Komzpa
