@@ -117,11 +117,13 @@ h3_polyfill(PG_FUNCTION_ARGS)
 
 			while (array_iterate(iterator, &value, &isnull))
 			{
-				if (!isnull) {
+				if (isnull) {
+					polygon.numHoles--;
+				} else {
 					POLYGON    *hole = DatumGetPolygonP(value);
 					polygonToGeofence(hole, &(polygon.holes[i]));
+					i++;
 				}
-				i++;
 			}
 		}
 		else
