@@ -4,34 +4,99 @@ set -e
 BASEDIR=$(dirname $(realpath "$0"))
 REPOSITORY="docker.pkg.github.com/bytesandbrains/h3-pg"
 
+# i386 being phased out from postgres apt :-(
+#ARCHS=(amd64 i386)
+ARCHS=(amd64)
+UBUNTUS=(impish focal) # latest and LTS
+POSTGRESQLS=(14 13) # two latest
+
 cd $BASEDIR
 
-function help {
-  echo -e "Usage: $0"\\n
-  echo -e "-b   --Build images"
-  echo -e "-p   --Push images"
-  echo -e "-t   --Run tests"
-  echo -e "-u   --Run tests on i386"
+printhelp () { echo \
+"Usage: $0 [-a i386] [-u bionic] [-g 12] -b|-p|-t
+
+Options:
+  -a   Architecture (amd64 or i386)
+  -u   Ubuntu release (focal, bionic, etc.)
+  -g   PostgreSQL version (15, 14, etc.)
+
+Commands
+  -b   Build images
+  -p   Push images
+  -t   Run tests"
+
+  exit 0;
 }
 
-while getopts 'hbptu' o; do
-case "$o" in
-	b)	docker build -t $REPOSITORY/test:amd64 --build-arg ARCH=amd64 .
-      docker build -t $REPOSITORY/test:i386  --build-arg ARCH=i386  .
+while getopts ':hbpta::u::g::' o; do
+case "${o}" in
+  a)  # set arch
+      ARCHS=($OPTARG)
+      ;;
+  u)  # set release name
+      UBUNTUS=($OPTARG)
+      ;;
+  g)  # set postgresql version
+      POSTGRESQLS=($OPTARG)
+      ;;
+
+  b)  # build images
+      work=build
+      for postgresql in "${POSTGRESQLS[@]}"; do
+        for ubuntu in "${UBUNTUS[@]}"; do
+          for arch in "${ARCHS[@]}"; do
+            echo "=============================="
+            echo "$postgresql-$ubuntu-$arch"
+            docker build \
+              --tag $REPOSITORY/test:$postgresql-$ubuntu-$arch \
+              --build-arg POSTGRESQL=$postgresql \
+              --build-arg UBUNTU=$ubuntu \
+              --build-arg ARCH=$arch \
+              .
+          done
+        done
+      done
+      ;;
+
+  p)  # push images
+      work=push
+      for postgresql in "${POSTGRESQLS[@]}"; do
+        for ubuntu in "${UBUNTUS[@]}"; do
+          for arch in "${ARCHS[@]}"; do
+            echo "=============================="
+            echo "$postgresql-$ubuntu-$arch"
+            docker push \
+              $REPOSITORY/test:$postgresql-$ubuntu-$arch
+          done
+        done
+      done
+      ;;
+
+  t)  # run tests
+      work=test
+      for postgresql in "${POSTGRESQLS[@]}"; do
+        for ubuntu in "${UBUNTUS[@]}"; do
+          for arch in "${ARCHS[@]}"; do
+            echo "=============================="
+            echo "$postgresql-$ubuntu-$arch"
+            docker run \
+              --rm \
+              -v "$PWD"/../..:/github/workspace \
+              $REPOSITORY/test:$postgresql-$ubuntu-$arch
+          done
+        done
+      done
+      ;;
+
+  *) # print help
+      printhelp
       exit 1;;
-	p)	docker push $REPOSITORY/test:amd64
-      docker push $REPOSITORY/test:i386
-      exit 1;;
-  t)  docker run --rm -v "$PWD"/../..:/github/workspace $REPOSITORY/test:amd64
-      exit 1;;
-  u)  docker run --rm -v "$PWD"/../..:/github/workspace $REPOSITORY/test:i386
-      exit 1;;
-	*) help;;
-	esac
+  esac
 done
 
 shift $((OPTIND-1))
 
-if [ -z "${s}" ] || [ -z "${p}" ]; then
-    help
+# print help if no actual work was done
+if [ -z "${work}" ]; then
+  printhelp
 fi

@@ -1,5 +1,5 @@
 ARG ARCH=amd64
-ARG UBUNTU=bionic
+ARG UBUNTU=latest
 FROM $ARCH/ubuntu:$UBUNTU
 
 ARG ARCH
@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y \
 RUN apt-key adv --fetch-keys https://www.postgresql.org/media/keys/ACCC4CF8.asc
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt/ ${UBUNTU}-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 
-ARG POSTGRESQL=12
+ARG POSTGRESQL=14
 ARG POSTGIS=3
 
 RUN apt-get update && apt-get install -y \
