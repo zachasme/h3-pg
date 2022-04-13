@@ -73,3 +73,5 @@ SELECT h3_test_polyfill_bad1();
 SELECT h3_test_polyfill_bad2();
  t
 
+DROP FUNCTION h3_test_polyfill_bad1;
+DROP FUNCTION h3_test_polyfill_bad2;

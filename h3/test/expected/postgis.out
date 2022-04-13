@@ -34,6 +34,7 @@ SELECT h3_test_postgis_nounit();
  t
 
 SET h3.strict TO false;
+DROP FUNCTION h3_test_postgis_nounit;
 -- Test wraparound
 \set lon 55.6677199224442
 \set lat 12.592131261648213
