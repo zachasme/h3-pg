@@ -151,7 +151,9 @@ avoid adding features or APIs which do not map onto the
 
 - Initial public release
 
-[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.7.0...HEAD
+[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.7.2...HEAD
+[3.7.2]: https://github.com/bytesandbrains/h3-pg/compare/v3.7.1...v3.7.2
+[3.7.1]: https://github.com/bytesandbrains/h3-pg/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.5...v3.7.0
 [3.6.5]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.4...v3.6.5
 [3.6.4]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.3...v3.6.4
