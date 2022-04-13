@@ -94,6 +94,9 @@ h3_polyfill(PG_FUNCTION_ARGS)
 		Datum		value;
 		bool		isnull;
 
+		if (PG_ARGISNULL(0))
+			ASSERT_EXTERNAL(0, "No polygon given to polyfill");
+
 		/* get function arguments */
 		POLYGON    *exterior = PG_GETARG_POLYGON_P(0);
 

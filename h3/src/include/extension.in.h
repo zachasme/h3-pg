@@ -93,7 +93,7 @@ Datum		srf_return_h3_index_distances_from_user_fctx(PG_FUNCTION_ARGS);
 	)
 
 #define DEBUG(msg, ...)			   \
-	ereport(ERROR, (			   \
+	ereport(NOTICE, (			   \
 		errmsg(msg, ##__VA_ARGS__) \
 	))
 

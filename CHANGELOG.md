@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Handle non-polygons for `h3_polyfill` (see [#55], thanks [@Lokks])
+
 </details>
 
 ## [3.7.2] - 2022-04-13
@@ -186,6 +188,7 @@ avoid adding features or APIs which do not map onto the
 [#37]: https://github.com/bytesandbrains/h3-pg/issues/37
 [#38]: https://github.com/bytesandbrains/h3-pg/issues/38
 [#41]: https://github.com/bytesandbrains/h3-pg/issues/41
+[#55]: https://github.com/bytesandbrains/h3-pg/issues/55
 [#64]: https://github.com/bytesandbrains/h3-pg/issues/64
 [#65]: https://github.com/bytesandbrains/h3-pg/pull/65
 [@abelvm]: https://github.com/AbelVM
@@ -193,3 +196,4 @@ avoid adding features or APIs which do not map onto the
 [@kmacdough]: https://github.com/kmacdough
 [@trylinka]: https://github.com/trylinka
 [@mngr777]: https://github.com/mngr777
+[@lokks]: https://github.com/Lokks
