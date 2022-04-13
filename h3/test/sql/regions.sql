@@ -67,3 +67,5 @@ CREATE FUNCTION h3_test_polyfill_bad2() RETURNS boolean LANGUAGE PLPGSQL
     $$;
 SELECT h3_test_polyfill_bad1();
 SELECT h3_test_polyfill_bad2();
+DROP FUNCTION h3_test_polyfill_bad1;
+DROP FUNCTION h3_test_polyfill_bad2;

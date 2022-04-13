@@ -26,10 +26,10 @@ CREATE FUNCTION h3_test_postgis_nounit() RETURNS boolean LANGUAGE PLPGSQL
             RETURN true;
         END;
     $$;
-
 SET h3.strict TO true;
 SELECT h3_test_postgis_nounit();
 SET h3.strict TO false;
+DROP FUNCTION h3_test_postgis_nounit;
 
 -- Test wraparound
 \set lon 55.6677199224442
