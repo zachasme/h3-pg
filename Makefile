@@ -64,6 +64,7 @@ EXTRA_CLEAN += \
 
 # PGXS boilerplate
 PG_CONFIG = pg_config
+CUSTOM_COPT=-flto -mpc64
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
 
@@ -81,7 +82,7 @@ $(LIBH3_BUILD): $(LIBH3_SOURCE)
 	mkdir -p $(LIBH3_BUILD)
 	cd $(LIBH3_BUILD) && cmake \
 		-DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_C_FLAGS=-fPIC \
+		-DCMAKE_C_FLAGS="-fPIC -fvisibility=hidden -flto -fwrapv -mpc64" \
 		-DBUILD_TESTING=OFF \
 		-DENABLE_COVERAGE=OFF \
 		-DENABLE_DOCS=OFF \
