@@ -6,21 +6,21 @@ Developed in collaboration with [Scandinavian Highlands](http://www.scandinavian
 
 ## Prerequisites
 
-* PostgreSQL 9.6 or higher (*including server headers*). It might work with earlier versions, we have not tested earlier than 9.6.
-* C compiler (e.g., gcc)
-* GNU Make
-* Git & CMake (for libh3)
+- PostgreSQL 9.6 or higher (_including server headers_). It might work with earlier versions, we have not tested earlier than 9.6.
+- C compiler (e.g., gcc)
+- GNU Make
+- Git & CMake (for libh3)
 
 ## Quick Overview
 
 If the prerequisites are met you can use the PGXN Client to download, build, and install, e.g.:
 
-```
+```shell
 $ pgxn install h3
 $ pgxn load h3
 $ psql
 =# SELECT h3_geo_to_h3(POINT('37.3615593,-122.0553238'), 5);
-  h3_geo_to_h3   
+  h3_geo_to_h3
 -----------------
  85e35e73fffffff
 (1 row)
@@ -28,16 +28,20 @@ $ psql
 
 #### On macOS with the Postgres.app Universal Binary
 
-```
+```shell
 brew install pgxnclient make cmake
 export CMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 pgxn install h3
 ```
 
-
 ## Usage
 
-Generally, all functions have been renamed from camelCase in H3 to snake_case in SQL with an added `h3_` prefix (except when that would result in a double `h3_` prefix). For example `geoToH3` becomes `h3_geo_to_h3` and `h3ToChildren` becomes `h3_to_children`.
+> :tada: **Note:** The following usage docs apply to **H3 v4**, which was released on August 23, 2022.
+>
+> - For v3 docs, [see the latest v3.x.x release](https://github.com/bytesandbrains/h3-pg/blob/v3.7.2/README.md).
+> - For breaking changes in v4, [see the CHANGELOG](./CHANGELOG.md). In particular, most [function names have changed](https://h3geo.org/docs/library/migration-3.x/functions).
+
+Generally, all functions have been renamed from camelCase in H3 to snake*case in SQL with an added `h3*` prefix.
 
 See [API reference](docs/api.md) for all provided functions.
 

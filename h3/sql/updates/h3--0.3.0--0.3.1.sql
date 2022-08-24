@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Bytes & Brains
+ * Copyright 2018-2022 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ DROP FUNCTION IF EXISTS h3_h3_to_geo_boundary_geometry(h3index);
 DROP FUNCTION IF EXISTS h3_h3_to_geo_boundary_geography(h3index);
 
 CREATE OR REPLACE FUNCTION h3_h3_to_geo_boundary(h3index, extend_at_meridian BOOLEAN DEFAULT FALSE) RETURNS polygon
-    AS 'h3', 'h3_to_geo_boundary' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    AS 'h3', 'h3_cell_to_boundary' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_h3_to_geo_boundary(h3index, boolean) IS
     'Finds the boundary of the index, second argument extends coordinates when crossing 180th meridian to help visualization';
 CREATE OR REPLACE FUNCTION h3_h3_to_geo_boundary_geometry(h3index, extend BOOLEAN DEFAULT FALSE) RETURNS geometry

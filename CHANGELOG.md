@@ -26,9 +26,15 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
-- Handle non-polygons for `h3_polyfill` (see [#55], thanks [@Lokks])
-
 </details>
+
+## [4.0.0] - 2022-08-24
+
+- ⚠️ Update `h3` core library to `v4.0.0`. Almost all functions have been renamed to align with `h3` core `v4`. Please take care when updating. You can see a [list of changed function names](https://h3geo.org/docs/library/migration-3.x/functions) in the core library documentation.
+- ⚠️ The PostGIS functions has been extracted into a separate extension `h3_postgis`. Install using `CREATE EXTENSION h3_postgis;`.
+- Enable link time optimization (see [#75], thanks [@mngr777])
+- Handle non-polygons for `h3_polyfill` (see [#55], thanks [@Lokks])
+- Take advantage of the new v4 error codes (fixes [#71], thanks [@kalenikaliaksandr])
 
 ## [3.7.2] - 2022-04-13
 
@@ -153,7 +159,8 @@ avoid adding features or APIs which do not map onto the
 
 - Initial public release
 
-[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v3.7.2...HEAD
+[unreleased]: https://github.com/bytesandbrains/h3-pg/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/bytesandbrains/h3-pg/compare/v3.7.2...v4.0.0
 [3.7.2]: https://github.com/bytesandbrains/h3-pg/compare/v3.7.1...v3.7.2
 [3.7.1]: https://github.com/bytesandbrains/h3-pg/compare/v3.7.0...v3.7.1
 [3.7.0]: https://github.com/bytesandbrains/h3-pg/compare/v3.6.5...v3.7.0
@@ -191,9 +198,12 @@ avoid adding features or APIs which do not map onto the
 [#55]: https://github.com/bytesandbrains/h3-pg/issues/55
 [#64]: https://github.com/bytesandbrains/h3-pg/issues/64
 [#65]: https://github.com/bytesandbrains/h3-pg/pull/65
+[#71]: https://github.com/bytesandbrains/h3-pg/issues/71
+[#75]: https://github.com/bytesandbrains/h3-pg/pull/75
 [@abelvm]: https://github.com/AbelVM
-[@komzpa]: https://github.com/Komzpa
+[@kalenikaliaksandr]: https://github.com/kalenikaliaksandr
 [@kmacdough]: https://github.com/kmacdough
-[@trylinka]: https://github.com/trylinka
-[@mngr777]: https://github.com/mngr777
+[@komzpa]: https://github.com/Komzpa
 [@lokks]: https://github.com/Lokks
+[@mngr777]: https://github.com/mngr777
+[@trylinka]: https://github.com/trylinka

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Bytes & Brains
+ * Copyright 2018-2022 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,58 +23,32 @@
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 
-PG_FUNCTION_INFO_V1(h3_point_dist);
-PG_FUNCTION_INFO_V1(h3_hex_area);
+PG_FUNCTION_INFO_V1(h3_get_hexagon_area_avg);
 PG_FUNCTION_INFO_V1(h3_cell_area);
+PG_FUNCTION_INFO_V1(h3_get_hexagon_edge_length_avg);
 PG_FUNCTION_INFO_V1(h3_edge_length);
-PG_FUNCTION_INFO_V1(h3_exact_edge_length);
-PG_FUNCTION_INFO_V1(h3_num_hexagons);
-PG_FUNCTION_INFO_V1(h3_get_res_0_indexes);
-PG_FUNCTION_INFO_V1(h3_get_pentagon_indexes);
-
-/* The great circle distance in radians between two spherical coordinates */
-Datum
-h3_point_dist(PG_FUNCTION_ARGS)
-{
-	Point	   *aPoint = PG_GETARG_POINT_P(0);
-	Point	   *bPoint = PG_GETARG_POINT_P(1);
-	char	   *unit = text_to_cstring(PG_GETARG_TEXT_PP(2));
-
-	GeoCoord	a;
-	GeoCoord	b;
-	double		distance;
-
-	a.lon = degsToRads(aPoint->x);
-	a.lat = degsToRads(aPoint->y);
-	b.lon = degsToRads(bPoint->x);
-	b.lat = degsToRads(bPoint->y);
-
-	if (strcmp(unit, "rads") == 0)
-		distance = pointDistRads(&a, &b);
-	else if (strcmp(unit, "km") == 0)
-		distance = pointDistKm(&a, &b);
-	else if (strcmp(unit, "m") == 0)
-		distance = pointDistM(&a, &b);
-	else
-		ASSERT_EXTERNAL(0, "Unit must be m, km or rads.");
-
-	PG_RETURN_FLOAT8(distance);
-}
+PG_FUNCTION_INFO_V1(h3_get_num_cells);
+PG_FUNCTION_INFO_V1(h3_get_res_0_cells);
+PG_FUNCTION_INFO_V1(h3_get_pentagons);
+PG_FUNCTION_INFO_V1(h3_great_circle_distance);
 
 /* Average hexagon area in square (kilo)meters at the given resolution */
 Datum
-h3_hex_area(PG_FUNCTION_ARGS)
+h3_get_hexagon_area_avg(PG_FUNCTION_ARGS)
 {
 	int			resolution = PG_GETARG_INT32(0);
 	char	   *unit = text_to_cstring(PG_GETARG_TEXT_PP(1));
 	double		area;
+	H3Error		error;
 
 	if (strcmp(unit, "km") == 0)
-		area = hexAreaKm2(resolution);
+		error = getHexagonAreaAvgKm2(resolution, &area);
 	else if (strcmp(unit, "m") == 0)
-		area = hexAreaM2(resolution);
+		error = getHexagonAreaAvgM2(resolution, &area);
 	else
-		ASSERT_EXTERNAL(0, "Unit must be m or km.");
+		ASSERT(0, ERRCODE_INVALID_PARAMETER_VALUE, "Unit must be m or km.");
+
+	H3_ERROR(error, "getHexagonAreaAvgM2");
 
 	PG_RETURN_FLOAT8(area);
 }
@@ -86,70 +60,107 @@ h3_cell_area(PG_FUNCTION_ARGS)
 	H3Index		cell = PG_GETARG_H3INDEX(0);
 	char	   *unit = text_to_cstring(PG_GETARG_TEXT_PP(1));
 	double		area;
+	H3Error		error;
 
 	if (strcmp(unit, "rads^2") == 0)
-		area = cellAreaRads2(cell);
+	{
+		error = cellAreaRads2(cell, &area);
+		H3_ERROR(error, "cellAreaRads2");
+	}
 	else if (strcmp(unit, "km^2") == 0)
-		area = cellAreaKm2(cell);
+	{
+		error = cellAreaKm2(cell, &area);
+		H3_ERROR(error, "cellAreaKm2");
+	}
 	else if (strcmp(unit, "m^2") == 0)
-		area = cellAreaM2(cell);
+	{
+		error = cellAreaM2(cell, &area);
+		H3_ERROR(error, "cellAreaM2");
+	}
 	else
-		ASSERT_EXTERNAL(0, "Unit must be m^2, km^2 or rads^2.");
+	{
+		ASSERT(0, ERRCODE_INVALID_PARAMETER_VALUE, "Unit must be m^2, km^2 or rads^2.");
+	}
 
 	PG_RETURN_FLOAT8(area);
 }
 
 /* Average hexagon edge length in (kilo)meters at the given resolution */
 Datum
-h3_edge_length(PG_FUNCTION_ARGS)
+h3_get_hexagon_edge_length_avg(PG_FUNCTION_ARGS)
 {
 	int			resolution = PG_GETARG_INT32(0);
 	char	   *unit = text_to_cstring(PG_GETARG_TEXT_PP(1));
 	double		length;
+	H3Error		error;
 
 	if (strcmp(unit, "km") == 0)
-		length = edgeLengthKm(resolution);
+	{
+		error = getHexagonEdgeLengthAvgKm(resolution, &length);
+		H3_ERROR(error, "getHexagonEdgeLengthAvgKm");
+	}
 	else if (strcmp(unit, "m") == 0)
-		length = edgeLengthM(resolution);
+	{
+		error = getHexagonEdgeLengthAvgM(resolution, &length);
+		H3_ERROR(error, "getHexagonEdgeLengthAvgM");
+	}
 	else
-		ASSERT_EXTERNAL(0, "Unit must be m or km.");
+	{
+		ASSERT(0, ERRCODE_INVALID_PARAMETER_VALUE, "Unit must be m or km.");
+	}
+
 
 	PG_RETURN_FLOAT8(length);
 }
 
 /* Exact length for a specific unidirectional edge */
 Datum
-h3_exact_edge_length(PG_FUNCTION_ARGS)
+h3_edge_length(PG_FUNCTION_ARGS)
 {
 	H3Index		edge = PG_GETARG_H3INDEX(0);
 	char	   *unit = text_to_cstring(PG_GETARG_TEXT_PP(1));
 	double		length;
+	H3Error		error;
 
 	if (strcmp(unit, "rads") == 0)
-		length = exactEdgeLengthRads(edge);
+	{
+		error = edgeLengthRads(edge, &length);
+		H3_ERROR(error, "edgeLengthRads");
+	}
 	else if (strcmp(unit, "km") == 0)
-		length = exactEdgeLengthKm(edge);
+	{
+		error = edgeLengthKm(edge, &length);
+		H3_ERROR(error, "edgeLengthKm");
+	}
 	else if (strcmp(unit, "m") == 0)
-		length = exactEdgeLengthM(edge);
+	{
+		error = edgeLengthM(edge, &length);
+		H3_ERROR(error, "edgeLengthM");
+	}
 	else
-		ASSERT_EXTERNAL(0, "Unit must be m, km or rads.");
+	{
+		ASSERT(0, ERRCODE_INVALID_PARAMETER_VALUE, "Unit must be m, km or rads.");
+	}
 
 	PG_RETURN_FLOAT8(length);
 }
 
 /* Number of unique H3 indexes at the given resolution */
 Datum
-h3_num_hexagons(PG_FUNCTION_ARGS)
+h3_get_num_cells(PG_FUNCTION_ARGS)
 {
+	int64_t		cells;
 	int			resolution = PG_GETARG_INT32(0);
-	unsigned long long retVal = numHexagons(resolution);
+	H3Error		error = getNumCells(resolution, &cells);
 
-	PG_RETURN_INT64(retVal);
+	H3_ERROR(error, "getNumCells");
+
+	PG_RETURN_INT64(cells);
 }
 
 /* Provides all resolution 0 indexes */
 Datum
-h3_get_res_0_indexes(PG_FUNCTION_ARGS)
+h3_get_res_0_cells(PG_FUNCTION_ARGS)
 {
 	if (SRF_IS_FIRSTCALL())
 	{
@@ -157,10 +168,12 @@ h3_get_res_0_indexes(PG_FUNCTION_ARGS)
 		MemoryContext oldcontext =
 		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-		int			count = res0IndexCount();
-		H3Index    *indexes = palloc(sizeof(H3Index) * count);
+		H3Error		error;
+		int			count = res0CellCount();
+		H3Index    *indexes = palloc(count * sizeof(H3Index));
 
-		getRes0Indexes(indexes);
+		error = getRes0Cells(indexes);
+		H3_ERROR(error, "getRes0Cells");
 
 		funcctx->user_fctx = indexes;
 		funcctx->max_calls = count;
@@ -172,7 +185,7 @@ h3_get_res_0_indexes(PG_FUNCTION_ARGS)
 
 /* All the pentagon H3 indexes at the specified resolution */
 Datum
-h3_get_pentagon_indexes(PG_FUNCTION_ARGS)
+h3_get_pentagons(PG_FUNCTION_ARGS)
 {
 	if (SRF_IS_FIRSTCALL())
 	{
@@ -180,11 +193,13 @@ h3_get_pentagon_indexes(PG_FUNCTION_ARGS)
 		MemoryContext oldcontext =
 		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
+		H3Error		error;
 		int			resolution = PG_GETARG_INT32(0);
-		int			count = pentagonIndexCount();
-		H3Index    *indexes = palloc(sizeof(H3Index) * count);
+		int			count = pentagonCount();
+		H3Index    *indexes = palloc(count * sizeof(H3Index));
 
-		getPentagonIndexes(resolution, indexes);
+		error = getPentagons(resolution, indexes);
+		H3_ERROR(error, "getPentagons");
 
 		funcctx->user_fctx = indexes;
 		funcctx->max_calls = count;
@@ -192,4 +207,33 @@ h3_get_pentagon_indexes(PG_FUNCTION_ARGS)
 	}
 
 	SRF_RETURN_H3_INDEXES_FROM_USER_FCTX();
+}
+
+/* The great circle distance in radians between two spherical coordinates */
+Datum
+h3_great_circle_distance(PG_FUNCTION_ARGS)
+{
+	Point	   *aPoint = PG_GETARG_POINT_P(0);
+	Point	   *bPoint = PG_GETARG_POINT_P(1);
+	char	   *unit = text_to_cstring(PG_GETARG_TEXT_PP(2));
+
+	LatLng		a;
+	LatLng		b;
+	double		distance;
+
+	a.lng = degsToRads(aPoint->x);
+	a.lat = degsToRads(aPoint->y);
+	b.lng = degsToRads(bPoint->x);
+	b.lat = degsToRads(bPoint->y);
+
+	if (strcmp(unit, "rads") == 0)
+		distance = greatCircleDistanceRads(&a, &b);
+	else if (strcmp(unit, "km") == 0)
+		distance = greatCircleDistanceKm(&a, &b);
+	else if (strcmp(unit, "m") == 0)
+		distance = greatCircleDistanceM(&a, &b);
+	else
+		ASSERT(0, ERRCODE_INVALID_PARAMETER_VALUE, "Unit must be m, km or rads.");
+
+	PG_RETURN_FLOAT8(distance);
 }

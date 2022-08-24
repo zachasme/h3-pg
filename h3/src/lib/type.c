@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Bytes & Brains
+ * Copyright 2018-2022 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,20 +30,27 @@ PG_FUNCTION_INFO_V1(bigint_to_h3index);
 Datum
 h3index_in(PG_FUNCTION_ARGS)
 {
-	char	   *str = PG_GETARG_CSTRING(0);
-	H3Index		hex = stringToH3(str);
+	H3Error		error;
+	H3Index		h3;
+	char	   *string = PG_GETARG_CSTRING(0);
 
-	PG_RETURN_H3INDEX(hex);
+	error = stringToH3(string, &h3);
+	H3_ERROR(error, "stringToH3");
+
+	PG_RETURN_H3INDEX(h3);
 }
 
 Datum
 h3index_out(PG_FUNCTION_ARGS)
 {
-	H3Index		hex = PG_GETARG_H3INDEX(0);
-	char	   *str = palloc(17 * sizeof(char));
+	H3Error		error;
+	H3Index		h3 = PG_GETARG_H3INDEX(0);
+	char	   *string = palloc(17 * sizeof(char));
 
-	h3ToString(hex, str, 17);
-	PG_RETURN_CSTRING(str);
+	error = h3ToString(h3, string, 17);
+	H3_ERROR(error, "h3ToString");
+
+	PG_RETURN_CSTRING(string);
 }
 
 /* bigint conversion functions */
@@ -58,7 +65,7 @@ h3index_to_bigint(PG_FUNCTION_ARGS)
 Datum
 bigint_to_h3index(PG_FUNCTION_ARGS)
 {
-	int64		bigint = PG_GETARG_INT64(0);
+	int64_t		bigint = PG_GETARG_INT64(0);
 
 	PG_RETURN_H3INDEX(bigint);
 }

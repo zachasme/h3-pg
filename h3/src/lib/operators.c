@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Bytes & Brains
+ * Copyright 2020-2022 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,10 +37,18 @@ PG_FUNCTION_INFO_V1(h3index_contained_by);
 static int
 containment(H3Index a, H3Index b)
 {
-	int			aRes = h3GetResolution(a);
-	int			bRes = h3GetResolution(b);
-	H3Index		aParent = h3ToParent(a, bRes);
-	H3Index		bParent = h3ToParent(b, aRes);
+	H3Error		error = 0;
+	H3Index		aParent = a;
+	H3Index		bParent = b;
+	int			aRes = getResolution(a);
+	int			bRes = getResolution(b);
+
+	if (aRes > bRes)
+		error = cellToParent(a, bRes, &aParent);
+	else if (aRes < bRes)
+		error = cellToParent(b, aRes, &bParent);
+
+	H3_ERROR(error, "cellToParent");
 
 	/* a contains b */
 	if (a == bParent)

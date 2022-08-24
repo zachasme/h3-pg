@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Bytes & Brains
+ * Copyright 2018-2022 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,19 +27,19 @@
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 
-PG_FUNCTION_INFO_V1(h3_polyfill);
-PG_FUNCTION_INFO_V1(h3_set_to_multi_polygon);
+PG_FUNCTION_INFO_V1(h3_polygon_to_cells);
+PG_FUNCTION_INFO_V1(h3_cells_to_multi_polygon);
 
 static void
-polygonToGeofence(POLYGON *polygon, Geofence * geofence)
+polygonToGeoLoop(POLYGON *polygon, GeoLoop * geoloop)
 {
-	geofence->numVerts = polygon->npts;
-	geofence->verts = (GeoCoord *) palloc(geofence->numVerts * sizeof(GeoCoord));
+	geoloop->numVerts = polygon->npts;
+	geoloop->verts = (LatLng *) palloc(geoloop->numVerts * sizeof(LatLng));
 
-	for (int i = 0; i < geofence->numVerts; i++)
+	for (int i = 0; i < geoloop->numVerts; i++)
 	{
-		geofence->verts[i].lon = degsToRads(polygon->p[i].x);
-		geofence->verts[i].lat = degsToRads(polygon->p[i].y);
+		geoloop->verts[i].lng = degsToRads(polygon->p[i].x);
+		geoloop->verts[i].lat = degsToRads(polygon->p[i].y);
 	}
 }
 
@@ -47,7 +47,7 @@ static int
 linkedGeoLoopToNativePolygonSize(LinkedGeoLoop * linkedLoop)
 {
 	int			count = 0;
-	LinkedGeoCoord *linkedCoord = linkedLoop->first;
+	LinkedLatLng *linkedCoord = linkedLoop->first;
 
 	while (linkedCoord != NULL)
 	{
@@ -61,12 +61,12 @@ static void
 linkedGeoLoopToNativePolygon(LinkedGeoLoop * linkedLoop, POLYGON *polygon)
 {
 	int			count;
-	LinkedGeoCoord *linkedCoord = linkedLoop->first;
+	LinkedLatLng *linkedCoord = linkedLoop->first;
 
 	count = 0;
 	while (linkedCoord != NULL)
 	{
-		(polygon->p[count]).x = radsToDegs(linkedCoord->vertex.lon);
+		(polygon->p[count]).x = radsToDegs(linkedCoord->vertex.lng);
 		(polygon->p[count]).y = radsToDegs(linkedCoord->vertex.lat);
 		linkedCoord = linkedCoord->next;
 		count++;
@@ -77,7 +77,7 @@ linkedGeoLoopToNativePolygon(LinkedGeoLoop * linkedLoop, POLYGON *polygon)
  * void polyfill(const GeoPolygon* geoPolygon, int res, H3Index* out);
  */
 Datum
-h3_polyfill(PG_FUNCTION_ARGS)
+h3_polygon_to_cells(PG_FUNCTION_ARGS)
 {
 	if (SRF_IS_FIRSTCALL())
 	{
@@ -85,20 +85,22 @@ h3_polyfill(PG_FUNCTION_ARGS)
 		MemoryContext oldcontext =
 		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-		int			maxSize;
+		int64_t		maxSize;
 		H3Index    *indices;
+		H3Error		error;
 		ArrayType  *holes;
 		int			nelems = 0;
 		int			resolution;
 		GeoPolygon	polygon;
 		Datum		value;
 		bool		isnull;
+		POLYGON    *exterior;
 
 		if (PG_ARGISNULL(0))
-			ASSERT_EXTERNAL(0, "No polygon given to polyfill");
+			ASSERT(0, ERRCODE_INVALID_PARAMETER_VALUE, "No polygon given to polyfill");
 
 		/* get function arguments */
-		POLYGON    *exterior = PG_GETARG_POLYGON_P(0);
+		exterior = PG_GETARG_POLYGON_P(0);
 
 		if (!PG_ARGISNULL(1))
 		{
@@ -108,7 +110,7 @@ h3_polyfill(PG_FUNCTION_ARGS)
 		resolution = PG_GETARG_INT32(2);
 
 		/* build polygon */
-		polygonToGeofence(exterior, &(polygon.geofence));
+		polygonToGeoLoop(exterior, &(polygon.geoloop));
 
 		if (nelems)
 		{
@@ -116,15 +118,19 @@ h3_polyfill(PG_FUNCTION_ARGS)
 			ArrayIterator iterator = array_create_iterator(holes, 0, NULL);
 
 			polygon.numHoles = nelems;
-			polygon.holes = (Geofence *) palloc(polygon.numHoles * sizeof(Geofence));
+			polygon.holes = (GeoLoop *) palloc(polygon.numHoles * sizeof(GeoLoop));
 
 			while (array_iterate(iterator, &value, &isnull))
 			{
-				if (isnull) {
+				if (isnull)
+				{
 					polygon.numHoles--;
-				} else {
+				}
+				else
+				{
 					POLYGON    *hole = DatumGetPolygonP(value);
-					polygonToGeofence(hole, &(polygon.holes[i]));
+
+					polygonToGeoLoop(hole, &(polygon.holes[i]));
 					i++;
 				}
 			}
@@ -135,10 +141,12 @@ h3_polyfill(PG_FUNCTION_ARGS)
 		}
 
 		/* produce hexagons into allocated memory */
-		maxSize = maxPolyfillSize(&polygon, resolution);
+		error = maxPolygonToCellsSize(&polygon, resolution, 0, &maxSize);
+		H3_ERROR(error, "maxPolygonToCellsSize");
 		indices = palloc_extended(maxSize * sizeof(H3Index),
 								  MCXT_ALLOC_HUGE | MCXT_ALLOC_ZERO);
-		polyfill(&polygon, resolution, indices);
+		error = polygonToCells(&polygon, resolution, 0, indices);
+		H3_ERROR(error, "polygonToCells");
 
 		funcctx->user_fctx = indices;
 		funcctx->max_calls = maxSize;
@@ -154,7 +162,7 @@ h3_polyfill(PG_FUNCTION_ARGS)
  * https://stackoverflow.com/questions/51127189/how-to-return-array-into-array-with-custom-type-in-postgres-c-function
  */
 Datum
-h3_set_to_multi_polygon(PG_FUNCTION_ARGS)
+h3_cells_to_multi_polygon(PG_FUNCTION_ARGS)
 {
 	FuncCallContext *funcctx;
 	TupleDesc	tuple_desc;
@@ -164,33 +172,32 @@ h3_set_to_multi_polygon(PG_FUNCTION_ARGS)
 
 	if (SRF_IS_FIRSTCALL())
 	{
-		MemoryContext oldcontext;
-		ArrayType  *array;
-		int			numHexes;
-		H3Index    *h3Set;
-		H3Index    *idx;
+		H3Error		error;
+		Datum		value;
+		bool		isnull;
+		int			i = 0;
 
-		funcctx = SRF_FIRSTCALL_INIT();
-		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+		FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
+		MemoryContext oldcontext =
+		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-		ENSURE_TYPEFUNC_COMPOSITE(get_call_result_type(fcinfo, NULL, &tuple_desc));
+		ArrayType  *array = PG_GETARG_ARRAYTYPE_P(0);
+		int			numHexes = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
+		ArrayIterator iterator = array_create_iterator(array, 0, NULL);
+		H3Index    *h3set = palloc(numHexes * sizeof(H3Index));
 
-		/* get function arguments */
-		array = PG_GETARG_ARRAYTYPE_P(0);
-
-		numHexes = ArrayGetNItems(ARR_NDIM(array), ARR_DIMS(array));
-		h3Set = palloc(sizeof(H3Index) * numHexes);
-		idx = (H3Index *) ARR_DATA_PTR(array);
-
-		for (int i = 0; i < numHexes; i++)
+		/* Extract data from array into h3set, and wipe compactedSet memory */
+		while (array_iterate(iterator, &value, &isnull))
 		{
-			h3Set[i] = fetch_att(idx, true, sizeof(H3Index));
-			idx++;
+			h3set[i++] = DatumGetH3Index(value);
 		}
 
 		/* produce hexagons into allocated memory */
 		linkedPolygon = palloc(sizeof(LinkedGeoPolygon));
-		h3SetToLinkedGeo(h3Set, numHexes, linkedPolygon);
+		error = cellsToLinkedMultiPolygon(h3set, numHexes, linkedPolygon);
+		H3_ERROR(error, "cellsToLinkedMultiPolygon");
+
+		ENSURE_TYPEFUNC_COMPOSITE(get_call_result_type(fcinfo, NULL, &tuple_desc));
 
 		funcctx->user_fctx = linkedPolygon;
 		funcctx->tuple_desc = BlessTupleDesc(tuple_desc);
@@ -271,13 +278,13 @@ h3_set_to_multi_polygon(PG_FUNCTION_ARGS)
 	}
 	else
 	{
-		destroyLinkedPolygon(linkedPolygon);
+		destroyLinkedMultiPolygon(linkedPolygon);
 		SRF_RETURN_DONE(funcctx);
 	}
 }
 
 /* ---------------------------------------------------------------------------
- * The GeoPolygon, LinkedGeoCoord, LinkedGeoCoord,
+ * The GeoPolygon, LinkedLatLng, LinkedLatLng,
  * LinkedGeoLoop, and LinkedGeoPolygon
  *
  * copied from H3 core for reference
@@ -290,28 +297,28 @@ h3_set_to_multi_polygon(PG_FUNCTION_ARGS)
 typedef struct {
 	double lat;  ///< latitude in radians
 	double lon;  ///< longitude in radians
-} GeoCoord;
+} LatLng;
 
 typedef struct {
 	int numVerts;
-	GeoCoord *verts;
-} Geofence;
+	LatLng *verts;
+} GeoLoop;
 
 typedef struct {
-	Geofence geofence;	///< exterior boundary of the polygon
+	GeoLoop geoloop;	///< exterior boundary of the polygon
 	int numHoles;		///< number of elements in the array pointed to by holes
-	Geofence *holes;	///< interior boundaries (holes) in the polygon
+	GeoLoop *holes; ///< interior boundaries (holes) in the polygon
 } GeoPolygon;
 */
 
-/** @struct LinkedGeoCoord
+/** @struct LinkedLatLng
  *	@brief A coordinate node in a linked geo structure, part of a linked list
  *
-typedef struct LinkedGeoCoord LinkedGeoCoord;
-struct LinkedGeoCoord
+typedef struct LinkedLatLng LinkedLatLng;
+struct LinkedLatLng
 {
-	GeoCoord vertex;
-	LinkedGeoCoord *next;
+	LatLng vertex;
+	LinkedLatLng *next;
 };
 
 ** @struct LinkedGeoLoop
@@ -320,8 +327,8 @@ struct LinkedGeoCoord
 typedef struct LinkedGeoLoop LinkedGeoLoop;
 struct LinkedGeoLoop
 {
-	LinkedGeoCoord *first;
-	LinkedGeoCoord *last;
+	LinkedLatLng *first;
+	LinkedLatLng *last;
 	LinkedGeoLoop *next;
 };
 

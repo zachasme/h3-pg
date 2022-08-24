@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Bytes & Brains
+ * Copyright 2018-2022 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,14 +75,24 @@ Datum		srf_return_h3_index_distances_from_user_fctx(PG_FUNCTION_ARGS);
 #define SRF_RETURN_H3_INDEX_DISTANCES_FROM_USER_FCTX() \
 	return srf_return_h3_index_distances_from_user_fctx(fcinfo)
 
+/* use origin resolution minus one when no resolution is given */
+#define PG_GETARG_OPTIONAL_RES(n, cell, offset) \
+	PG_NARGS() == (n + 1) ? PG_GETARG_INT32(1) : getResolution(cell) + offset
+
+/*error reporting*/
+
+#define H3_ERROR(error, func)						 \
+	if (error) ereport(ERROR, (						 \
+		errcode(ERRCODE_EXTERNAL_ROUTINE_EXCEPTION), \
+		errmsg("%s error code: %i", func, error),		 \
+		errhint("https://h3geo.org/docs/next/library/errors/#table-of-error-codes") \
+	))
+
 #define ASSERT(condition, code, msg, ...)  \
 	if (0 == (condition)) ereport(ERROR, ( \
 		errcode(code),					   \
 		errmsg(msg, ##__VA_ARGS__)		   \
 	))
-
-#define ASSERT_EXTERNAL(condition, msg, ...) \
-	ASSERT(condition, ERRCODE_EXTERNAL_ROUTINE_EXCEPTION, msg, ##__VA_ARGS__)
 
 #define ENSURE_TYPEFUNC_COMPOSITE(x)				   \
 	ASSERT(											   \

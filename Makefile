@@ -1,4 +1,4 @@
-# Copyright 2018-2019 Bytes & Brains
+# Copyright 2018-2022 Bytes & Brains
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-EXTENSION = h3
+EXTENSION = h3 h3_postgis
 
 # extract extension version from .control file
-EXTVERSION = $(shell grep default_version $(EXTENSION).control | \
+EXTVERSION = $(shell grep default_version h3.control | \
 	sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
 
 # h3 core library version to clone and statically link
-LIBH3_VERSION = v3.7.1
+LIBH3_VERSION = v4.0.0-rc5
 # directory that h3 core repository is cloned into
 LIBH3_SOURCE = libh3-$(LIBH3_VERSION)
 # h3 static library location
@@ -28,15 +28,19 @@ LIBH3_BUILD = $(LIBH3_SOURCE)/build
 SQL_INSTALLS = $(wildcard h3/sql/install/*.sql)
 SQL_UPDATES = $(wildcard h3/sql/updates/*.sql)
 SQL_TESTS = $(wildcard h3/test/sql/*.sql)
-SQL_FULLINSTALL = $(EXTENSION)--$(EXTVERSION).sql
+SQL_FULLINSTALL = h3--$(EXTVERSION).sql
+
+# postgis extension
+SQL_INSTALLS_H3_POSTGIS = $(wildcard h3_postgis/sql/install/*.sql)
+SQL_FULLINSTALL_H3_POSTGIS = h3_postgis--$(EXTVERSION).sql
 
 # a shared library to build from multiple source files
-MODULE_big = $(EXTENSION)
+MODULE_big = h3
 # object files to be linked together
 OBJS = $(patsubst %.c,%.o,$(wildcard h3/src/lib/*.c))
 # random files to install into $PREFIX/share/$MODULEDIR
 DATA = $(SQL_UPDATES)
-DATA_built = $(SQL_FULLINSTALL)
+DATA_built = $(SQL_FULLINSTALL) $(SQL_FULLINSTALL_H3_POSTGIS)
 # will be added to MODULE_big link line
 SHLIB_LINK += -lh3 -L$(LIBH3_BUILD)/lib
 # will be added to CPPFLAGS
@@ -47,13 +51,12 @@ REGRESS = $(basename $(notdir $(SQL_TESTS)))
 REGRESS_OPTS = \
 	--inputdir=h3/test \
 	--outputdir=h3/test \
-	--load-extension=postgis \
 	--load-extension=h3
 # extra files to remove in make clean
 EXTRA_CLEAN += \
 	$(LIBH3_SOURCE) \
 	$(DATA_built) \
-	src/include/extension.h \
+	h3/src/include/extension.h \
 	$(wildcard h3/test/sql/ci-*.sql) \
 	$(wildcard h3/test/expected/ci-*.out) \
 	$(wildcard *.BAK) \
@@ -100,10 +103,16 @@ h3/src/include/extension.h: h3/src/include/extension.in.h
 # generate full installation sql (from uninstalled to latest)
 $(SQL_FULLINSTALL): $(sort $(SQL_INSTALLS))
 	cat $^ > $@
+$(SQL_FULLINSTALL_H3_POSTGIS): $(sort $(SQL_INSTALLS_H3_POSTGIS))
+	cat $^ > $@
 
 # package for distribution
-dist: $(SQL_FULLINSTALL)
-	git archive --prefix=h3-$(EXTVERSION)/ --output h3-${EXTVERSION}.zip --add-file=$(SQL_FULLINSTALL) HEAD
+dist: $(SQL_FULLINSTALL) $(SQL_FULLINSTALL_H3_POSTGIS)
+	git archive --prefix=h3-$(EXTVERSION)/ \
+				--output h3-${EXTVERSION}.zip \
+				--add-file=$(SQL_FULLINSTALL) \
+				--add-file=$(SQL_FULLINSTALL_H3_POSTGIS) \
+				HEAD
 
 ###########################################################################
 # Extra CI testing targets
@@ -112,6 +121,8 @@ dist: $(SQL_FULLINSTALL)
 format: clean
 	pgindent
 
+# Run on dev using:
+# PIPENV_PIPFILE=.github/documentation/Pipfile pipenv run make docs/api.md
 docs/api.md: $(SQL_INSTALLS)
 	python .github/documentation/generate.py "h3/sql/install/*" > $@
 	npx doctoc $@
@@ -126,11 +137,11 @@ EXCLUDED_BINDING_FUNCTIONS = \
 # functions provided that are not part of expected binding functions
 EXTRA_BINDING_FUNCTIONS = \
 	get_extension_version \
-	to_children_slow \
-	to_geo_boundary_geography \
-	to_geo_boundary_geometry \
-	to_geography \
-	to_geometry
+	cell_to_children_slow \
+	cell_to_geo_boundary_geography \
+	cell_to_geo_boundary_geometry \
+	cell_to_geography \
+	cell_to_geometry
 
 /tmp/excluded-functions:
 	echo "$(EXCLUDED_BINDING_FUNCTIONS)" | tr " " "\n" > $@
@@ -141,7 +152,7 @@ EXTRA_BINDING_FUNCTIONS = \
 PRINT_TYPES_SQL = "SELECT typname, typlen, typbyval, typalign FROM pg_type WHERE typname LIKE '%h3index' ORDER BY typname;"
 PRINT_FUNCTIONS_SQL = "\df *h3*"
 PRINT_FUNCFLAGS_SQL = "SELECT proname, proisstrict, provolatile, proparallel, prosrc FROM pg_proc WHERE proname LIKE '%h3%' ORDER BY proname, prosrc;"
-PRINT_OPERATORS_SQL = "\do"
+PRINT_OPERATORS_SQL = "\do *h3*"
 
 # rules for testing the update path against full install
 h3/test/sql/ci-install.sql: $(SQL_FULLINSTALL)

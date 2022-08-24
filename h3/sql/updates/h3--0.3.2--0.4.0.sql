@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Bytes & Brains
+ * Copyright 2018-2022 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 \echo Use "ALTER EXTENSION h3 UPDATE TO '0.4.0'" to load this file. \quit
 
 CREATE OR REPLACE FUNCTION h3_line(h3index, h3index) RETURNS SETOF h3index
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+    AS 'h3', 'h3_grid_path_cells' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_line(h3index, h3index) IS
 'Given two H3 indexes, return the line of indexes between them (inclusive).
 

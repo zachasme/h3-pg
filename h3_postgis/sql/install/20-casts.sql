@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Bytes & Brains
+ * Copyright 2019-2022 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
---| # Extension specific functions
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+--| ## PostGIS casts
 
---@ availability: 1.0.0
-CREATE OR REPLACE FUNCTION h3_get_extension_version() RETURNS text
-    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-    COMMENT ON FUNCTION h3_get_extension_version() IS
-'Get the currently installed version of the extension.';
+--@ availability: 0.3.0
+CREATE CAST (h3index AS geometry) WITH FUNCTION h3_cell_to_geometry(h3index);
+
+--@ availability: 0.3.0
+CREATE CAST (h3index AS geography) WITH FUNCTION h3_cell_to_geography(h3index);
