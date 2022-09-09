@@ -1,3 +1,19 @@
+/*
+ * Copyright 2022 Bytes & Brains
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *	   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #include "wkb.h"
 #include <stddef.h>
 #include <string.h>
@@ -25,66 +41,66 @@
 		(int)(data - (uint8 *)wkb), VARSIZE(wkb))
 
 static bool
-boundary_is_empty(const CellBoundary *boundary);
+			boundary_is_empty(const CellBoundary * boundary);
 
 static bool
-boundary_is_closed(const CellBoundary *boundary);
+			boundary_is_closed(const CellBoundary * boundary);
 
 static size_t
-boundary_array_data_size(const CellBoundary *boundaries, int num);
+			boundary_array_data_size(const CellBoundary * boundaries, int num);
 
 static size_t
-boundary_data_size(const CellBoundary *boundary);
+			boundary_data_size(const CellBoundary * boundary);
 
-static uint8*
-wkb_write_boundary_array_data(uint8 *data, const CellBoundary *boundaries, int num);
+static uint8 *
+			wkb_write_boundary_array_data(uint8 *data, const CellBoundary * boundaries, int num);
 
-static uint8*
-wkb_write_boundary_data(uint8 *data, const CellBoundary *boundary);
+static uint8 *
+			wkb_write_boundary_data(uint8 *data, const CellBoundary * boundary);
 
-static uint8*
-wkb_write_lat_lng_array(uint8 *data, const LatLng *coord, int num);
+static uint8 *
+			wkb_write_lat_lng_array(uint8 *data, const LatLng * coord, int num);
 
-static uint8*
-wkb_write_lat_lng(uint8 *data, const LatLng *coord);
+static uint8 *
+			wkb_write_lat_lng(uint8 *data, const LatLng * coord);
 
-static uint8*
-wkb_write_endian(uint8 *data);
+static uint8 *
+			wkb_write_endian(uint8 *data);
 
-static uint8*
-wkb_write_int(uint8 *data, uint32 value);
+static uint8 *
+			wkb_write_int(uint8 *data, uint32 value);
 
-static uint8*
-wkb_write(uint8 *data, const void *value, size_t size);
+static uint8 *
+			wkb_write(uint8 *data, const void *value, size_t size);
 
-bytea*
-boundary_array_to_wkb(const CellBoundary *boundaries, size_t num)
+bytea *
+boundary_array_to_wkb(const CellBoundary * boundaries, size_t num)
 {
-	uint8 *data;
-	bytea *wkb;
-	size_t size = boundary_array_data_size(boundaries, num);
+	uint8	   *data;
+	bytea	   *wkb;
+	size_t		size = boundary_array_data_size(boundaries, num);
 
 	wkb = palloc(VARHDRSZ + size);
 	SET_VARSIZE(wkb, VARHDRSZ + size);
 
-	data = (uint8 *)VARDATA(wkb);
+	data = (uint8 *) VARDATA(wkb);
 	data = wkb_write_boundary_array_data(data, boundaries, num);
 
 	ASSERT_WKB_DATA_WRITTEN(wkb, data);
 	return wkb;
 }
 
-bytea*
-boundary_to_wkb(const CellBoundary *boundary)
+bytea *
+boundary_to_wkb(const CellBoundary * boundary)
 {
-	bytea *wkb;
-	uint8 *data;
-	size_t size = boundary_data_size(boundary);
+	bytea	   *wkb;
+	uint8	   *data;
+	size_t		size = boundary_data_size(boundary);
 
 	wkb = palloc(VARHDRSZ + size);
 	SET_VARSIZE(wkb, VARHDRSZ + size);
 
-	data = (uint8 *)VARDATA(wkb);
+	data = (uint8 *) VARDATA(wkb);
 	data = wkb_write_boundary_data(data, boundary);
 
 	ASSERT_WKB_DATA_WRITTEN(wkb, data);
@@ -92,16 +108,16 @@ boundary_to_wkb(const CellBoundary *boundary)
 }
 
 bool
-boundary_is_empty(const CellBoundary *boundary)
+boundary_is_empty(const CellBoundary * boundary)
 {
 	return boundary->numVerts < 1;
 }
 
 bool
-boundary_is_closed(const CellBoundary *boundary)
+boundary_is_closed(const CellBoundary * boundary)
 {
 	const LatLng *verts;
-	int numVerts;
+	int			numVerts;
 
 	if (boundary_is_empty(boundary))
 		return true;
@@ -113,10 +129,11 @@ boundary_is_closed(const CellBoundary *boundary)
 }
 
 size_t
-boundary_array_data_size(const CellBoundary *boundaries, int num)
+boundary_array_data_size(const CellBoundary * boundaries, int num)
 {
 	/* byte order + type + srid + # of polygons */
-	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE * 3;
+	size_t		size = WKB_BYTE_SIZE + WKB_INT_SIZE * 3;
+
 	/* boundaries */
 	for (int i = 0; i < num; i++)
 		size += boundary_data_size(&boundaries[i]);
@@ -124,14 +141,16 @@ boundary_array_data_size(const CellBoundary *boundaries, int num)
 }
 
 size_t
-boundary_data_size(const CellBoundary *boundary)
+boundary_data_size(const CellBoundary * boundary)
 {
 	/* byte order + type + srid + # of rings */
-	size_t size = WKB_BYTE_SIZE + WKB_INT_SIZE * 3;
+	size_t		size = WKB_BYTE_SIZE + WKB_INT_SIZE * 3;
+
 	/* points */
 	if (!boundary_is_empty(boundary))
 	{
-		int numVerts = boundary->numVerts;
+		int			numVerts = boundary->numVerts;
+
 		if (!boundary_is_closed(boundary))
 			numVerts++;
 		/* # of points, point data */
@@ -140,8 +159,8 @@ boundary_data_size(const CellBoundary *boundary)
 	return size;
 }
 
-uint8*
-wkb_write_boundary_array_data(uint8 *data, const CellBoundary *boundaries, int num)
+uint8 *
+wkb_write_boundary_array_data(uint8 *data, const CellBoundary * boundaries, int num)
 {
 	/* byte order */
 	data = wkb_write_endian(data);
@@ -157,8 +176,8 @@ wkb_write_boundary_array_data(uint8 *data, const CellBoundary *boundaries, int n
 	return data;
 }
 
-uint8*
-wkb_write_boundary_data(uint8 *data, const CellBoundary *boundary)
+uint8 *
+wkb_write_boundary_data(uint8 *data, const CellBoundary * boundary)
 {
 	/* byte order */
 	data = wkb_write_endian(data);
@@ -171,7 +190,7 @@ wkb_write_boundary_data(uint8 *data, const CellBoundary *boundary)
 	/* exterior ring */
 	if (!boundary_is_empty(boundary))
 	{
-		bool is_closed = boundary_is_closed(boundary);
+		bool		is_closed = boundary_is_closed(boundary);
 
 		data = wkb_write_int(data, boundary->numVerts + (is_closed ? 0 : 1));
 		data = wkb_write_lat_lng_array(data, boundary->verts, boundary->numVerts);
@@ -182,38 +201,39 @@ wkb_write_boundary_data(uint8 *data, const CellBoundary *boundary)
 	return data;
 }
 
-uint8*
-wkb_write_lat_lng_array(uint8 *data, const LatLng *coords, int num)
+uint8 *
+wkb_write_lat_lng_array(uint8 *data, const LatLng * coords, int num)
 {
 	for (int i = 0; i < num; i++)
 		data = wkb_write_lat_lng(data, &coords[i]);
 	return data;
 }
 
-uint8*
-wkb_write_lat_lng(uint8 *data, const LatLng *coord)
+uint8 *
+wkb_write_lat_lng(uint8 *data, const LatLng * coord)
 {
 	data = wkb_write(data, &coord->lng, sizeof(coord->lng));
 	data = wkb_write(data, &coord->lat, sizeof(coord->lat));
 	return data;
 }
 
-uint8*
+uint8 *
 wkb_write_endian(uint8 *data)
 {
 	/* Always use native order */
-	uint32 order = 0x00000001;
-	data[0] = ((uint8 *)&order)[0] ? WKB_NDR : WKB_XDR;
+	uint32		order = 0x00000001;
+
+	data[0] = ((uint8 *) &order)[0] ? WKB_NDR : WKB_XDR;
 	return data + 1;
 }
 
-uint8*
+uint8 *
 wkb_write_int(uint8 *data, uint32 value)
 {
 	return wkb_write(data, &value, sizeof(value));
 }
 
-uint8*
+uint8 *
 wkb_write(uint8 *data, const void *value, size_t size)
 {
 	memcpy(data, value, size);
