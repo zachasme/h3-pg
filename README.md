@@ -19,8 +19,8 @@ If the prerequisites are met you can use the PGXN Client to download, build, and
 $ pgxn install h3
 $ pgxn load h3
 $ psql
-=# SELECT h3_geo_to_h3(POINT('37.3615593,-122.0553238'), 5);
-  h3_geo_to_h3
+=# SELECT h3_lat_lng_to_cell(POINT('37.3615593,-122.0553238'), 5);
+  h3_lat_lng_to_cell
 -----------------
  85e35e73fffffff
 (1 row)
