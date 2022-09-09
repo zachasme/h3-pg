@@ -26,6 +26,10 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Add compile flag support check (see [#78], thanks [@mngr777])
+- Allow splitting polygons by 180th meridian (see [#76], thanks [@mngr777])
+- _Actually_ bump `h3` to `v4.0.0` (was locked on `rc5` for the previous release)
+
 </details>
 
 ## [4.0.0] - 2022-08-24
@@ -200,6 +204,8 @@ avoid adding features or APIs which do not map onto the
 [#65]: https://github.com/bytesandbrains/h3-pg/pull/65
 [#71]: https://github.com/bytesandbrains/h3-pg/issues/71
 [#75]: https://github.com/bytesandbrains/h3-pg/pull/75
+[#76]: https://github.com/bytesandbrains/h3-pg/pull/76
+[#78]: https://github.com/bytesandbrains/h3-pg/pull/78
 [@abelvm]: https://github.com/AbelVM
 [@kalenikaliaksandr]: https://github.com/kalenikaliaksandr
 [@kmacdough]: https://github.com/kmacdough
