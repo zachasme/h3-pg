@@ -65,9 +65,21 @@ EXTRA_CLEAN += \
 	h3/test/regression.diffs h3/test/regression.out h3/test/results \
 	h3-*.zip
 
-# PGXS boilerplate
 PG_CONFIG = pg_config
-CUSTOM_COPT=-flto -mpc64
+
+# additional flags
+CFLAGS_ADD :=
+PG_CC := $(shell $(PG_CONFIG) --cc)
+CHECK_FLAG_CMD := echo 'int main() { return 0; }' | $(PG_CC) -x c - -o /dev/null {flag} 2>&1 1>/dev/null; echo $$?
+
+# add -mpc64 flag is supported
+CHECK_FLAG_MPC64 := $(shell $(subst {flag},-mpc64,$(CHECK_FLAG_CMD)))
+ifeq ($(CHECK_FLAG_MPC64),0)
+	CFLAGS_ADD += -mpc64
+endif
+
+# PGXS boilerplate
+CUSTOM_COPT=-flto $(CFLAGS_ADD)
 PGXS := $(shell $(PG_CONFIG) --pgxs)
 include $(PGXS)
 
@@ -85,7 +97,7 @@ $(LIBH3_BUILD): $(LIBH3_SOURCE)
 	mkdir -p $(LIBH3_BUILD)
 	cd $(LIBH3_BUILD) && cmake \
 		-DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_C_FLAGS="-fPIC -fvisibility=hidden -flto -fwrapv -mpc64" \
+		-DCMAKE_C_FLAGS="-fPIC -fvisibility=hidden -flto -fwrapv $(CFLAGS_ADD)" \
 		-DBUILD_TESTING=OFF \
 		-DENABLE_COVERAGE=OFF \
 		-DENABLE_DOCS=OFF \
