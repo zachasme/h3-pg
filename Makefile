@@ -37,14 +37,14 @@ SQL_FULLINSTALL_H3_POSTGIS = h3_postgis--$(EXTVERSION).sql
 # a shared library to build from multiple source files
 MODULE_big = h3
 # object files to be linked together
-OBJS = $(patsubst %.c,%.o,$(wildcard h3/src/lib/*.c))
+OBJS = $(patsubst %.c,%.o,$(wildcard h3/src/*.c))
 # random files to install into $PREFIX/share/$MODULEDIR
 DATA = $(SQL_UPDATES)
 DATA_built = $(SQL_FULLINSTALL) $(SQL_FULLINSTALL_H3_POSTGIS)
 # will be added to MODULE_big link line
 SHLIB_LINK += -lh3 -L$(LIBH3_BUILD)/lib
 # will be added to CPPFLAGS
-PG_CPPFLAGS += -I$(LIBH3_BUILD)/src/h3lib/include -Ih3/src/include
+PG_CPPFLAGS += -I$(LIBH3_BUILD)/src/h3lib/include -Ih3/src
 # list of regression test cases (without suffix)
 REGRESS = $(basename $(notdir $(SQL_TESTS)))
 # additional switches to pass to pg_regress
@@ -56,7 +56,7 @@ REGRESS_OPTS = \
 EXTRA_CLEAN += \
 	$(LIBH3_SOURCE) \
 	$(DATA_built) \
-	h3/src/include/extension.h \
+	h3/src/extension.h \
 	$(wildcard h3/test/sql/ci-*.sql) \
 	$(wildcard h3/test/expected/ci-*.out) \
 	$(wildcard *.BAK) \
@@ -87,7 +87,7 @@ include $(PGXS)
 # Non-standard PGXS stuff below
 ###########################################################################
 
-$(OBJS): $(LIBH3_BUILD) h3/src/include/extension.h
+$(OBJS): $(LIBH3_BUILD) h3/src/extension.h
 
 # targets for building H3 library internals
 $(LIBH3_SOURCE):
@@ -108,7 +108,7 @@ $(LIBH3_BUILD): $(LIBH3_SOURCE)
 	cmake --build $(LIBH3_BUILD) --target binding-functions
 
 # generate header file with extension version baked in
-h3/src/include/extension.h: h3/src/include/extension.in.h
+h3/src/extension.h: h3/src/extension.in.h
 	sed -e 's/@EXTVERSION@/$(EXTVERSION)/g' \
 		$< > $@
 
