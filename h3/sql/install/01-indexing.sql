@@ -24,14 +24,14 @@ CREATE OR REPLACE FUNCTION
     h3_lat_lng_to_cell(latlng point, resolution integer) RETURNS h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_lat_lng_to_cell(point, integer)
-IS 'Indexes the location at the specified resolution';
+IS 'Indexes the location at the specified resolution.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_cell_to_lat_lng(cell h3index) RETURNS point
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_cell_to_lat_lng(h3index)
-IS 'Finds the centroid of the index';
+IS 'Finds the centroid of the index.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION

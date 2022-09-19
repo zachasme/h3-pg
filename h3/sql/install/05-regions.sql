@@ -25,11 +25,11 @@ AS 'h3' LANGUAGE C IMMUTABLE
 -- intentionally NOT STRICT
 CALLED ON NULL INPUT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_polygon_to_cells(polygon, polygon[], integer)
-IS 'Takes an exterior polygon [and a set of hole polygon] and returns the set of hexagons that best fit the structure';
+IS 'Takes an exterior polygon [and a set of hole polygon] and returns the set of hexagons that best fit the structure.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_cells_to_multi_polygon(h3index[], OUT exterior polygon, OUT holes polygon[]) RETURNS SETOF record
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_cells_to_multi_polygon(h3index[])
-IS 'Create a LinkedGeoPolygon describing the outline(s) of a set of hexagons. Polygon outlines will follow GeoJSON MultiPolygon order: Each polygon will have one outer loop, which is first in the list, followed by any holes';
+IS 'Create a LinkedGeoPolygon describing the outline(s) of a set of hexagons. Polygon outlines will follow GeoJSON MultiPolygon order: Each polygon will have one outer loop, which is first in the list, followed by any holes.';

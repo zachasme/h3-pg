@@ -24,21 +24,21 @@ CREATE OR REPLACE FUNCTION
     h3_grid_disk(origin h3index, k integer DEFAULT 1) RETURNS SETOF h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_grid_disk(h3index, integer)
-IS 'Produces indices within "k" distance of the origin index';
+IS 'Produces indices within "k" distance of the origin index.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_grid_disk_distances(origin h3index, k integer DEFAULT 1, OUT index h3index, OUT distance int) RETURNS SETOF record
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_grid_disk_distances(h3index, integer)
-IS 'Produces indices within "k" distance of the origin index paired with their distance to the origin';
+IS 'Produces indices within "k" distance of the origin index paired with their distance to the origin.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_grid_ring_unsafe(origin h3index, k integer DEFAULT 1) RETURNS SETOF h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_grid_ring_unsafe(h3index, integer)
-IS 'Returns the hollow hexagonal ring centered at origin with distance "k"';
+IS 'Returns the hollow hexagonal ring centered at origin with distance "k".';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
@@ -56,7 +56,7 @@ CREATE OR REPLACE FUNCTION
     h3_grid_distance(origin h3index, destination h3index) RETURNS bigint
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_grid_distance(h3index, h3index)
-IS 'Returns the distance in grid cells between the two indices';    
+IS 'Returns the distance in grid cells between the two indices.';    
 
 --@ availability: 0.2.0
 CREATE OR REPLACE FUNCTION

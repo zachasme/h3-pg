@@ -34,7 +34,7 @@ CREATE OPERATOR = (
   HASHES, MERGES
 );
 COMMENT ON OPERATOR = (h3index, h3index) IS
-  'Returns true if two indexes are the same';
+  'Returns true if two indexes are the same.';
 
 
 --@ internal
@@ -121,7 +121,7 @@ CREATE OPERATOR && (
     RESTRICT = contsel, JOIN = contjoinsel
 );
 COMMENT ON OPERATOR && (h3index, h3index) IS
-  'Returns true if the two H3 indexes intersect';
+  'Returns true if the two H3 indexes intersect.';
 
 --@ internal
 CREATE OR REPLACE FUNCTION h3index_contains(h3index, h3index) RETURNS boolean
@@ -134,7 +134,7 @@ CREATE OPERATOR @> (
     RESTRICT = contsel, JOIN = contjoinsel
 );
 COMMENT ON OPERATOR @> (h3index, h3index) IS
-  'Returns true if A containts B';
+  'Returns true if A containts B.';
 
 --@ internal
 CREATE OR REPLACE FUNCTION h3index_contained_by(h3index, h3index) RETURNS boolean
@@ -147,7 +147,7 @@ CREATE OPERATOR <@ (
     RESTRICT = contsel, JOIN = contjoinsel
 );
 COMMENT ON OPERATOR <@ (h3index, h3index) IS
-  'Returns true if A is contained by B';
+  'Returns true if A is contained by B.';
 
 --@ availability: 3.7.0
 CREATE OPERATOR <-> (
@@ -157,4 +157,4 @@ CREATE OPERATOR <-> (
   COMMUTATOR = <->
 );
 COMMENT ON OPERATOR <-> (h3index, h3index) IS
-  'Returns the distance in grid cells between the two indices';
+  'Returns the distance in grid cells between the two indices.';

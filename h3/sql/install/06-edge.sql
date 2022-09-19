@@ -24,7 +24,7 @@ CREATE OR REPLACE FUNCTION
     h3_are_neighbor_cells(origin h3index, destination h3index) RETURNS boolean
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_are_neighbor_cells(origin h3index, destination h3index)
-IS 'Returns true if the given indices are neighbors';
+IS 'Returns true if the given indices are neighbors.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
@@ -66,7 +66,7 @@ CREATE OR REPLACE FUNCTION
     h3_origin_to_directed_edges(h3index) RETURNS SETOF h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_origin_to_directed_edges(h3index)
-IS 'Returns all unidirectional edges with the given index as origin';
+IS 'Returns all unidirectional edges with the given index as origin.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION

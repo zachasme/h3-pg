@@ -23,25 +23,25 @@ CREATE OR REPLACE FUNCTION
     h3_cell_to_vertex(cell h3index, vertexNum integer) RETURNS h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_cell_to_vertex(cell h3index, vertexNum integer)
-IS 'Returns a single vertex for a given cell, as an H3 index';
+IS 'Returns a single vertex for a given cell, as an H3 index.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_cell_to_vertexes(cell h3index) RETURNS SETOF h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_cell_to_vertexes(cell h3index)
-IS 'Returns all vertexes for a given cell, as H3 indexes';
+IS 'Returns all vertexes for a given cell, as H3 indexes.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_vertex_to_lat_lng(vertex h3index) RETURNS point
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_vertex_to_lat_lng(vertex h3index)
-IS 'Get the geocoordinates of an H3 vertex';
+IS 'Get the geocoordinates of an H3 vertex.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_is_valid_vertex(vertex h3index) RETURNS boolean
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_is_valid_vertex(vertex h3index)
-IS 'Whether the input is a valid H3 vertex';
+IS 'Whether the input is a valid H3 vertex.';

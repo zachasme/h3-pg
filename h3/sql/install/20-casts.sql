@@ -22,7 +22,7 @@ CREATE OR REPLACE FUNCTION
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 CREATE CAST (h3index AS bigint) WITH FUNCTION h3index_to_bigint(h3index);
 COMMENT ON CAST (h3index AS bigint) IS
-    'Convert H3 index to bigint, which is useful when you need a decimal representation';
+    'Convert H3 index to bigint, which is useful when you need a decimal representation.';
 
 --@ internal
 CREATE OR REPLACE FUNCTION
@@ -30,8 +30,8 @@ CREATE OR REPLACE FUNCTION
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 CREATE CAST (bigint AS h3index) WITH FUNCTION bigint_to_h3index(bigint);
 COMMENT ON CAST (h3index AS bigint) IS
-    'Convert bigint to H3 index';
+    'Convert bigint to H3 index.';
 
 CREATE CAST (h3index AS point) WITH FUNCTION h3_cell_to_lat_lng(h3index);
 COMMENT ON CAST (h3index AS point) IS
-    'Convert H3 index to point';
+    'Convert H3 index to point.';

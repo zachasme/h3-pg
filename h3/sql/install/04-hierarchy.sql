@@ -24,28 +24,28 @@ CREATE OR REPLACE FUNCTION
     h3_cell_to_parent(cell h3index, resolution integer) RETURNS h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_cell_to_parent(cell h3index, resolution integer)
-IS 'Returns the parent of the given index';
+IS 'Returns the parent of the given index.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_cell_to_children(cell h3index, resolution integer) RETURNS SETOF h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_cell_to_children(cell h3index, resolution integer)
-IS 'Returns the set of children of the given index';
+IS 'Returns the set of children of the given index.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_cell_to_center_child(cell h3index, resolution integer) RETURNS h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_cell_to_center_child(cell h3index, resolution integer)
-IS 'Returns the center child (finer) index contained by input index at given resolution';
+IS 'Returns the center child (finer) index contained by input index at given resolution.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_compact_cells(cells h3index[]) RETURNS SETOF h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_compact_cells(cells h3index[])
-IS 'Compacts the given array as best as possible';
+IS 'Compacts the given array as best as possible.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
@@ -62,28 +62,28 @@ CREATE OR REPLACE FUNCTION
     h3_cell_to_parent(cell h3index) RETURNS h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_cell_to_parent(cell h3index)
-IS 'Returns the parent of the given index';
+IS 'Returns the parent of the given index.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_cell_to_children(cell h3index) RETURNS SETOF h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_cell_to_children(cell h3index)
-IS 'Returns the set of children of the given index';
+IS 'Returns the set of children of the given index.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_cell_to_center_child(cell h3index) RETURNS h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_cell_to_center_child(cell h3index)
-IS 'Returns the center child (finer) index contained by input index at next resolution';
+IS 'Returns the center child (finer) index contained by input index at next resolution.';
 
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_uncompact_cells(cells h3index[]) RETURNS SETOF h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_uncompact_cells(cells h3index[])
-IS 'Uncompacts the given array at the resolution one higher than the highest resolution in the set';
+IS 'Uncompacts the given array at the resolution one higher than the highest resolution in the set.';
 
 
 --@ internal
@@ -115,10 +115,10 @@ CREATE OR REPLACE FUNCTION __h3_cell_to_children_aux(index h3index, resolution i
 CREATE OR REPLACE FUNCTION h3_cell_to_children_slow(index h3index, resolution integer) RETURNS SETOF h3index
     AS $$ SELECT __h3_cell_to_children_aux($1, $2, -1) $$ LANGUAGE SQL;
     COMMENT ON FUNCTION h3_cell_to_children_slow(index h3index, resolution integer) IS
-'Slower version of H3ToChildren but allocates less memory';
+'Slower version of H3ToChildren but allocates less memory.';
 
 CREATE OR REPLACE FUNCTION h3_cell_to_children_slow(index h3index) RETURNS SETOF h3index
     AS $$ SELECT __h3_cell_to_children_aux($1, -1, -1) $$ LANGUAGE SQL;
     COMMENT ON FUNCTION h3_cell_to_children_slow(index h3index) IS
-'Slower version of H3ToChildren but allocates less memory';
+'Slower version of H3ToChildren but allocates less memory.';
 
