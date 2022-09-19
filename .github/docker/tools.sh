@@ -4,6 +4,10 @@ set -e
 BASEDIR=$(dirname $(realpath "$0"))
 REPOSITORY="ghcr.io/zachasme/h3-pg"
 
+# grab extension version from `h3.control`
+EXTVERSION=$(grep default_version h3.control | \
+	sed -e "s/default_version[[:space:]]*=[[:space:]]*'\([^']*\)'/\1/")
+
 # i386 being phased out from postgres apt :-(
 #ARCHS=(amd64 i386)
 ARCHS=(amd64)
@@ -102,11 +106,12 @@ case "${o}" in
               --platform linux/$arch \
               -v "$PWD"/../..:/github/workspace \
               $REPOSITORY/test:$postgresql-$ubuntu-$arch \
-              pgxn "./h3-unreleased.zip"
+              pgxn "./h3-${EXTVERSION}.zip"
           done
         done
       done
       ;;
+
   v)  # validate upgrade path
       work=pg_validate_extupgrade
       for postgresql in "${POSTGRESQLS[@]}"; do
