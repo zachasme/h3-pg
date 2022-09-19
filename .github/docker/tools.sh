@@ -28,7 +28,7 @@ Commands
   exit 0;
 }
 
-while getopts ':hbptia::u::g::' o; do
+while getopts ':hbptivca::u::g::' o; do
 case "${o}" in
   a)  # set arch
       ARCHS=($OPTARG)
@@ -102,7 +102,44 @@ case "${o}" in
               --platform linux/$arch \
               -v "$PWD"/../..:/github/workspace \
               $REPOSITORY/test:$postgresql-$ubuntu-$arch \
-              "./h3-unreleased.zip"
+              pgxn "./h3-unreleased.zip"
+          done
+        done
+      done
+      ;;
+  v)  # validate upgrade path
+      work=pg_validate_extupgrade
+      for postgresql in "${POSTGRESQLS[@]}"; do
+        for ubuntu in "${UBUNTUS[@]}"; do
+          for arch in "${ARCHS[@]}"; do
+            echo "=============================="
+            echo "$postgresql-$ubuntu-$arch"
+            docker run \
+              --rm \
+              --platform linux/$arch \
+              -v "$PWD"/../..:/github/workspace \
+              $REPOSITORY/test:$postgresql-$ubuntu-$arch \
+              "pg_validate_extupgrade --config h3/pg_validate_extupgrade.toml && \
+              pg_validate_extupgrade --config h3_postgis/pg_validate_extupgrade.toml"
+          done
+        done
+      done
+      ;;
+
+  c)  # run bash
+      work=bash
+      for postgresql in "${POSTGRESQLS[@]}"; do
+        for ubuntu in "${UBUNTUS[@]}"; do
+          for arch in "${ARCHS[@]}"; do
+            echo "=============================="
+            echo "$postgresql-$ubuntu-$arch"
+            docker run \
+              --rm \
+              --platform linux/$arch \
+              -v "$PWD"/../..:/github/workspace \
+              -it \
+              --entrypoint bash \
+              $REPOSITORY/test:$postgresql-$ubuntu-$arch
           done
         done
       done
