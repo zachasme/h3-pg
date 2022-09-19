@@ -85,7 +85,6 @@ Datum
 h3_cell_to_boundary(PG_FUNCTION_ARGS)
 {
 	H3Index		cell = PG_GETARG_H3INDEX(0);
-	bool		extend = PG_GETARG_BOOL(1);
 
 	double		delta,
 				firstLon,
@@ -95,6 +94,16 @@ h3_cell_to_boundary(PG_FUNCTION_ARGS)
 	int			size;
 	POLYGON    *polygon;
 	CellBoundary boundary;
+
+	// DEPRECATION BEGIN: Remove next major
+	bool		extend;
+	if (PG_NARGS() == 1) {
+		extend = h3_guc_extend_antimeridian;
+	} else {
+		extend = PG_GETARG_BOOL(1);
+		H3_DEPRECATION("Please use `SET h3.extend_antimeridian TO true` instead of extend flag");
+	}
+	// DEPRECATION END
 
 	error = cellToBoundary(cell, &boundary);
 	H3_ERROR(error, "cellToBoundary");
