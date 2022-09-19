@@ -16,6 +16,12 @@ elif [ "$CMD" = "pgxn" ]; then
     pgxn install $DISTRIBUTION
     su postgres -p -c "pgxn load $DISTRIBUTION"
     su postgres -p -c "pgxn check $DISTRIBUTION"
+elif [ "$CMD" = "pgxn-v3" ]; then
+    DISTRIBUTION=$2
+    su postgres -p -c "psql -c 'CREATE EXTENSION postgis'"
+    pgxn install 'h3=3.7.2'
+    su postgres -p -c "pgxn load 'h3=3.7.2'"
+    su postgres -p -c "pgxn check 'h3=3.7.2'"
 else
     ARGS="$@"
     make install

@@ -26,7 +26,9 @@ $ psql
 (1 row)
 ```
 
-#### On macOS with the Postgres.app Universal Binary
+(You can install a specific version using `pgxn install 'h3=3.7.2'` and `pgxn load 'h3=3.7.2'` for example)
+
+### On macOS with the Postgres.app Universal Binary
 
 ```shell
 brew install pgxnclient make cmake

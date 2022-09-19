@@ -32,7 +32,7 @@ Commands
   exit 0;
 }
 
-while getopts ':hbptivca::u::g::' o; do
+while getopts ':hbptiva::u::g::c::' o; do
 case "${o}" in
   a)  # set arch
       ARCHS=($OPTARG)
@@ -131,8 +131,9 @@ case "${o}" in
       done
       ;;
 
-  c)  # run bash
-      work=bash
+  c)  # run cmd
+      work=cmd
+      CMD=($OPTARG)
       for postgresql in "${POSTGRESQLS[@]}"; do
         for ubuntu in "${UBUNTUS[@]}"; do
           for arch in "${ARCHS[@]}"; do
@@ -142,9 +143,8 @@ case "${o}" in
               --rm \
               --platform linux/$arch \
               -v "$PWD"/../..:/github/workspace \
-              -it \
-              --entrypoint bash \
-              $REPOSITORY/test:$postgresql-$ubuntu-$arch
+              $REPOSITORY/test:$postgresql-$ubuntu-$arch \
+              $CMD
           done
         done
       done
