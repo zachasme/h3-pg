@@ -1,0 +1,6 @@
+extname = 'h3'
+from = '3.7.2'
+to = '4.0.0'
+extra_queries = [
+    "SELECT COUNT(*) FROM pg_class WHERE relname = 'dump_0'"
+]

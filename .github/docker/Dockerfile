@@ -33,6 +33,13 @@ RUN apt-get update && apt-get install -y \
     postgresql-server-dev-${POSTGRESQL} \
     postgresql-${POSTGRESQL}
 
+# Setup pg_validate_extupgrade
+RUN apt-get update && apt install -y cargo
+RUN git clone https://github.com/rjuju/pg_validate_extupgrade.git
+WORKDIR pg_validate_extupgrade
+RUN cargo build --release
+RUN cp ./target/release/pg_validate_extupgrade /usr/bin/
+
 # Set workdir
 WORKDIR /github/workspace
 
