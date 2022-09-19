@@ -83,6 +83,12 @@ IS 'Returns the hollow hexagonal ring centered at origin with distance "k".';
 COMMENT ON FUNCTION
     h3_grid_distance(h3index, h3index)
 IS 'Returns the distance in grid cells between the two indices.';    
+COMMENT ON FUNCTION
+    h3_cell_to_local_ij(h3index, h3index)
+IS 'Produces local IJ coordinates for an H3 index anchored by an origin.';
+COMMENT ON FUNCTION
+    h3_local_ij_to_cell(h3index, point)
+IS 'Produces an H3 index from local IJ coordinates anchored by an origin.';
 -- hierarchy
 COMMENT ON FUNCTION
     h3_cell_to_parent(cell h3index, resolution integer)

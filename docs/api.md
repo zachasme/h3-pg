@@ -105,7 +105,7 @@ and for finding the center and boundary of H3 indexes.
 *Since v4.0.0*
 
 
-Indexes the location at the specified resolution
+Indexes the location at the specified resolution.
 
 
 
@@ -113,7 +113,7 @@ Indexes the location at the specified resolution
 *Since v4.0.0*
 
 
-Finds the centroid of the index
+Finds the centroid of the index.
 
 
 
@@ -135,7 +135,7 @@ or base cell, and provide utilities for converting into and out of the
 *Since v1.0.0*
 
 
-Returns the resolution of the index
+Returns the resolution of the index.
 
 
 
@@ -143,7 +143,7 @@ Returns the resolution of the index
 *Since v4.0.0*
 
 
-Returns the base cell number of the index
+Returns the base cell number of the index.
 
 
 
@@ -151,7 +151,7 @@ Returns the base cell number of the index
 *Since v1.0.0*
 
 
-Returns true if the given H3Index is valid
+Returns true if the given H3Index is valid.
 
 
 
@@ -159,7 +159,7 @@ Returns true if the given H3Index is valid
 *Since v1.0.0*
 
 
-Returns true if this index has a resolution with Class III orientation
+Returns true if this index has a resolution with Class III orientation.
 
 
 
@@ -167,7 +167,7 @@ Returns true if this index has a resolution with Class III orientation
 *Since v1.0.0*
 
 
-Returns true if this index represents a pentagonal cell
+Returns true if this index represents a pentagonal cell.
 
 
 
@@ -175,7 +175,7 @@ Returns true if this index represents a pentagonal cell
 *Since v4.0.0*
 
 
-Find all icosahedron faces intersected by a given H3 index
+Find all icosahedron faces intersected by a given H3 index.
 
 # Grid traversal functions
 
@@ -186,7 +186,7 @@ determining how to traverse the grid from one cell to another.
 *Since v4.0.0*
 
 
-Produces indices within "k" distance of the origin index
+Produces indices within "k" distance of the origin index.
 
 
 
@@ -194,7 +194,7 @@ Produces indices within "k" distance of the origin index
 *Since v4.0.0*
 
 
-Produces indices within "k" distance of the origin index paired with their distance to the origin
+Produces indices within "k" distance of the origin index paired with their distance to the origin.
 
 
 
@@ -202,7 +202,7 @@ Produces indices within "k" distance of the origin index paired with their dista
 *Since v4.0.0*
 
 
-Returns the hollow hexagonal ring centered at origin with distance "k"
+Returns the hollow hexagonal ring centered at origin with distance "k".
 
 
 
@@ -222,7 +222,7 @@ distances for indexes on opposite sides of a pentagon.
 *Since v4.0.0*
 
 
-Returns the distance in grid cells between the two indices
+Returns the distance in grid cells between the two indices.
 
 
 
@@ -249,7 +249,7 @@ The functions produce parent (coarser) or children (finer) cells.
 *Since v4.0.0*
 
 
-Returns the parent of the given index
+Returns the parent of the given index.
 
 
 
@@ -257,7 +257,7 @@ Returns the parent of the given index
 *Since v4.0.0*
 
 
-Returns the set of children of the given index
+Returns the set of children of the given index.
 
 
 
@@ -265,7 +265,7 @@ Returns the set of children of the given index
 *Since v4.0.0*
 
 
-Returns the center child (finer) index contained by input index at given resolution
+Returns the center child (finer) index contained by input index at given resolution.
 
 
 
@@ -273,7 +273,7 @@ Returns the center child (finer) index contained by input index at given resolut
 *Since v4.0.0*
 
 
-Compacts the given array as best as possible
+Compacts the given array as best as possible.
 
 
 
@@ -289,7 +289,7 @@ Uncompacts the given array at the given resolution.
 *Since v4.0.0*
 
 
-Returns the parent of the given index
+Returns the parent of the given index.
 
 
 
@@ -297,7 +297,7 @@ Returns the parent of the given index
 *Since v4.0.0*
 
 
-Returns the set of children of the given index
+Returns the set of children of the given index.
 
 
 
@@ -305,7 +305,7 @@ Returns the set of children of the given index
 *Since v4.0.0*
 
 
-Returns the center child (finer) index contained by input index at next resolution
+Returns the center child (finer) index contained by input index at next resolution.
 
 
 
@@ -313,7 +313,7 @@ Returns the center child (finer) index contained by input index at next resoluti
 *Since v4.0.0*
 
 
-Uncompacts the given array at the resolution one higher than the highest resolution in the set
+Uncompacts the given array at the resolution one higher than the highest resolution in the set.
 
 
 
@@ -322,14 +322,14 @@ Uncompacts the given array at the resolution one higher than the highest resolut
 *Since v4.0.0*
 
 
-Slower version of H3ToChildren but allocates less memory
+Slower version of H3ToChildren but allocates less memory.
 
 
 
 ### h3_cell_to_children_slow(index `h3index`) ⇒ `h3index`
 
 
-Slower version of H3ToChildren but allocates less memory
+Slower version of H3ToChildren but allocates less memory.
 
 # Region functions
 
@@ -339,7 +339,7 @@ These functions convert H3 indexes to and from polygonal areas.
 *Since v4.0.0*
 
 
-Takes an exterior polygon [and a set of hole polygon] and returns the set of hexagons that best fit the structure
+Takes an exterior polygon [and a set of hole polygon] and returns the set of hexagons that best fit the structure.
 
 
 
@@ -347,7 +347,7 @@ Takes an exterior polygon [and a set of hole polygon] and returns the set of hex
 *Since v4.0.0*
 
 
-Create a LinkedGeoPolygon describing the outline(s) of a set of hexagons. Polygon outlines will follow GeoJSON MultiPolygon order: Each polygon will have one outer loop, which is first in the list, followed by any holes
+Create a LinkedGeoPolygon describing the outline(s) of a set of hexagons. Polygon outlines will follow GeoJSON MultiPolygon order: Each polygon will have one outer loop, which is first in the list, followed by any holes.
 
 # Unidirectional edge functions
 
@@ -358,7 +358,7 @@ neighboring cell.
 *Since v4.0.0*
 
 
-Returns true if the given indices are neighbors
+Returns true if the given indices are neighbors.
 
 
 
@@ -406,7 +406,7 @@ Returns the pair of indices from the given edge.
 *Since v4.0.0*
 
 
-Returns all unidirectional edges with the given index as origin
+Returns all unidirectional edges with the given index as origin.
 
 
 
@@ -424,7 +424,7 @@ Functions for working with cell vertexes.
 *Since v4.0.0*
 
 
-Returns a single vertex for a given cell, as an H3 index
+Returns a single vertex for a given cell, as an H3 index.
 
 
 
@@ -432,7 +432,7 @@ Returns a single vertex for a given cell, as an H3 index
 *Since v4.0.0*
 
 
-Returns all vertexes for a given cell, as H3 indexes
+Returns all vertexes for a given cell, as H3 indexes.
 
 
 
@@ -440,7 +440,7 @@ Returns all vertexes for a given cell, as H3 indexes
 *Since v4.0.0*
 
 
-Get the geocoordinates of an H3 vertex
+Get the geocoordinates of an H3 vertex.
 
 
 
@@ -448,7 +448,7 @@ Get the geocoordinates of an H3 vertex
 *Since v4.0.0*
 
 
-Whether the input is a valid H3 vertex
+Whether the input is a valid H3 vertex.
 
 # Miscellaneous H3 functions
 
@@ -458,7 +458,7 @@ These functions include descriptions of the H3 grid system.
 *Since v4.0.0*
 
 
-The great circle distance in radians between two spherical coordinates
+The great circle distance in radians between two spherical coordinates.
 
 
 
@@ -466,7 +466,7 @@ The great circle distance in radians between two spherical coordinates
 *Since v4.0.0*
 
 
-Average hexagon area in square (kilo)meters at the given resolution
+Average hexagon area in square (kilo)meters at the given resolution.
 
 
 
@@ -474,7 +474,7 @@ Average hexagon area in square (kilo)meters at the given resolution
 *Since v4.0.0*
 
 
-Exact area for a specific cell (hexagon or pentagon)
+Exact area for a specific cell (hexagon or pentagon).
 
 
 
@@ -482,7 +482,7 @@ Exact area for a specific cell (hexagon or pentagon)
 *Since v4.0.0*
 
 
-Average hexagon edge length in (kilo)meters at the given resolution
+Average hexagon edge length in (kilo)meters at the given resolution.
 
 
 
@@ -490,7 +490,7 @@ Average hexagon edge length in (kilo)meters at the given resolution
 *Since v4.0.0*
 
 
-Exact length for a specific unidirectional edge
+Exact length for a specific unidirectional edge.
 
 
 
@@ -498,7 +498,7 @@ Exact length for a specific unidirectional edge
 *Since v4.0.0*
 
 
-Number of unique H3 indexes at the given resolution
+Number of unique H3 indexes at the given resolution.
 
 
 
@@ -506,7 +506,7 @@ Number of unique H3 indexes at the given resolution
 *Since v4.0.0*
 
 
-Returns all 122 resolution 0 indexes
+Returns all 122 resolution 0 indexes.
 
 
 
@@ -514,7 +514,7 @@ Returns all 122 resolution 0 indexes
 *Since v4.0.0*
 
 
-All the pentagon H3 indexes at the specified resolution
+All the pentagon H3 indexes at the specified resolution.
 
 # Operators
 ## B-tree operators
@@ -523,7 +523,7 @@ All the pentagon H3 indexes at the specified resolution
 *Since v0.1.0*
 
 
-Returns true if two indexes are the same
+Returns true if two indexes are the same.
 
 
 
@@ -545,7 +545,7 @@ Returns true if two indexes are the same
 *Since v3.6.1*
 
 
-Returns true if the two H3 indexes intersect
+Returns true if the two H3 indexes intersect.
 
 
 
@@ -553,7 +553,7 @@ Returns true if the two H3 indexes intersect
 *Since v3.6.1*
 
 
-Returns true if A containts B
+Returns true if A containts B.
 
 
 
@@ -561,14 +561,14 @@ Returns true if A containts B
 *Since v3.6.1*
 
 
-Returns true if A is contained by B
+Returns true if A is contained by B.
 
 
 ### Operator: `h3index` <-> `h3index`
 *Since v3.7.0*
 
 
-Returns the distance in grid cells between the two indices
+Returns the distance in grid cells between the two indices.
 
 
 
@@ -579,20 +579,20 @@ Returns the distance in grid cells between the two indices
 ### `h3index` :: `bigint`
 
 
-Convert H3 index to bigint, which is useful when you need a decimal representation
+Convert H3 index to bigint, which is useful when you need a decimal representation.
 
 
 
 ### `bigint` :: `h3index`
 
 
-Convert bigint to H3 index
+Convert bigint to H3 index.
 
 
 ### `h3index` :: `point`
 
 
-Convert H3 index to point
+Convert H3 index to point.
 
 # Extension specific functions
 
