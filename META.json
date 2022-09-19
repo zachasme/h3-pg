@@ -8,7 +8,13 @@
   "provides": {
     "h3": {
       "abstract": "PostgreSQL bindings for H3",
-      "file": "sql/h3--unreleased.sql",
+      "file": "h3--unreleased.sql",
+      "docfile": "README.md",
+      "version": "unreleased"
+    },
+    "h3_postgis": {
+      "abstract": "H3 PostGIS integration",
+      "file": "h3_postgis--unreleased.sql",
       "docfile": "README.md",
       "version": "unreleased"
     }

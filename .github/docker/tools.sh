@@ -28,7 +28,7 @@ Commands
   exit 0;
 }
 
-while getopts ':hbpta::u::g::' o; do
+while getopts ':hbptia::u::g::' o; do
 case "${o}" in
   a)  # set arch
       ARCHS=($OPTARG)
@@ -90,7 +90,25 @@ case "${o}" in
       done
       ;;
 
-  *) # print help
+  i)  # try pgxnclient install
+      work=pgxn
+      for postgresql in "${POSTGRESQLS[@]}"; do
+        for ubuntu in "${UBUNTUS[@]}"; do
+          for arch in "${ARCHS[@]}"; do
+            echo "=============================="
+            echo "$postgresql-$ubuntu-$arch"
+            docker run \
+              --rm \
+              --platform linux/$arch \
+              -v "$PWD"/../..:/github/workspace \
+              $REPOSITORY/test:$postgresql-$ubuntu-$arch \
+              "./h3-unreleased.zip"
+          done
+        done
+      done
+      ;;
+
+  *)  # print help
       printhelp
       exit 1;;
   esac

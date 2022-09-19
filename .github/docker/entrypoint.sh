@@ -11,6 +11,7 @@ if [ -z "$DISTRIBUTION" ]; then
     su postgres -p -c "make ci"
     su postgres -p -c "make installcheck"
 else
+    su postgres -p -c "psql -c 'CREATE EXTENSION postgis'"
     pgxn install $DISTRIBUTION
     su postgres -p -c "pgxn load $DISTRIBUTION"
     su postgres -p -c "pgxn check $DISTRIBUTION"
