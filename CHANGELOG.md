@@ -26,9 +26,9 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Bump `h3` to `v4.0.1` (was locked on `rc5` for the previous release)
 - Add compile flag support check (see [#78], thanks [@mngr777])
 - Allow splitting polygons by 180th meridian (see [#76], thanks [@mngr777])
-- _Actually_ bump `h3` to `v4.0.0` (was locked on `rc5` for the previous release)
 
 </details>
 
