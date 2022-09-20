@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Bytes & Brains
+ * Copyright 2020-2022 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,22 +20,22 @@
 -- Fix function flags which were previously only changed in install files
 ALTER FUNCTION h3_get_h3_unidirectional_edge_boundary(h3index)
     IMMUTABLE STRICT PARALLEL SAFE;
-ALTER FUNCTION h3_geo_to_h3(geometry, integer)
-    IMMUTABLE STRICT PARALLEL SAFE;
-ALTER FUNCTION h3_geo_to_h3(geography, integer)
-    IMMUTABLE STRICT PARALLEL SAFE;
-ALTER FUNCTION h3_to_geometry(h3index)
-    IMMUTABLE STRICT PARALLEL SAFE;
-ALTER FUNCTION h3_to_geography(h3index)
-    IMMUTABLE STRICT PARALLEL SAFE;
-ALTER FUNCTION h3_to_geo_boundary_geometry(h3index, boolean)
-    IMMUTABLE STRICT PARALLEL SAFE;
-ALTER FUNCTION h3_to_geo_boundary_geography(h3index, boolean)
-    IMMUTABLE STRICT PARALLEL SAFE;
-ALTER FUNCTION h3_polyfill(geometry, integer)
-    IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
-ALTER FUNCTION h3_polyfill(geography, integer)
-    IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
+--ALTER FUNCTION h3_geo_to_h3(geometry, integer)
+--    IMMUTABLE STRICT PARALLEL SAFE;
+--ALTER FUNCTION h3_geo_to_h3(geography, integer)
+--    IMMUTABLE STRICT PARALLEL SAFE;
+--ALTER FUNCTION h3_to_geometry(h3index)
+--    IMMUTABLE STRICT PARALLEL SAFE;
+--ALTER FUNCTION h3_to_geography(h3index)
+--    IMMUTABLE STRICT PARALLEL SAFE;
+--ALTER FUNCTION h3_to_geo_boundary_geometry(h3index, boolean)
+--    IMMUTABLE STRICT PARALLEL SAFE;
+--ALTER FUNCTION h3_to_geo_boundary_geography(h3index, boolean)
+--    IMMUTABLE STRICT PARALLEL SAFE;
+--ALTER FUNCTION h3_polyfill(geometry, integer)
+--    IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
+--ALTER FUNCTION h3_polyfill(geography, integer)
+--    IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
 
 -- Add second support function for hash opclass
 CREATE OR REPLACE FUNCTION h3index_hash_extended(h3index, int8) RETURNS int8

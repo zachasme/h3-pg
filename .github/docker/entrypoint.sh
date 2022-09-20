@@ -25,6 +25,5 @@ elif [ "$CMD" = "pgxn-v3" ]; then
 else
     ARGS="$@"
     make install
-    su postgres -p -c "psql -c 'CREATE EXTENSION postgis'"
     su postgres -p -c "$ARGS"
 fi

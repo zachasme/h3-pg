@@ -26,8 +26,8 @@ DROP FUNCTION IF EXISTS h3_to_geo_boundary_geometry(h3index, extend boolean);
 DROP FUNCTION IF EXISTS h3_to_geo_boundary_geography(h3index, extend boolean);
 DROP FUNCTION IF EXISTS h3_polyfill(multi geometry, resolution integer);
 DROP FUNCTION IF EXISTS h3_polyfill(multi geography, resolution integer);
-DROP CAST (h3index AS geometry);
-DROP CAST (h3index AS geography);
+DROP CAST IF EXISTS (h3index AS geometry);
+DROP CAST IF EXISTS (h3index AS geography);
 DROP FUNCTION IF EXISTS h3_to_geometry(h3index);
 DROP FUNCTION IF EXISTS h3_to_geography(h3index);
 

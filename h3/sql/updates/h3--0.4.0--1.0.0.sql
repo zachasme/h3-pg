@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Bytes & Brains
+ * Copyright 2018-2022 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,20 +34,20 @@ ALTER FUNCTION h3_h3_set_to_linked_geo(h3index[]) RENAME TO h3_set_to_linked_geo
 ALTER FUNCTION __h3_h3_to_children_aux(h3index,integer,integer) RENAME TO __h3_to_children_aux;
 ALTER FUNCTION h3_h3_to_children(h3index,integer) RENAME TO h3_to_children;
 ALTER FUNCTION h3_h3_to_children_slow(h3index,integer) RENAME TO h3_to_children_slow;
-ALTER FUNCTION h3_h3_to_geo_boundary_geography(h3index,boolean) RENAME TO h3_to_geo_boundary_geography;
-ALTER FUNCTION h3_h3_to_geo_boundary_geometry(h3index,boolean) RENAME TO h3_to_geo_boundary_geometry;
+--ALTER FUNCTION h3_h3_to_geo_boundary_geography(h3index,boolean) RENAME TO h3_to_geo_boundary_geography;
+--ALTER FUNCTION h3_h3_to_geo_boundary_geometry(h3index,boolean) RENAME TO h3_to_geo_boundary_geometry;
 ALTER FUNCTION h3_h3_to_geo_boundary(h3index,boolean) RENAME TO h3_to_geo_boundary;
-ALTER FUNCTION h3_h3_to_geography(h3index) RENAME TO h3_to_geography;
+--ALTER FUNCTION h3_h3_to_geography(h3index) RENAME TO h3_to_geography;
 ALTER FUNCTION h3_h3_to_geo(h3index) RENAME TO h3_to_geo;
-ALTER FUNCTION h3_h3_to_geometry(h3index) RENAME TO h3_to_geometry;
+--ALTER FUNCTION h3_h3_to_geometry(h3index) RENAME TO h3_to_geometry;
 ALTER FUNCTION h3_h3_to_parent(h3index,integer) RENAME TO h3_to_parent;
 ALTER FUNCTION h3_h3_to_string(h3index) RENAME TO h3_to_string;
 ALTER FUNCTION h3_h3_unidirectional_edge_is_valid(h3index) RENAME TO h3_unidirectional_edge_is_valid;
 
-CREATE OR REPLACE FUNCTION h3_to_geo_boundary_geometry(h3index, extend BOOLEAN DEFAULT FALSE) RETURNS geometry
-  AS $$ SELECT ST_SetSRID(h3_to_geo_boundary($1, $2)::geometry, 4326) $$ LANGUAGE SQL;
-CREATE OR REPLACE FUNCTION h3_to_geo_boundary_geography(h3index, extend BOOLEAN DEFAULT FALSE) RETURNS geography
-  AS $$ SELECT h3_to_geo_boundary_geometry($1, $2)::geography $$ LANGUAGE SQL;
+--CREATE OR REPLACE FUNCTION h3_to_geo_boundary_geometry(h3index, extend BOOLEAN DEFAULT FALSE) RETURNS geometry
+--  AS $$ SELECT ST_SetSRID(h3_to_geo_boundary($1, $2)::geometry, 4326) $$ LANGUAGE SQL;
+--CREATE OR REPLACE FUNCTION h3_to_geo_boundary_geography(h3index, extend BOOLEAN DEFAULT FALSE) RETURNS geography
+--  AS $$ SELECT h3_to_geo_boundary_geometry($1, $2)::geography $$ LANGUAGE SQL;
 
 CREATE OR REPLACE FUNCTION h3_to_children_slow(index h3index, resolution integer DEFAULT -1) RETURNS SETOF h3index
     AS $$ SELECT __h3_to_children_aux($1, $2, -1) $$ LANGUAGE SQL;

@@ -25,7 +25,7 @@ CREATE OR REPLACE FUNCTION h3_h3_to_geo_boundary(h3index, extend_at_meridian BOO
     AS 'h3', 'h3_cell_to_boundary' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_h3_to_geo_boundary(h3index, boolean) IS
     'Finds the boundary of the index, second argument extends coordinates when crossing 180th meridian to help visualization';
-CREATE OR REPLACE FUNCTION h3_h3_to_geo_boundary_geometry(h3index, extend BOOLEAN DEFAULT FALSE) RETURNS geometry
-  AS $$ SELECT ST_SetSRID(h3_h3_to_geo_boundary($1, $2)::geometry, 4326) $$ LANGUAGE SQL;
-CREATE OR REPLACE FUNCTION h3_h3_to_geo_boundary_geography(h3index, extend BOOLEAN DEFAULT FALSE) RETURNS geography
-  AS $$ SELECT h3_h3_to_geo_boundary_geometry($1, $2)::geography $$ LANGUAGE SQL;
+--CREATE OR REPLACE FUNCTION h3_h3_to_geo_boundary_geometry(h3index, extend BOOLEAN DEFAULT FALSE) RETURNS geometry
+--  AS $$ SELECT ST_SetSRID(h3_h3_to_geo_boundary($1, $2)::geometry, 4326) $$ LANGUAGE SQL;
+--CREATE OR REPLACE FUNCTION h3_h3_to_geo_boundary_geography(h3index, extend BOOLEAN DEFAULT FALSE) RETURNS geography
+--  AS $$ SELECT h3_h3_to_geo_boundary_geometry($1, $2)::geography $$ LANGUAGE SQL;
