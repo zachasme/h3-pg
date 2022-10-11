@@ -27,4 +27,7 @@ bytea *
 bytea *
 			boundary_to_wkb(const CellBoundary * boundary);
 
+bytea *
+			linked_geo_polygon_to_wkb(const LinkedGeoPolygon * multiPolygon);
+
 #endif

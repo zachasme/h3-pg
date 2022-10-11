@@ -40,3 +40,13 @@ CREATE OR REPLACE FUNCTION h3_polygon_to_cells(multi geometry, resolution intege
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION h3_polygon_to_cells(multi geography, resolution integer) RETURNS SETOF h3index
 AS $$ SELECT h3_polygon_to_cells($1::geometry, $2) $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
+
+--@ availability: unreleased
+CREATE OR REPLACE FUNCTION
+    h3_cells_to_multi_polygon_geometry(h3index[]) RETURNS geometry
+AS $$ SELECT h3_cells_to_multi_polygon_wkb($1)::geometry $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+
+--@ availability: unreleased
+CREATE OR REPLACE FUNCTION
+    h3_cells_to_multi_polygon_geography(h3index[]) RETURNS geography
+AS $$ SELECT h3_cells_to_multi_polygon_wkb($1)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;

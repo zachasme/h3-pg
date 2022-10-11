@@ -155,7 +155,8 @@ EXTRA_BINDING_FUNCTIONS = \
 	cell_to_geo_boundary_geometry \
 	cell_to_geography \
 	cell_to_geometry \
-	cell_to_boundary_wkb
+	cell_to_boundary_wkb \
+	cells_to_multi_polygon_wkb
 
 /tmp/excluded-functions:
 	echo "$(EXCLUDED_BINDING_FUNCTIONS)" | tr " " "\n" > $@

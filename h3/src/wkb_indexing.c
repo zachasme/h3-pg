@@ -20,6 +20,7 @@
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 #include <math.h>
+#include "wkb_split.h"
 #include "wkb_vect3.h"
 #include "wkb.h"
 
@@ -39,10 +40,6 @@ static bool
 /* Splits CellBoundary by antimeridian (and 0 meridian around poles) */
 static void
 			boundary_split_180(const CellBoundary * boundary, CellBoundary * left, CellBoundary * right);
-
-/* Calculates latitude of intersection point between segment and antimeridian or 0 meridian */
-static double
-			split_180_lat(const LatLng * coord1, const LatLng * coord2);
 
 /* Finds the boundary of the index, converts to EWKB, splits the boundary by 180 meridian */
 Datum
@@ -185,31 +182,4 @@ boundary_split_180(const CellBoundary * boundary, CellBoundary * part1, CellBoun
 	part = (prevSign < 0) ? part1 : part2;
 	for (int i = start; i < numVerts; i++)
 		part->verts[part->numVerts++] = verts[i];
-}
-
-double
-split_180_lat(const LatLng * coord1, const LatLng * coord2)
-{
-	Vect3		p1,
-				p2,
-				normal,
-				s;
-	double		y;
-
-	/* Normal of circle containing points: normal = p1 x p2 */
-	vect3_from_lat_lng(coord1, &p1);
-	vect3_from_lat_lng(coord2, &p2);
-	vect3_cross(&p1, &p2, &normal);
-
-	/* y coordinate of 0/180 meridian circle normal */
-	y = (coord1->lng < 0 || coord2->lng > 0) ? -1 : 1;
-
-	/* Circle plane intersection vector: s = (p1 x p2) x {0, y, 0} */
-	s.x = -(normal.z * y);
-	s.y = 0;
-	s.z = normal.x * y;
-	vect3_normalize(&s);		/* intersection point coordinates on unit
-								 * sphere */
-
-	return asin(s.z);			/* latitude */
 }
