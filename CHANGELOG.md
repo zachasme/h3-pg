@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Split PostGIS multipolygons by 180th meridian (see [#90], thanks [@mngr777])
+
 </details>
 
 ## [4.0.2] - 2022-09-19
@@ -215,6 +217,7 @@ avoid adding features or APIs which do not map onto the
 [#76]: https://github.com/zachasme/h3-pg/pull/76
 [#78]: https://github.com/zachasme/h3-pg/pull/78
 [#87]: https://github.com/zachasme/h3-pg/pull/87
+[#90]: https://github.com/zachasme/h3-pg/pull/90
 [@abelvm]: https://github.com/AbelVM
 [@kalenikaliaksandr]: https://github.com/kalenikaliaksandr
 [@kmacdough]: https://github.com/kmacdough
