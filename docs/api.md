@@ -78,6 +78,8 @@
     - [h3_get_extension_version() ⇒ `text`](#h3_get_extension_version-%E2%87%92-text)
 - [WKB indexing functions](#wkb-indexing-functions)
     - [h3_cell_to_boundary_wkb(cell `h3index`) ⇒ `bytea`](#h3_cell_to_boundary_wkbcell-h3index-%E2%87%92-bytea)
+- [WKB regions functions](#wkb-regions-functions)
+    - [h3_cells_to_multi_polygon_wkb(`h3index`) ⇒ `bytea`](#h3_cells_to_multi_polygon_wkbh3index-%E2%87%92-bytea)
 - [Deprecated functions](#deprecated-functions)
     - [h3_cell_to_boundary(cell `h3index`, extend_antimeridian `boolean`) ⇒ `polygon`](#h3_cell_to_boundarycell-h3index-extend_antimeridian-boolean-%E2%87%92-polygon)
 
@@ -613,6 +615,17 @@ Finds the boundary of the index, converts to EWKB.
 Splits polygons when crossing 180th meridian.
 
 This function has to return WKB since Postgres does not provide multipolygon type.
+
+
+# WKB regions functions
+
+### h3_cells_to_multi_polygon_wkb(`h3index`) ⇒ `bytea`
+*Since vunreleased*
+
+
+Create a LinkedGeoPolygon describing the outline(s) of a set of hexagons, converts to EWKB.
+
+Splits polygons when crossing 180th meridian.
 
 # Deprecated functions
 
