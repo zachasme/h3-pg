@@ -43,9 +43,6 @@ RUN RUSTUP_TOOLCHAIN=stable CARGO_TARGET_DIR=target \
 # RUN RUSTUP_TOOLCHAIN=stable cargo test --frozen --all-features
 RUN ./target/release/pg_validate_extupgrade --version
 RUN cp ./target/release/pg_validate_extupgrade /usr/bin/
-# For some reason i need this to run pg_validate_extupgrade
-RUN echo "local all postgres peer" > /etc/postgresql/${POSTGRESQL}/main/pg_hba.conf
-RUN echo "host all all 0.0.0.0/0 trust" >> /etc/postgresql/${POSTGRESQL}/main/pg_hba.conf
 
 # Set workdir
 WORKDIR /github/workspace

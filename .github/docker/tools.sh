@@ -124,8 +124,8 @@ case "${o}" in
               --platform linux/$arch \
               -v "$PWD"/../..:/github/workspace \
               $REPOSITORY/test:$postgresql-$ubuntu-$arch \
-              "pg_validate_extupgrade --config h3/pg_validate_extupgrade.toml && \
-              pg_validate_extupgrade --config h3_postgis/pg_validate_extupgrade.toml"
+              "pg_validate_extupgrade --host /var/run/postgresql --config h3/pg_validate_extupgrade.toml && \
+              pg_validate_extupgrade --host /var/run/postgresql --config h3_postgis/pg_validate_extupgrade.toml"
           done
         done
       done
