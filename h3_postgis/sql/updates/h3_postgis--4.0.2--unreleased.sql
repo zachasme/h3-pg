@@ -24,3 +24,17 @@ AS $$ SELECT h3_cells_to_multi_polygon_wkb($1)::geometry $$ IMMUTABLE STRICT PAR
 CREATE OR REPLACE FUNCTION
     h3_cells_to_multi_polygon_geography(h3index[]) RETURNS geography
 AS $$ SELECT h3_cells_to_multi_polygon_wkb($1)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
+
+CREATE OR REPLACE AGGREGATE h3_cells_to_multi_polygon_geometry(h3index) (
+    sfunc = array_append,
+    stype = h3index[],
+    finalfunc = h3_cells_to_multi_polygon_geometry,
+    parallel = safe
+);
+
+CREATE OR REPLACE AGGREGATE h3_cells_to_multi_polygon_geography(h3index) (
+    sfunc = array_append,
+    stype = h3index[],
+    finalfunc = h3_cells_to_multi_polygon_geography,
+    parallel = safe
+);
