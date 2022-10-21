@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Bytes & Brains
+ * Copyright 2018-2022 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,31 +14,9 @@
  * limitations under the License.
  */
 
--- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
+--| # PostGIS Grid Traversal Functions
 
-CREATE OR REPLACE FUNCTION
-    h3_cells_to_multi_polygon_geometry(h3index[]) RETURNS geometry
-AS $$ SELECT h3_cells_to_multi_polygon_wkb($1)::geometry $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
-
-CREATE OR REPLACE FUNCTION
-    h3_cells_to_multi_polygon_geography(h3index[]) RETURNS geography
-AS $$ SELECT h3_cells_to_multi_polygon_wkb($1)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
-
-CREATE OR REPLACE AGGREGATE h3_cells_to_multi_polygon_geometry(h3index) (
-    sfunc = array_append,
-    stype = h3index[],
-    finalfunc = h3_cells_to_multi_polygon_geometry,
-    parallel = safe
-);
-
-CREATE OR REPLACE AGGREGATE h3_cells_to_multi_polygon_geography(h3index) (
-    sfunc = array_append,
-    stype = h3index[],
-    finalfunc = h3_cells_to_multi_polygon_geography,
-    parallel = safe
-);
-
+--@ availability: unreleased
 CREATE OR REPLACE FUNCTION
     h3_grid_path_cells_recursive(origin h3index, destination h3index) RETURNS SETOF h3index
 AS $$
@@ -75,4 +53,3 @@ BEGIN
     END IF;
 END;
 $$ LANGUAGE 'plpgsql' IMMUTABLE STRICT PARALLEL SAFE;
-
