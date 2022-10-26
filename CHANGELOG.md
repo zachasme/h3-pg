@@ -27,6 +27,8 @@ avoid adding features or APIs which do not map onto the
   </summary>
 
 - Split PostGIS multipolygons by 180th meridian (see [#90], thanks [@mngr777])
+- Add aggregate functions for `h3_postgis` (see [#91], thanks [@mngr777])
+- Add recursive `h3_grid_path_cells` (see [#93], thanks [@mngr777])
 
 </details>
 
@@ -218,6 +220,8 @@ avoid adding features or APIs which do not map onto the
 [#78]: https://github.com/zachasme/h3-pg/pull/78
 [#87]: https://github.com/zachasme/h3-pg/pull/87
 [#90]: https://github.com/zachasme/h3-pg/pull/90
+[#91]: https://github.com/zachasme/h3-pg/pull/91
+[#93]: https://github.com/zachasme/h3-pg/pull/93
 [@abelvm]: https://github.com/AbelVM
 [@kalenikaliaksandr]: https://github.com/kalenikaliaksandr
 [@kmacdough]: https://github.com/kmacdough
