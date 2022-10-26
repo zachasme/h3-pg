@@ -92,27 +92,14 @@ boundary_crosses_180(const CellBoundary * boundary)
 	const int	numVerts = boundary->numVerts;
 	const LatLng *verts = boundary->verts;
 
-	int			prevSign = 0;
-
-	for (int v = 0; v <= numVerts; v++)
+	for (int v = 0; v < numVerts; v++)
 	{
-		int			cur = v % numVerts;
-		double		lon = verts[cur].lng;
-		int			sign = SIGN(lon);
-
-		if (prevSign == 0)
+		double		lon = verts[v].lng;
+		double		nextLon = verts[(v + 1) % numVerts].lng;
+		if (SIGN(lon) != SIGN(nextLon)
+			&& fabs(lon - nextLon) > M_PI)
 		{
-			prevSign = sign;
-		}
-		else if (sign != 0 && prevSign != sign)
-		{
-			int			prev = (v + numVerts - 1) % numVerts;
-			double		prevLon = verts[prev].lng;
-
-			if (fabs(lon) + fabs(prevLon) > M_PI)
-				return true;
-			else
-				prevSign = sign;
+			return true;
 		}
 	}
 	return false;
@@ -149,7 +136,7 @@ boundary_split_180(const CellBoundary * boundary, CellBoundary * part1, CellBoun
 
 			int			prev = (v + numVerts - 1) % numVerts;
 			double		prevLon = verts[prev].lng;
-			bool		crossesZero = (fabs(lon) + fabs(prevLon) < M_PI);
+			bool		crossesZero = (fabs(lon - prevLon) < M_PI);
 
 			prevPart = (prevSign < 0) ? part1 : part2;
 			part = (sign < 0) ? part1 : part2;
