@@ -27,7 +27,7 @@ Splits polygons when crossing 180th meridian.';
 
 
 -- BRIN operator class
-CREATE OPERATOR CLASS brin_h3index_ops DEFAULT FOR TYPE h3index USING brin AS
+CREATE OPERATOR CLASS h3index_minmax_ops DEFAULT FOR TYPE h3index USING brin AS
     OPERATOR  1  <  ,
     OPERATOR  2  <= ,
     OPERATOR  3   = ,
@@ -37,4 +37,3 @@ CREATE OPERATOR CLASS brin_h3index_ops DEFAULT FOR TYPE h3index USING brin AS
     FUNCTION  2  brin_minmax_add_value(internal, internal, internal, internal),
     FUNCTION  3  brin_minmax_consistent(internal, internal, internal),
     FUNCTION  4  brin_minmax_union(internal, internal, internal);
-

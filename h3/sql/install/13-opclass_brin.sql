@@ -17,7 +17,7 @@
 -- BRIN operator class
 
 --@ internal
-CREATE OPERATOR CLASS brin_h3index_ops DEFAULT FOR TYPE h3index USING brin AS
+CREATE OPERATOR CLASS h3index_minmax_ops DEFAULT FOR TYPE h3index USING brin AS
     OPERATOR  1  <  ,
     OPERATOR  2  <= ,
     OPERATOR  3   = ,
