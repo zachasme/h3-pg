@@ -26,6 +26,7 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Add BRIN operator class (see [#97], thanks [@mngr777])
 - Split PostGIS multipolygons by 180th meridian (see [#90], thanks [@mngr777])
 - Add aggregate functions for `h3_postgis` (see [#91], thanks [@mngr777])
 - Add recursive `h3_grid_path_cells` (see [#93], thanks [@mngr777])
@@ -222,6 +223,7 @@ avoid adding features or APIs which do not map onto the
 [#90]: https://github.com/zachasme/h3-pg/pull/90
 [#91]: https://github.com/zachasme/h3-pg/pull/91
 [#93]: https://github.com/zachasme/h3-pg/pull/93
+[#97]: https://github.com/zachasme/h3-pg/pull/97
 [@abelvm]: https://github.com/AbelVM
 [@kalenikaliaksandr]: https://github.com/kalenikaliaksandr
 [@kmacdough]: https://github.com/kmacdough
