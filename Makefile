@@ -29,10 +29,3 @@ install: build
 
 installcheck: install
 	ctest --output-on-failure --build-config Release
-
-###########################################################################
-# Extra CI testing targets
-###########################################################################
-
-format:
-	pgindent

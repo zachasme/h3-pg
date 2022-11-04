@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Use CMake for entire build (see [#70])
+
 </details>
 
 ## [4.0.3] - 2022-11-04
@@ -218,6 +220,7 @@ avoid adding features or APIs which do not map onto the
 [#55]: https://github.com/zachasme/h3-pg/issues/55
 [#64]: https://github.com/zachasme/h3-pg/issues/64
 [#65]: https://github.com/zachasme/h3-pg/pull/65
+[#70]: https://github.com/zachasme/h3-pg/pull/70
 [#71]: https://github.com/zachasme/h3-pg/issues/71
 [#75]: https://github.com/zachasme/h3-pg/pull/75
 [#76]: https://github.com/zachasme/h3-pg/pull/76
