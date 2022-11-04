@@ -16,3 +16,4 @@ jobs:
           python-version: "3.10"
       - run: pipx install poetry
       - run: scripts/documentation.sh
+      - run: git diff --exit-code docs
