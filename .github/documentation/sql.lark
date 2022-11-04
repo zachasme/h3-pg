@@ -29,7 +29,7 @@ create_type_stmt: "CREATE" "TYPE" CNAME ("(" /([^\)])+/ ")")?
 
 // -----------------------------------------------------------------------------
 // CREATE CAST ...
-create_cast_stmt: "CREATE" "CAST" "(" datatype "AS" datatype ")" "WITH" "FUNCTION" CNAME "(" /([^\)])+/ ")"
+create_cast_stmt: "CREATE" "CAST" "(" DATATYPE "AS" DATATYPE ")" "WITH" "FUNCTION" CNAME "(" /([^\)])+/ ")"
 
 // -----------------------------------------------------------------------------
 // CREATE OPERATOR CLASS name [ DEFAULT ] FOR TYPE data_type
@@ -53,8 +53,8 @@ create_opcl_list: create_opcl_opts ("," create_opcl_opts)*
 // )
 create_oper_stmt: "CREATE" "OPERATOR" OPERATOR "(" create_oper_opts ")"
 create_oper_opt: /PROCEDURE/ "=" CNAME
-               | /LEFTARG/ "=" datatype
-               | /RIGHTARG/ "=" datatype
+               | /LEFTARG/ "=" DATATYPE
+               | /RIGHTARG/ "=" DATATYPE
                | /COMMUTATOR/ "=" OPERATOR
                | /NEGATOR/ "=" OPERATOR
                | /RESTRICT/ "=" CNAME
@@ -82,13 +82,14 @@ create_oper_opts: create_oper_opt ("," create_oper_opt)*
 //   } ...
 //     [ WITH ( attribute [, ...] ) ]
 create_func_stmt: "CREATE" ("OR" "REPLACE")? "FUNCTION" fun_name "(" [argument_list] ")" [create_fun_rets] create_fun_opts*
-?create_fun_rets: "RETURNS" ("SETOF")? datatype "[]"?
+?create_fun_rets: "RETURNS" create_fun_rettype
 create_fun_opts: "LANGUAGE" CNAME
               | ("IMMUTABLE" | "STABLE" | "VOLATILE" | ("NOT"? "LEAKPROOF"))
               | (("CALLED" "ON" "NULL" "INPUT") | ("RETURNS" "NULL" "ON" "NULL" "INPUT") | "STRICT")
               | ("PARALLEL" ("UNSAFE" | "RESTRICTED" | "SAFE"))
               | "AS" string ("," string)?
 argument_list: argument ("," argument)*
+!create_fun_rettype: ["SETOF"] DATATYPE
 
 // -----------------------------------------------------------------------------
 // COMMENT ON
@@ -102,32 +103,34 @@ argument_list: argument ("," argument)*
 //   ...
 // } IS 'text'
 comment_on_stmt: "COMMENT" "ON" comment_on_type "IS" string
-comment_on_type: "CAST" "(" datatype "AS" datatype ")" -> comment_on_cast
+comment_on_type: "CAST" "(" DATATYPE "AS" DATATYPE ")" -> comment_on_cast
                | "FUNCTION" fun_name "(" [argument_list] ")" -> comment_on_function
                | "OPERATOR" OPERATOR "(" argument "," argument ")" -> comment_on_operator
 
 // -----------------------------------------------------------------------------
 // SIMPLE RULES
-argument: "OUT"? [CNAME] datatype "[]"? ("DEFAULT" expr)?
-!datatype: "h3index"
+argument: [ARGMODE] [CNAME] DATATYPE "[]"? ("DEFAULT" expr)?
+ARGMODE.2: "IN" | "OUT" | "INOUT"
+DATATYPE_SCALAR: "h3index"
         | "bigint"
         | "boolean"
         | "cstring"
-        | "double" "precision"
+        | "double" WS "precision"
         | "float"
         | "geography"
         | "geometry"
         | "bytea"
-        | "int"
         | "int32"
         | "int8"
         | "integer"
         | "internal"
+        | "int"
         | "point"
         | "polygon"
         | "record"
         | "text"
         | "void"
+DATATYPE: DATATYPE_SCALAR "[]"?
 fun_name: [CNAME "."] CNAME
 ?expr: atom | string
 atom: SIGNED_NUMBER -> number

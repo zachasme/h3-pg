@@ -6,18 +6,21 @@ from lark import Lark, Transformer, Visitor, v_args, Transformer
 
 
 class Function:
-    def __init__(self, name: str, arguments, returntype: str):
+    def __init__(self, name: str, arguments, returntype: str, returns_set: bool):
         self.name = name
         self.arguments = arguments
         self.returntype = returntype
+        self.returns_set = returns_set
 
     def __str__(self):
         if self.name.startswith("__"):
             return None
         if self.arguments is None:
             self.arguments = []
-        return "\n### {}({}) ⇒ `{}`".format(
-            self.name, ", ".join(self.arguments), self.returntype
+        return "\n### {}({}) ⇒ {}`{}`".format(
+            self.name, ", ".join(self.arguments),
+            "SETOF " if self.returns_set else "",
+            self.returntype
         )
 
 
@@ -87,6 +90,10 @@ class SQLTransformer(Transformer):
         return [str(option), value]
 
     # -- CREATE FUNCTION -------------------------------------------------------
+    def create_fun_rettype(self, children):
+        # (returntype, returns_set)
+        return (children[1], children[0] is not None)
+
     @v_args(inline=True)
     def create_func_stmt(self, name: str, arguments, returntype, *opts):
         # skip internal functions
@@ -95,7 +102,7 @@ class SQLTransformer(Transformer):
 
         # print("func")
 
-        return Function(name, arguments, returntype)
+        return Function(name, arguments, returntype[0], returntype[1])
 
     def argument_list(self, children):
         return children
@@ -136,12 +143,11 @@ class SQLTransformer(Transformer):
     def fun_name(self, children):
         return children[1]
 
-    def datatype(self, children):
-        return children[0]
-
     @v_args(inline=True)
-    def argument(self, name, argtype, default=None):
+    def argument(self, argmode, name, argtype, default=None):
         out = ""
+        if argmode:
+            out += "{} ".format(argmode)
         if name:
             out += name + " "
         out += "`{}`".format(argtype)

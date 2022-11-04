@@ -14,53 +14,53 @@
     - [h3_is_valid_cell(`h3index`) ⇒ `boolean`](#h3_is_valid_cellh3index-%E2%87%92-boolean)
     - [h3_is_res_class_iii(`h3index`) ⇒ `boolean`](#h3_is_res_class_iiih3index-%E2%87%92-boolean)
     - [h3_is_pentagon(`h3index`) ⇒ `boolean`](#h3_is_pentagonh3index-%E2%87%92-boolean)
-    - [h3_get_icosahedron_faces(`h3index`) ⇒ `integer`](#h3_get_icosahedron_facesh3index-%E2%87%92-integer)
+    - [h3_get_icosahedron_faces(`h3index`) ⇒ `integer[]`](#h3_get_icosahedron_facesh3index-%E2%87%92-integer)
 - [Grid traversal functions](#grid-traversal-functions)
-    - [h3_grid_disk(origin `h3index`, [k `integer` = 1]) ⇒ `h3index`](#h3_grid_diskorigin-h3index-k-integer--1-%E2%87%92-h3index)
-    - [h3_grid_disk_distances(origin `h3index`, [k `integer` = 1], index `h3index`, distance `int`) ⇒ `record`](#h3_grid_disk_distancesorigin-h3index-k-integer--1-index-h3index-distance-int-%E2%87%92-record)
-    - [h3_grid_ring_unsafe(origin `h3index`, [k `integer` = 1]) ⇒ `h3index`](#h3_grid_ring_unsafeorigin-h3index-k-integer--1-%E2%87%92-h3index)
-    - [h3_grid_path_cells(origin `h3index`, destination `h3index`) ⇒ `h3index`](#h3_grid_path_cellsorigin-h3index-destination-h3index-%E2%87%92-h3index)
+    - [h3_grid_disk(origin `h3index`, [k `integer` = 1]) ⇒ SETOF `h3index`](#h3_grid_diskorigin-h3index-k-integer--1-%E2%87%92-setof-h3index)
+    - [h3_grid_disk_distances(origin `h3index`, [k `integer` = 1], OUT index `h3index`, OUT distance `int`) ⇒ SETOF `record`](#h3_grid_disk_distancesorigin-h3index-k-integer--1-out-index-h3index-out-distance-int-%E2%87%92-setof-record)
+    - [h3_grid_ring_unsafe(origin `h3index`, [k `integer` = 1]) ⇒ SETOF `h3index`](#h3_grid_ring_unsafeorigin-h3index-k-integer--1-%E2%87%92-setof-h3index)
+    - [h3_grid_path_cells(origin `h3index`, destination `h3index`) ⇒ SETOF `h3index`](#h3_grid_path_cellsorigin-h3index-destination-h3index-%E2%87%92-setof-h3index)
     - [h3_grid_distance(origin `h3index`, destination `h3index`) ⇒ `bigint`](#h3_grid_distanceorigin-h3index-destination-h3index-%E2%87%92-bigint)
     - [h3_cell_to_local_ij(origin `h3index`, index `h3index`) ⇒ `point`](#h3_cell_to_local_ijorigin-h3index-index-h3index-%E2%87%92-point)
     - [h3_local_ij_to_cell(origin `h3index`, coord `point`) ⇒ `h3index`](#h3_local_ij_to_cellorigin-h3index-coord-point-%E2%87%92-h3index)
 - [Hierarchical grid functions](#hierarchical-grid-functions)
     - [h3_cell_to_parent(cell `h3index`, resolution `integer`) ⇒ `h3index`](#h3_cell_to_parentcell-h3index-resolution-integer-%E2%87%92-h3index)
-    - [h3_cell_to_children(cell `h3index`, resolution `integer`) ⇒ `h3index`](#h3_cell_to_childrencell-h3index-resolution-integer-%E2%87%92-h3index)
+    - [h3_cell_to_children(cell `h3index`, resolution `integer`) ⇒ SETOF `h3index`](#h3_cell_to_childrencell-h3index-resolution-integer-%E2%87%92-setof-h3index)
     - [h3_cell_to_center_child(cell `h3index`, resolution `integer`) ⇒ `h3index`](#h3_cell_to_center_childcell-h3index-resolution-integer-%E2%87%92-h3index)
-    - [h3_compact_cells(cells `h3index`) ⇒ `h3index`](#h3_compact_cellscells-h3index-%E2%87%92-h3index)
-    - [h3_uncompact_cells(cells `h3index`, resolution `integer`) ⇒ `h3index`](#h3_uncompact_cellscells-h3index-resolution-integer-%E2%87%92-h3index)
+    - [h3_compact_cells(cells `h3index[]`) ⇒ SETOF `h3index`](#h3_compact_cellscells-h3index-%E2%87%92-setof-h3index)
+    - [h3_uncompact_cells(cells `h3index[]`, resolution `integer`) ⇒ SETOF `h3index`](#h3_uncompact_cellscells-h3index-resolution-integer-%E2%87%92-setof-h3index)
     - [h3_cell_to_parent(cell `h3index`) ⇒ `h3index`](#h3_cell_to_parentcell-h3index-%E2%87%92-h3index)
-    - [h3_cell_to_children(cell `h3index`) ⇒ `h3index`](#h3_cell_to_childrencell-h3index-%E2%87%92-h3index)
+    - [h3_cell_to_children(cell `h3index`) ⇒ SETOF `h3index`](#h3_cell_to_childrencell-h3index-%E2%87%92-setof-h3index)
     - [h3_cell_to_center_child(cell `h3index`) ⇒ `h3index`](#h3_cell_to_center_childcell-h3index-%E2%87%92-h3index)
-    - [h3_uncompact_cells(cells `h3index`) ⇒ `h3index`](#h3_uncompact_cellscells-h3index-%E2%87%92-h3index)
-    - [h3_cell_to_children_slow(index `h3index`, resolution `integer`) ⇒ `h3index`](#h3_cell_to_children_slowindex-h3index-resolution-integer-%E2%87%92-h3index)
-    - [h3_cell_to_children_slow(index `h3index`) ⇒ `h3index`](#h3_cell_to_children_slowindex-h3index-%E2%87%92-h3index)
+    - [h3_uncompact_cells(cells `h3index[]`) ⇒ SETOF `h3index`](#h3_uncompact_cellscells-h3index-%E2%87%92-setof-h3index)
+    - [h3_cell_to_children_slow(index `h3index`, resolution `integer`) ⇒ SETOF `h3index`](#h3_cell_to_children_slowindex-h3index-resolution-integer-%E2%87%92-setof-h3index)
+    - [h3_cell_to_children_slow(index `h3index`) ⇒ SETOF `h3index`](#h3_cell_to_children_slowindex-h3index-%E2%87%92-setof-h3index)
 - [Region functions](#region-functions)
-    - [h3_polygon_to_cells(exterior `polygon`, holes `polygon`, [resolution `integer` = 1]) ⇒ `h3index`](#h3_polygon_to_cellsexterior-polygon-holes-polygon-resolution-integer--1-%E2%87%92-h3index)
-    - [h3_cells_to_multi_polygon(`h3index`, exterior `polygon`, holes `polygon`) ⇒ `record`](#h3_cells_to_multi_polygonh3index-exterior-polygon-holes-polygon-%E2%87%92-record)
+    - [h3_polygon_to_cells(exterior `polygon`, holes `polygon[]`, [resolution `integer` = 1]) ⇒ SETOF `h3index`](#h3_polygon_to_cellsexterior-polygon-holes-polygon-resolution-integer--1-%E2%87%92-setof-h3index)
+    - [h3_cells_to_multi_polygon(`h3index[]`, OUT exterior `polygon`, OUT holes `polygon[]`) ⇒ SETOF `record`](#h3_cells_to_multi_polygonh3index-out-exterior-polygon-out-holes-polygon-%E2%87%92-setof-record)
 - [Unidirectional edge functions](#unidirectional-edge-functions)
     - [h3_are_neighbor_cells(origin `h3index`, destination `h3index`) ⇒ `boolean`](#h3_are_neighbor_cellsorigin-h3index-destination-h3index-%E2%87%92-boolean)
     - [h3_cells_to_directed_edge(origin `h3index`, destination `h3index`) ⇒ `h3index`](#h3_cells_to_directed_edgeorigin-h3index-destination-h3index-%E2%87%92-h3index)
     - [h3_is_valid_directed_edge(edge `h3index`) ⇒ `boolean`](#h3_is_valid_directed_edgeedge-h3index-%E2%87%92-boolean)
     - [h3_get_directed_edge_origin(edge `h3index`) ⇒ `h3index`](#h3_get_directed_edge_originedge-h3index-%E2%87%92-h3index)
     - [h3_get_directed_edge_destination(edge `h3index`) ⇒ `h3index`](#h3_get_directed_edge_destinationedge-h3index-%E2%87%92-h3index)
-    - [h3_directed_edge_to_cells(edge `h3index`, origin `h3index`, destination `h3index`) ⇒ `record`](#h3_directed_edge_to_cellsedge-h3index-origin-h3index-destination-h3index-%E2%87%92-record)
-    - [h3_origin_to_directed_edges(`h3index`) ⇒ `h3index`](#h3_origin_to_directed_edgesh3index-%E2%87%92-h3index)
+    - [h3_directed_edge_to_cells(edge `h3index`, OUT origin `h3index`, OUT destination `h3index`) ⇒ `record`](#h3_directed_edge_to_cellsedge-h3index-out-origin-h3index-out-destination-h3index-%E2%87%92-record)
+    - [h3_origin_to_directed_edges(`h3index`) ⇒ SETOF `h3index`](#h3_origin_to_directed_edgesh3index-%E2%87%92-setof-h3index)
     - [h3_directed_edge_to_boundary(edge `h3index`) ⇒ `polygon`](#h3_directed_edge_to_boundaryedge-h3index-%E2%87%92-polygon)
 - [H3 Vertex functions](#h3-vertex-functions)
     - [h3_cell_to_vertex(cell `h3index`, vertexNum `integer`) ⇒ `h3index`](#h3_cell_to_vertexcell-h3index-vertexnum-integer-%E2%87%92-h3index)
-    - [h3_cell_to_vertexes(cell `h3index`) ⇒ `h3index`](#h3_cell_to_vertexescell-h3index-%E2%87%92-h3index)
+    - [h3_cell_to_vertexes(cell `h3index`) ⇒ SETOF `h3index`](#h3_cell_to_vertexescell-h3index-%E2%87%92-setof-h3index)
     - [h3_vertex_to_lat_lng(vertex `h3index`) ⇒ `point`](#h3_vertex_to_lat_lngvertex-h3index-%E2%87%92-point)
     - [h3_is_valid_vertex(vertex `h3index`) ⇒ `boolean`](#h3_is_valid_vertexvertex-h3index-%E2%87%92-boolean)
 - [Miscellaneous H3 functions](#miscellaneous-h3-functions)
-    - [h3_great_circle_distance(a `point`, b `point`, [unit `text` = km]) ⇒ `double`](#h3_great_circle_distancea-point-b-point-unit-text--km-%E2%87%92-double)
-    - [h3_get_hexagon_area_avg(resolution `integer`, [unit `text` = km]) ⇒ `double`](#h3_get_hexagon_area_avgresolution-integer-unit-text--km-%E2%87%92-double)
-    - [h3_cell_area(cell `h3index`, [unit `text` = km^2]) ⇒ `double`](#h3_cell_areacell-h3index-unit-text--km%5E2-%E2%87%92-double)
-    - [h3_get_hexagon_edge_length_avg(resolution `integer`, [unit `text` = km]) ⇒ `double`](#h3_get_hexagon_edge_length_avgresolution-integer-unit-text--km-%E2%87%92-double)
-    - [h3_edge_length(edge `h3index`, [unit `text` = km]) ⇒ `double`](#h3_edge_lengthedge-h3index-unit-text--km-%E2%87%92-double)
+    - [h3_great_circle_distance(a `point`, b `point`, [unit `text` = km]) ⇒ `double precision`](#h3_great_circle_distancea-point-b-point-unit-text--km-%E2%87%92-double-precision)
+    - [h3_get_hexagon_area_avg(resolution `integer`, [unit `text` = km]) ⇒ `double precision`](#h3_get_hexagon_area_avgresolution-integer-unit-text--km-%E2%87%92-double-precision)
+    - [h3_cell_area(cell `h3index`, [unit `text` = km^2]) ⇒ `double precision`](#h3_cell_areacell-h3index-unit-text--km%5E2-%E2%87%92-double-precision)
+    - [h3_get_hexagon_edge_length_avg(resolution `integer`, [unit `text` = km]) ⇒ `double precision`](#h3_get_hexagon_edge_length_avgresolution-integer-unit-text--km-%E2%87%92-double-precision)
+    - [h3_edge_length(edge `h3index`, [unit `text` = km]) ⇒ `double precision`](#h3_edge_lengthedge-h3index-unit-text--km-%E2%87%92-double-precision)
     - [h3_get_num_cells(resolution `integer`) ⇒ `bigint`](#h3_get_num_cellsresolution-integer-%E2%87%92-bigint)
-    - [h3_get_res_0_cells() ⇒ `h3index`](#h3_get_res_0_cells-%E2%87%92-h3index)
-    - [h3_get_pentagons(resolution `integer`) ⇒ `h3index`](#h3_get_pentagonsresolution-integer-%E2%87%92-h3index)
+    - [h3_get_res_0_cells() ⇒ SETOF `h3index`](#h3_get_res_0_cells-%E2%87%92-setof-h3index)
+    - [h3_get_pentagons(resolution `integer`) ⇒ SETOF `h3index`](#h3_get_pentagonsresolution-integer-%E2%87%92-setof-h3index)
 - [Operators](#operators)
   - [B-tree operators](#b-tree-operators)
     - [Operator: `h3index` = `h3index`](#operator-h3index--h3index)
@@ -79,7 +79,7 @@
 - [WKB indexing functions](#wkb-indexing-functions)
     - [h3_cell_to_boundary_wkb(cell `h3index`) ⇒ `bytea`](#h3_cell_to_boundary_wkbcell-h3index-%E2%87%92-bytea)
 - [WKB regions functions](#wkb-regions-functions)
-    - [h3_cells_to_multi_polygon_wkb(`h3index`) ⇒ `bytea`](#h3_cells_to_multi_polygon_wkbh3index-%E2%87%92-bytea)
+    - [h3_cells_to_multi_polygon_wkb(`h3index[]`) ⇒ `bytea`](#h3_cells_to_multi_polygon_wkbh3index-%E2%87%92-bytea)
 - [Deprecated functions](#deprecated-functions)
     - [h3_cell_to_boundary(cell `h3index`, extend_antimeridian `boolean`) ⇒ `polygon`](#h3_cell_to_boundarycell-h3index-extend_antimeridian-boolean-%E2%87%92-polygon)
 
@@ -173,7 +173,7 @@ Returns true if this index represents a pentagonal cell.
 
 
 
-### h3_get_icosahedron_faces(`h3index`) ⇒ `integer`
+### h3_get_icosahedron_faces(`h3index`) ⇒ `integer[]`
 *Since v4.0.0*
 
 
@@ -184,7 +184,7 @@ Find all icosahedron faces intersected by a given H3 index.
 Grid traversal allows finding cells in the vicinity of an origin cell, and
 determining how to traverse the grid from one cell to another.
 
-### h3_grid_disk(origin `h3index`, [k `integer` = 1]) ⇒ `h3index`
+### h3_grid_disk(origin `h3index`, [k `integer` = 1]) ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -192,7 +192,7 @@ Produces indices within "k" distance of the origin index.
 
 
 
-### h3_grid_disk_distances(origin `h3index`, [k `integer` = 1], index `h3index`, distance `int`) ⇒ `record`
+### h3_grid_disk_distances(origin `h3index`, [k `integer` = 1], OUT index `h3index`, OUT distance `int`) ⇒ SETOF `record`
 *Since v4.0.0*
 
 
@@ -200,7 +200,7 @@ Produces indices within "k" distance of the origin index paired with their dista
 
 
 
-### h3_grid_ring_unsafe(origin `h3index`, [k `integer` = 1]) ⇒ `h3index`
+### h3_grid_ring_unsafe(origin `h3index`, [k `integer` = 1]) ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -208,7 +208,7 @@ Returns the hollow hexagonal ring centered at origin with distance "k".
 
 
 
-### h3_grid_path_cells(origin `h3index`, destination `h3index`) ⇒ `h3index`
+### h3_grid_path_cells(origin `h3index`, destination `h3index`) ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -255,7 +255,7 @@ Returns the parent of the given index.
 
 
 
-### h3_cell_to_children(cell `h3index`, resolution `integer`) ⇒ `h3index`
+### h3_cell_to_children(cell `h3index`, resolution `integer`) ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -271,7 +271,7 @@ Returns the center child (finer) index contained by input index at given resolut
 
 
 
-### h3_compact_cells(cells `h3index`) ⇒ `h3index`
+### h3_compact_cells(cells `h3index[]`) ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -279,7 +279,7 @@ Compacts the given array as best as possible.
 
 
 
-### h3_uncompact_cells(cells `h3index`, resolution `integer`) ⇒ `h3index`
+### h3_uncompact_cells(cells `h3index[]`, resolution `integer`) ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -295,7 +295,7 @@ Returns the parent of the given index.
 
 
 
-### h3_cell_to_children(cell `h3index`) ⇒ `h3index`
+### h3_cell_to_children(cell `h3index`) ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -311,7 +311,7 @@ Returns the center child (finer) index contained by input index at next resoluti
 
 
 
-### h3_uncompact_cells(cells `h3index`) ⇒ `h3index`
+### h3_uncompact_cells(cells `h3index[]`) ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -320,7 +320,7 @@ Uncompacts the given array at the resolution one higher than the highest resolut
 
 
 
-### h3_cell_to_children_slow(index `h3index`, resolution `integer`) ⇒ `h3index`
+### h3_cell_to_children_slow(index `h3index`, resolution `integer`) ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -328,7 +328,7 @@ Slower version of H3ToChildren but allocates less memory.
 
 
 
-### h3_cell_to_children_slow(index `h3index`) ⇒ `h3index`
+### h3_cell_to_children_slow(index `h3index`) ⇒ SETOF `h3index`
 
 
 Slower version of H3ToChildren but allocates less memory.
@@ -337,7 +337,7 @@ Slower version of H3ToChildren but allocates less memory.
 
 These functions convert H3 indexes to and from polygonal areas.
 
-### h3_polygon_to_cells(exterior `polygon`, holes `polygon`, [resolution `integer` = 1]) ⇒ `h3index`
+### h3_polygon_to_cells(exterior `polygon`, holes `polygon[]`, [resolution `integer` = 1]) ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -345,7 +345,7 @@ Takes an exterior polygon [and a set of hole polygon] and returns the set of hex
 
 
 
-### h3_cells_to_multi_polygon(`h3index`, exterior `polygon`, holes `polygon`) ⇒ `record`
+### h3_cells_to_multi_polygon(`h3index[]`, OUT exterior `polygon`, OUT holes `polygon[]`) ⇒ SETOF `record`
 *Since v4.0.0*
 
 
@@ -396,7 +396,7 @@ Returns the destination index from the given edge.
 
 
 
-### h3_directed_edge_to_cells(edge `h3index`, origin `h3index`, destination `h3index`) ⇒ `record`
+### h3_directed_edge_to_cells(edge `h3index`, OUT origin `h3index`, OUT destination `h3index`) ⇒ `record`
 *Since v4.0.0*
 
 
@@ -404,7 +404,7 @@ Returns the pair of indices from the given edge.
 
 
 
-### h3_origin_to_directed_edges(`h3index`) ⇒ `h3index`
+### h3_origin_to_directed_edges(`h3index`) ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -430,7 +430,7 @@ Returns a single vertex for a given cell, as an H3 index.
 
 
 
-### h3_cell_to_vertexes(cell `h3index`) ⇒ `h3index`
+### h3_cell_to_vertexes(cell `h3index`) ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -456,7 +456,7 @@ Whether the input is a valid H3 vertex.
 
 These functions include descriptions of the H3 grid system.
 
-### h3_great_circle_distance(a `point`, b `point`, [unit `text` = km]) ⇒ `double`
+### h3_great_circle_distance(a `point`, b `point`, [unit `text` = km]) ⇒ `double precision`
 *Since v4.0.0*
 
 
@@ -464,7 +464,7 @@ The great circle distance in radians between two spherical coordinates.
 
 
 
-### h3_get_hexagon_area_avg(resolution `integer`, [unit `text` = km]) ⇒ `double`
+### h3_get_hexagon_area_avg(resolution `integer`, [unit `text` = km]) ⇒ `double precision`
 *Since v4.0.0*
 
 
@@ -472,7 +472,7 @@ Average hexagon area in square (kilo)meters at the given resolution.
 
 
 
-### h3_cell_area(cell `h3index`, [unit `text` = km^2]) ⇒ `double`
+### h3_cell_area(cell `h3index`, [unit `text` = km^2]) ⇒ `double precision`
 *Since v4.0.0*
 
 
@@ -480,7 +480,7 @@ Exact area for a specific cell (hexagon or pentagon).
 
 
 
-### h3_get_hexagon_edge_length_avg(resolution `integer`, [unit `text` = km]) ⇒ `double`
+### h3_get_hexagon_edge_length_avg(resolution `integer`, [unit `text` = km]) ⇒ `double precision`
 *Since v4.0.0*
 
 
@@ -488,7 +488,7 @@ Average hexagon edge length in (kilo)meters at the given resolution.
 
 
 
-### h3_edge_length(edge `h3index`, [unit `text` = km]) ⇒ `double`
+### h3_edge_length(edge `h3index`, [unit `text` = km]) ⇒ `double precision`
 *Since v4.0.0*
 
 
@@ -504,7 +504,7 @@ Number of unique H3 indexes at the given resolution.
 
 
 
-### h3_get_res_0_cells() ⇒ `h3index`
+### h3_get_res_0_cells() ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -512,7 +512,7 @@ Returns all 122 resolution 0 indexes.
 
 
 
-### h3_get_pentagons(resolution `integer`) ⇒ `h3index`
+### h3_get_pentagons(resolution `integer`) ⇒ SETOF `h3index`
 *Since v4.0.0*
 
 
@@ -619,7 +619,7 @@ This function has to return WKB since Postgres does not provide multipolygon typ
 
 # WKB regions functions
 
-### h3_cells_to_multi_polygon_wkb(`h3index`) ⇒ `bytea`
+### h3_cells_to_multi_polygon_wkb(`h3index[]`) ⇒ `bytea`
 *Since vunreleased*
 
 
