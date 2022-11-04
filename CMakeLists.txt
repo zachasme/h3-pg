@@ -65,3 +65,8 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND PostgreSQL_INDENT)
   )
   add_dependencies(postgresql_h3 format)
 endif()
+
+add_custom_target(pgxn
+  COMMAND git archive --format zip --prefix="${PROJECT_NAME}-${PROJECT_VERSION}/" -o ${PROJECT_NAME}-${PROJECT_VERSION}.zip HEAD
+  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
