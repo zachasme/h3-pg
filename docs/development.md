@@ -1,11 +1,6 @@
 ## Development
 
-We provide a Dockerfile for development without installation of H3 and Postgres. The following requires that your system has `docker` installed.
-
-Simply run `./.github/docker/tools.sh -t`.
-
-It will mount the code as a volume, and also mount the test output directory,
-so output can be inspected.
+In order to build and test your changes, simply run `./scripts/develop.sh`.
 
 Documentation is generated from the sql files, using the script `scripts/documentaion.sh` (requires poetry).
 

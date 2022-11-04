@@ -58,10 +58,12 @@ function(PostgreSQL_add_extension LIBRARY_NAME)
 
   # Generate .sql install file
   set(EXTENSION_INSTALL ${CMAKE_CURRENT_BINARY_DIR}/${EXTENSION_NAME}--${PROJECT_VERSION}.sql)
+  file(WRITE "${EXTENSION_INSTALL}.in" "")
   foreach(file ${EXTENSION_INSTALLS})
     file(READ ${file} CONTENTS)
-    file(APPEND ${EXTENSION_INSTALL} "${CONTENTS}")
+    file(APPEND "${EXTENSION_INSTALL}.in" "${CONTENTS}")
   endforeach()
+  configure_file("${EXTENSION_INSTALL}.in" "${EXTENSION_INSTALL}" COPYONLY)
 
   # Install everything else into share-dir
   install(
