@@ -5,6 +5,7 @@
 \set meter ST_SetSRID(ST_Point(6196902.235389061,1413172.0833316022), 3857)
 \set degree ST_SetSRID(ST_Point(55.6677199224442,12.592131261648213), 4326)
 \set edgecross '\'8003fffffffffff\'::h3index'
+\set polar '\'81f2bffffffffff\'::h3index'
 \set lat1 84.76455330449812
 \set lat2 89.980298101841
 \set epsilon 0.0000000000001
@@ -73,11 +74,17 @@ SELECT COUNT(*) = 48 FROM (
 -- polyfill of geo boundary returns original index
 SELECT h3_polygon_to_cells(h3_cell_to_boundary(:hexagon)::geometry::polygon, null, :resolution) = :hexagon;
 
--- the boundary of of a non-edgecrossing index is a polygon
+-- the boundary of a non-edgecrossing index is a polygon
 SELECT GeometryType(h3_cell_to_boundary_wkb(:hexagon)::geometry) LIKE 'POLYGON';
 
 -- the boundary of an edgecrossing index is a multipolygon when split
 SELECT GeometryType(h3_cell_to_boundary_wkb(:edgecross)::geometry) LIKE 'MULTIPOLYGON';
+
+-- the boundary of a polar cell is a polygon
+SELECT GeometryType(h3_cell_to_boundary_wkb(:polar)::geometry) LIKE 'POLYGON';
+
+-- check num points in polar cell boundary
+SELECT ST_NPoints(h3_cell_to_boundary_geometry(:polar)) = 11;
 
 -- check latitude of antimeridian crossing points
 SET h3.split_antimeridian TO true;

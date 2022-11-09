@@ -26,6 +26,13 @@
 
 #define SIGN(x) ((x < 0) ? -1 : (x > 0) ? 1 \
 										: 0)
+#define ABS_LAT_MAX (degsToRads(89.9999))
+
+#define SPLIT_ASSERT(condition, message)			\
+	ASSERT(										\
+		condition,									\
+		ERRCODE_EXTERNAL_ROUTINE_EXCEPTION,		\
+		message)
 
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_cell_to_boundary_wkb);
 
@@ -34,12 +41,21 @@ static void
 			boundary_to_degs(CellBoundary * boundary);
 
 /* Checks if CellBoundary is crossed by antimeridian */
-static bool
-			boundary_crosses_180(const CellBoundary * boundary);
+static int
+			boundary_crosses_180_num(const CellBoundary * boundary);
 
 /* Splits CellBoundary by antimeridian (and 0 meridian around poles) */
 static void
 			boundary_split_180(const CellBoundary * boundary, CellBoundary * left, CellBoundary * right);
+
+/*
+  Creates a boundary for polar cells with additional points on an antimeridian.
+  The functions adds 2 points (with lon. 180 and -180) for intersection with
+  antimeridian and 2 points on antimeridian close to the pole.
+  This allows to better display polar cells in e.g. Mercator projection.
+ */
+static void
+			boundary_split_180_polar(const CellBoundary * boundary, CellBoundary * res);
 
 /* Finds the boundary of the index, converts to EWKB, splits the boundary by 180 meridian */
 Datum
@@ -48,14 +64,31 @@ h3_cell_to_boundary_wkb(PG_FUNCTION_ARGS)
 	H3Index		cell = PG_GETARG_H3INDEX(0);
 
 	H3Error		error;
-	bytea	   *wkb;
+	bytea		*wkb;
 	CellBoundary boundary;
+	int		crossNum;
 
 	error = cellToBoundary(cell, &boundary);
 	H3_ERROR(error, "cellToBoundary");
 
-	if (boundary_crosses_180(&boundary))
+	crossNum = boundary_crosses_180_num(&boundary);
+	if (crossNum == 0)
 	{
+		/* Cell is not crossed by antimeridian */
+		boundary_to_degs(&boundary);
+		wkb = boundary_to_wkb(&boundary);
+	}
+	else if (crossNum == 1)
+	{
+		/* Cell boundary is crossed by antimeridian once */
+		CellBoundary split;
+		boundary_split_180_polar(&boundary, &split);
+		boundary_to_degs(&split);
+		wkb = boundary_to_wkb(&split);
+	}
+	else
+	{
+		/* Crossed by antimeridian */
 		CellBoundary parts[2];
 
 		boundary_split_180(&boundary, &parts[0], &parts[1]);
@@ -63,11 +96,6 @@ h3_cell_to_boundary_wkb(PG_FUNCTION_ARGS)
 		boundary_to_degs(&parts[0]);
 		boundary_to_degs(&parts[1]);
 		wkb = boundary_array_to_wkb(parts, 2);
-	}
-	else
-	{
-		boundary_to_degs(&boundary);
-		wkb = boundary_to_wkb(&boundary);
 	}
 
 	PG_RETURN_BYTEA_P(wkb);
@@ -86,12 +114,13 @@ boundary_to_degs(CellBoundary * boundary)
 	}
 }
 
-bool
-boundary_crosses_180(const CellBoundary * boundary)
+int
+boundary_crosses_180_num(const CellBoundary * boundary)
 {
 	const int	numVerts = boundary->numVerts;
 	const LatLng *verts = boundary->verts;
 
+    int num = 0;
 	for (int v = 0; v < numVerts; v++)
 	{
 		double		lon = verts[v].lng;
@@ -100,10 +129,10 @@ boundary_crosses_180(const CellBoundary * boundary)
 		if (SIGN(lon) != SIGN(nextLon)
 			&& fabs(lon - nextLon) > M_PI)
 		{
-			return true;
+			++num;
 		}
 	}
-	return false;
+	return num;
 }
 
 void
@@ -112,62 +141,90 @@ boundary_split_180(const CellBoundary * boundary, CellBoundary * part1, CellBoun
 	const int	numVerts = boundary->numVerts;
 	const LatLng *verts = boundary->verts;
 
-	CellBoundary *part,
-			   *prevPart;
-	LatLng		split;
-	int			prevSign = 0;
-	int			start = 0;		/* current batch start */
-
 	part1->numVerts = 0;
 	part2->numVerts = 0;
-	for (int v = 0; v <= numVerts; v++)
+	for (int v = 0; v < numVerts; v++)
 	{
-		int			cur = v % numVerts;
-		double		lon = verts[cur].lng;
-		int			sign = SIGN(lon);
+		int		next = (v + 1) % numVerts;
+		double		lon;
+		double		nextLon;
+		CellBoundary *part;
 
-		if (prevSign != 0 && sign != 0 && sign != prevSign)
+		lon = verts[v].lng;
+		nextLon = verts[next].lng;
+		part = (lon < 0) ? part1 : part2;
+
+		/* Add current vertex */
+		part->verts[part->numVerts++] = verts[v];
+
+		if (SIGN(lon) != SIGN(nextLon))
 		{
-			/* Crossing 0 or 180 meridian */
+			LatLng vert;
 
-			/*
-			 * Assuming boundary is crossed by 180 meridian at least once, so
-			 * segment has to be split by either anti or 0 meridian
-			 */
+			SPLIT_ASSERT(
+				fabs(lon - nextLon) > M_PI,
+				"Cell boundaries crossed by the Prime meridian "
+				"must be handled in `boundary_split_180_polar`");
 
-			int			prev = (v + numVerts - 1) % numVerts;
-			double		prevLon = verts[prev].lng;
-			bool		crossesZero = (fabs(lon - prevLon) < M_PI);
-
-			prevPart = (prevSign < 0) ? part1 : part2;
-			part = (sign < 0) ? part1 : part2;
-
-			/* Add points to prev. part */
-			for (int i = start; i < v && i < numVerts; i++)
-				prevPart->verts[prevPart->numVerts++] = verts[i];
-
-			/* Calc. split point latitude */
-			split.lat = split_180_lat(&verts[cur], &verts[prev]);
+			vert.lat = split_180_lat(&verts[v], &verts[next]);
+			vert.lng = (lon < 0) ? -M_PI : M_PI;
 
 			/* Add split point */
-			/* prev. part */
-			split.lng = crossesZero ? 0 : (prevLon < 0) ? -M_PI
-				: M_PI;
-			;
-			prevPart->verts[prevPart->numVerts++] = split;
-			/* current part */
-			split.lng = crossesZero ? 0 : -split.lng;
-			part->verts[part->numVerts++] = split;
-
-			start = v;			/* start next batch from current point */
+			/* current part  */
+			part->verts[part->numVerts++] = vert;
+			/* next part */
+			vert.lng = -vert.lng;
+			part = (part == part1) ? part2 : part1;
+			part->verts[part->numVerts++] = vert;
 		}
-
-		if (sign != 0)
-			prevSign = sign;
 	}
+}
 
-	/* Add remaining points */
-	part = (prevSign < 0) ? part1 : part2;
-	for (int i = start; i < numVerts; i++)
-		part->verts[part->numVerts++] = verts[i];
+void
+boundary_split_180_polar(const CellBoundary * boundary, CellBoundary * res)
+{
+	const int	numVerts = boundary->numVerts;
+	const LatLng *verts = boundary->verts;
+
+	res->numVerts = 0;
+	for (int v = 0; v < numVerts; v++)
+	{
+		int		next = (v + 1) % numVerts;
+		double		lon;
+		double		nextLon;
+
+		/* Add current vertex */
+		res->verts[res->numVerts++] = verts[v];
+
+		lon = verts[v].lng;
+		nextLon = verts[next].lng;
+		if (SIGN(lon) != SIGN(nextLon)
+			&& fabs(lon - nextLon) > M_PI)
+		{
+			LatLng vert;
+			double splitLat;
+
+			SPLIT_ASSERT(
+				v + 1 == res->numVerts,
+				"Cell boundaries crossed by antimeridian more than once "
+				"must be handled in `boundary_split_180`");
+
+			splitLat = split_180_lat(&verts[v], &verts[next]);
+
+			/* Add intersection point */
+			vert.lat = splitLat;
+			vert.lng = (lon < 0) ? -M_PI : M_PI;
+			res->verts[res->numVerts++] = vert;
+
+			/* Add points on antimeridian near the pole */
+			vert.lat = SIGN(vert.lat) * ABS_LAT_MAX;
+			res->verts[res->numVerts++] = vert;
+			vert.lng = -vert.lng;
+			res->verts[res->numVerts++] = vert;
+
+			/* Add intersection point */
+			vert.lat = splitLat;
+			res->verts[res->numVerts++] = vert;
+		}
+	}
 }
