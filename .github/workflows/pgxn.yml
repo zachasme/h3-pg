@@ -19,17 +19,15 @@ jobs:
       - name: Install PostgreSQL server dependencies
         run: sudo apt install postgresql-server-dev-14 postgis
 
-      - name: Bundle for PGXN
-        run: |
-          cmake -B build -DCMAKE_BUILD_TYPE=Release
-          cmake --build build --target=pgxn
-
       - name: Prepare PostgreSQL
         run: |
           sudo systemctl start postgresql.service
           sudo -u postgres -i createuser --superuser runner
           sudo -u postgres -i createdb runner
           psql -c "CREATE EXTENSION postgis;"
+
+      - name: Bundle
+        run: scripts/bundle
 
       - name: Install
         run: sudo pgxn install ./h3-*.zip
