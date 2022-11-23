@@ -1,0 +1,41 @@
+name: pgxn
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  pgxn:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install PGXN Client
+        run: sudo pip install pgxnclient
+
+      - name: Install PostgreSQL server dependencies
+        run: sudo apt install postgresql-server-dev-14 postgis
+
+      - name: Bundle for PGXN
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --target=pgxn
+
+      - name: Prepare PostgreSQL
+        run: |
+          sudo systemctl start postgresql.service
+          sudo -u postgres -i createuser --superuser runner
+          sudo -u postgres -i createdb runner
+          psql -c "CREATE EXTENSION postgis;"
+
+      - name: Install
+        run: sudo pgxn install ./h3-*.zip
+
+      - name: Load
+        run: pgxn load h3
+
+      - name: Check
+        run: pgxn check h3

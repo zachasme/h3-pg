@@ -4,11 +4,11 @@
 
 # https://www.postgresql.org/support/versioning/
 set(PostgreSQL_SUPPORTED_VERSIONS ${PostgreSQL_ADDITIONAL_VERSIONS}
-  "15" "14" "13" "12" "11" "10")
+  "15" "14" "13" "12" "11")
 
 # Use `FIND_VERSION` to locate specific version of pg_config, or fallback to known versions
-if(FIND_VERSION)
-  list(PREPEND PostgreSQL_SUPPORTED_VERSIONS "${FIND_VERSION}")
+if(PostgreSQL_FIND_VERSION)
+  list(PREPEND PostgreSQL_SUPPORTED_VERSIONS "${PostgreSQL_FIND_VERSION_MAJOR}")
 endif()
 
 foreach(suffix ${PostgreSQL_SUPPORTED_VERSIONS})
@@ -17,15 +17,15 @@ foreach(suffix ${PostgreSQL_SUPPORTED_VERSIONS})
       "PostgreSQL/${suffix}/bin")
   endif()
   if(UNIX)
-    list(APPEND PostgreSQL_CONFIG_PATH_SUFFIXES
-      "bin")
+    list(APPEND PostgreSQL_CONFIG_HINTS
+      "/usr/lib/postgresql/${suffix}/bin")
   endif()
 endforeach()
 
 # Configuration will be based on values gathered from `pg_config`
 find_program(PostgreSQL_CONFIG pg_config REQUIRED
-  PATH_SUFFIXES
-    ${PostgreSQL_CONFIG_PATH_SUFFIXES}
+  HINTS ${PostgreSQL_CONFIG_HINTS}
+  PATH_SUFFIXES ${PostgreSQL_CONFIG_PATH_SUFFIXES}
 )
 
 # Grab information about the installed version of PostgreSQL

@@ -17,8 +17,9 @@
 # and oldest tested versions of CMake. This will ensure
 # you pick up the best policies.
 
-# FetchContent_MakeAvailable in version 3.14
-cmake_minimum_required(VERSION 3.14..3.24)
+# Keep minimum version in sync with:
+# https://github.com/uber/h3/blob/master/CMakeLists.txt
+cmake_minimum_required(VERSION 3.20..3.24)
 
 if(POLICY CMP0135)
   # Set the timestamps of all extracted contents to the time of the extraction
@@ -37,8 +38,11 @@ project(
 # (But usually don't do this, except maybe for C++ standard)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+# Allow forcing PostgreSQL version
+set(POSTGRESQL_VERSION $ENV{POSTGRESQL_VERSION} CACHE STRING "PostgreSQL version major")
+
 # Find packages go here.
-find_package(PostgreSQL REQUIRED)
+find_package(PostgreSQL ${POSTGRESQL_VERSION} REQUIRED)
 include(AddPostgreSQLExtension)
 
 # https://cliutils.gitlab.io/modern-cmake/chapters/testing.html
@@ -67,6 +71,6 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND PostgreSQL_INDENT)
 endif()
 
 add_custom_target(pgxn
-  COMMAND git archive --format zip --prefix="${PROJECT_NAME}-${PROJECT_VERSION}/" -o ${PROJECT_NAME}-${PROJECT_VERSION}.zip HEAD
+  COMMAND git archive --format zip --prefix="h3-${PROJECT_VERSION}/" -o h3-${PROJECT_VERSION}.zip HEAD
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
