@@ -1,8 +1,8 @@
 ## Development
 
-In order to build and test your changes, simply run `./scripts/develop.sh`.
+In order to build and test your changes, simply run `./scripts/develop`.
 
-Documentation is generated from the sql files, using the script `scripts/documentaion.sh` (requires poetry).
+Documentation is generated from the sql files, using the script `scripts/documentaion` (requires poetry).
 
 ## Release Process
 
