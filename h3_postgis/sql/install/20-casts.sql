@@ -15,7 +15,7 @@
  */
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
---| ## PostGIS casts
+--| # PostGIS casts
 
 --@ availability: 0.3.0
 CREATE CAST (h3index AS geometry) WITH FUNCTION h3_cell_to_geometry(h3index);

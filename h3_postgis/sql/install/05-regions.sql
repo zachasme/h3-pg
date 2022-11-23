@@ -17,6 +17,7 @@
 --| # PostGIS Region Functions
 
 --@ availability: 4.0.0
+--@ refid: h3_polygon_to_cells_geometry
 CREATE OR REPLACE FUNCTION h3_polygon_to_cells(multi geometry, resolution integer) RETURNS SETOF h3index
     AS $$ SELECT h3_polygon_to_cells(exterior, holes, resolution) FROM (
         SELECT 
@@ -38,20 +39,24 @@ CREATE OR REPLACE FUNCTION h3_polygon_to_cells(multi geometry, resolution intege
     ) h3_polygon_to_cells; $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
 
 --@ availability: 4.0.0
+--@ refid: h3_polygon_to_cells_geography
 CREATE OR REPLACE FUNCTION h3_polygon_to_cells(multi geography, resolution integer) RETURNS SETOF h3index
 AS $$ SELECT h3_polygon_to_cells($1::geometry, $2) $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
 
 --@ availability: unreleased
+--@ refid: h3_cells_to_multi_polygon_geometry
 CREATE OR REPLACE FUNCTION
     h3_cells_to_multi_polygon_geometry(h3index[]) RETURNS geometry
 AS $$ SELECT h3_cells_to_multi_polygon_wkb($1)::geometry $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 --@ availability: unreleased
+--@ refid: h3_cells_to_multi_polygon_geography
 CREATE OR REPLACE FUNCTION
     h3_cells_to_multi_polygon_geography(h3index[]) RETURNS geography
 AS $$ SELECT h3_cells_to_multi_polygon_wkb($1)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 --@ availability: unreleased
+--@ refid: h3_cells_to_multi_polygon_geometry_agg
 CREATE OR REPLACE AGGREGATE h3_cells_to_multi_polygon_geometry(h3index) (
     sfunc = array_append,
     stype = h3index[],
@@ -60,6 +65,7 @@ CREATE OR REPLACE AGGREGATE h3_cells_to_multi_polygon_geometry(h3index) (
 );
 
 --@ availability: unreleased
+--@ refid: h3_cells_to_multi_polygon_geography_agg
 CREATE OR REPLACE AGGREGATE h3_cells_to_multi_polygon_geography(h3index) (
     sfunc = array_append,
     stype = h3index[],

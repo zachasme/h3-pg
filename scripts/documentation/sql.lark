@@ -12,6 +12,7 @@ custom_decorated_statement: [custom_decorators] statement
           | create_opcl_stmt
           | create_oper_stmt
           | create_func_stmt
+          | create_agg_stmt
           | comment_on_stmt
 
 custom_decorators: ("--@" /([^\n])+/)+
@@ -83,13 +84,44 @@ create_oper_opts: create_oper_opt ("," create_oper_opt)*
 //     [ WITH ( attribute [, ...] ) ]
 create_func_stmt: "CREATE" ("OR" "REPLACE")? "FUNCTION" fun_name "(" [argument_list] ")" [create_fun_rets] create_fun_opts*
 ?create_fun_rets: "RETURNS" create_fun_rettype
-create_fun_opts: "LANGUAGE" CNAME
+create_fun_opts: "LANGUAGE" (CNAME|"'" CNAME "'")
               | ("IMMUTABLE" | "STABLE" | "VOLATILE" | ("NOT"? "LEAKPROOF"))
               | (("CALLED" "ON" "NULL" "INPUT") | ("RETURNS" "NULL" "ON" "NULL" "INPUT") | "STRICT")
               | ("PARALLEL" ("UNSAFE" | "RESTRICTED" | "SAFE"))
               | "AS" string ("," string)?
 argument_list: argument ("," argument)*
 !create_fun_rettype: ["SETOF"] DATATYPE
+
+// -----------------------------------------------------------------------------
+// CREATE [ OR REPLACE ] AGGREGATE name ( [ argmode ] [ argname ] arg_data_type [ , ... ] ) (
+//     SFUNC = sfunc,
+//     STYPE = state_data_type
+//     [ , SSPACE = state_data_size ]
+//     [ , FINALFUNC = ffunc ]
+//     [ , FINALFUNC_EXTRA ]
+//     [ , FINALFUNC_MODIFY = { READ_ONLY | SHAREABLE | READ_WRITE } ]
+//     [ , COMBINEFUNC = combinefunc ]
+//     [ , SERIALFUNC = serialfunc ]
+//     [ , DESERIALFUNC = deserialfunc ]
+//     [ , INITCOND = initial_condition ]
+//     [ , MSFUNC = msfunc ]
+//     [ , MINVFUNC = minvfunc ]
+//     [ , MSTYPE = mstate_data_type ]
+//     [ , MSSPACE = mstate_data_size ]
+//     [ , MFINALFUNC = mffunc ]
+//     [ , MFINALFUNC_EXTRA ]
+//     [ , MFINALFUNC_MODIFY = { READ_ONLY | SHAREABLE | READ_WRITE } ]
+//     [ , MINITCOND = minitial_condition ]
+//     [ , SORTOP = sort_operator ]
+//     [ , PARALLEL = { SAFE | RESTRICTED | UNSAFE } ]
+// )
+// create_agg_stmt: "CREATE" ("OR" "REPLACE")? "AGGREGATE" fun_name "(" [argument_list] ")" "(" agg_param_list ")"
+create_agg_stmt: "CREATE" ("OR" "REPLACE")? "AGGREGATE" fun_name "(" [argument_list] ")" "(" agg_param_list ")"
+agg_param_list: agg_param ("," agg_param)*
+agg_param: "sfunc" "=" fun_name
+         | "stype" "=" DATATYPE
+         | "finalfunc" "=" fun_name
+         | "parallel" "=" ("safe"|"restricted"|"unsafe")
 
 // -----------------------------------------------------------------------------
 // COMMENT ON
@@ -109,7 +141,7 @@ comment_on_type: "CAST" "(" DATATYPE "AS" DATATYPE ")" -> comment_on_cast
 
 // -----------------------------------------------------------------------------
 // SIMPLE RULES
-argument: [ARGMODE] [CNAME] DATATYPE "[]"? ("DEFAULT" expr)?
+argument: [ARGMODE] [CNAME] DATATYPE ("DEFAULT" expr)?
 ARGMODE.2: "IN" | "OUT" | "INOUT"
 DATATYPE_SCALAR: "h3index"
         | "bigint"

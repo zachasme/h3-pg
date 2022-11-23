@@ -41,6 +41,7 @@ AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
 IS 'Returns the hollow hexagonal ring centered at origin with distance "k".';
 
 --@ availability: 4.0.0
+--@ ref: h3_grid_path_cells_recursive
 CREATE OR REPLACE FUNCTION
     h3_grid_path_cells(origin h3index, destination h3index) RETURNS SETOF h3index
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION

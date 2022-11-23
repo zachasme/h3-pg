@@ -15,9 +15,11 @@
  */
 
 --@ availability: 4.0.0
+--@ deprecated
 CREATE OR REPLACE FUNCTION h3_cell_to_boundary_geometry(h3index, extend_antimeridian boolean) RETURNS geometry
   AS $$ SELECT ST_SetSRID(h3_cell_to_boundary($1, extend_antimeridian)::geometry, 4326) $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 
 --@ availability: 4.0.0
+--@ deprecated
 CREATE OR REPLACE FUNCTION h3_cell_to_boundary_geography(h3index, extend_antimeridian boolean) RETURNS geography
   AS $$ SELECT ST_SetSRID(h3_cell_to_boundary($1, extend_antimeridian)::geometry, 4326) $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;

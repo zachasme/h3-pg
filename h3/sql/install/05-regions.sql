@@ -19,6 +19,7 @@
 --| These functions convert H3 indexes to and from polygonal areas.
 
 --@ availability: 4.0.0
+--@ ref: h3_polygon_to_cells_geometry, h3_polygon_to_cells_geography
 CREATE OR REPLACE FUNCTION
     h3_polygon_to_cells(exterior polygon, holes polygon[], resolution integer DEFAULT 1) RETURNS SETOF h3index
 AS 'h3' LANGUAGE C IMMUTABLE
@@ -28,6 +29,7 @@ CALLED ON NULL INPUT PARALLEL SAFE; COMMENT ON FUNCTION
 IS 'Takes an exterior polygon [and a set of hole polygon] and returns the set of hexagons that best fit the structure.';
 
 --@ availability: 4.0.0
+--@ ref: h3_cells_to_multi_polygon_geometry, h3_cells_to_multi_polygon_geography, h3_cells_to_multi_polygon_geometry_agg, h3_cells_to_multi_polygon_geography_agg
 CREATE OR REPLACE FUNCTION
     h3_cells_to_multi_polygon(h3index[], OUT exterior polygon, OUT holes polygon[]) RETURNS SETOF record
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION

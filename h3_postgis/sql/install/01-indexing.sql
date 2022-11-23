@@ -17,6 +17,7 @@
 --| # PostGIS Indexing Functions
 
 --@ availability: 4.0.0
+--@ refid: h3_lat_lng_to_cell_geometry
 CREATE OR REPLACE FUNCTION h3_lat_lng_to_cell(geometry, resolution integer) RETURNS h3index
     AS $$ SELECT h3_lat_lng_to_cell($1::point, $2); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 COMMENT ON FUNCTION
@@ -24,6 +25,7 @@ COMMENT ON FUNCTION
 IS 'Indexes the location at the specified resolution.';
 
 --@ availability: 4.0.0
+--@ refid: h3_lat_lng_to_cell_geography
 CREATE OR REPLACE FUNCTION h3_lat_lng_to_cell(geography, resolution integer) RETURNS h3index
     AS $$ SELECT h3_lat_lng_to_cell($1::geometry, $2); $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 COMMENT ON FUNCTION
@@ -31,6 +33,7 @@ COMMENT ON FUNCTION
 IS 'Indexes the location at the specified resolution.';
 
 --@ availability: 4.0.0
+--@ refid: h3_cell_to_geometry
 CREATE OR REPLACE FUNCTION h3_cell_to_geometry(h3index) RETURNS geometry
   AS $$ SELECT ST_SetSRID(h3_cell_to_lat_lng($1)::geometry, 4326) $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 COMMENT ON FUNCTION
@@ -38,6 +41,7 @@ COMMENT ON FUNCTION
 IS 'Finds the centroid of the index.';
 
 --@ availability: 4.0.0
+--@ refid: h3_cell_to_geography
 CREATE OR REPLACE FUNCTION h3_cell_to_geography(h3index) RETURNS geography
   AS $$ SELECT h3_cell_to_geometry($1)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 COMMENT ON FUNCTION
@@ -45,6 +49,7 @@ COMMENT ON FUNCTION
 IS 'Finds the centroid of the index.';
 
 --@ availability: 4.0.0
+--@ refid: h3_cell_to_boundary_geometry
 CREATE OR REPLACE FUNCTION h3_cell_to_boundary_geometry(h3index) RETURNS geometry
   AS $$ SELECT h3_cell_to_boundary_wkb($1)::geometry $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 COMMENT ON FUNCTION
@@ -54,6 +59,7 @@ IS 'Finds the boundary of the index.
 Splits polygons when crossing 180th meridian.';
 
 --@ availability: 4.0.0
+--@ refid: h3_cell_to_boundary_geography
 CREATE OR REPLACE FUNCTION h3_cell_to_boundary_geography(h3index) RETURNS geography
   AS $$ SELECT h3_cell_to_boundary_wkb($1)::geography $$ IMMUTABLE STRICT PARALLEL SAFE LANGUAGE SQL;
 COMMENT ON FUNCTION

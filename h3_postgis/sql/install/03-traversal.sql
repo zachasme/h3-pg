@@ -17,6 +17,7 @@
 --| # PostGIS Grid Traversal Functions
 
 --@ availability: unreleased
+--@ refid: h3_grid_path_cells_recursive
 CREATE OR REPLACE FUNCTION
     h3_grid_path_cells_recursive(origin h3index, destination h3index) RETURNS SETOF h3index
 AS $$

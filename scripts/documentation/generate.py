@@ -1,33 +1,245 @@
+"""
+The concept:
+
+We don't want to manually keep API docs in sync with SQL files.
+
+So instead we should generate the docs from the sql/install/*.sql files.
+
+We have the following things to document:
+    * Type
+    * Cast (put in same section as the type)
+    * Operator
+    * Function
+    * Aggregate function
+
+Some functions do not need docs, we can signal this by not applying a comment.
+This is internal operator functions for example.
+
+We should parse the sql files, extract the above, and then document all things that
+have comments applied.
+
+We should probably hardcode a list of things that should not be documented, so we can
+fail if new function are undocumented.
+
+"""
+
+import argparse
 import glob
+import re
 import sys
 from pathlib import Path
+from lark import Lark, Transformer, v_args, visitors
 
-from lark import Lark, Transformer, Visitor, v_args, Transformer
+# see PGXN::API::Indexer::_clean_html_body
+def to_anchor(text):
+    text = re.sub(r"[^\w\s\(\)-]", "", text) # approximating processing done in Text::Markdown
+    text = re.sub(r"^([^a-zA-Z])", r"L\1", text)
+    text = re.sub(r"[^a-zA-Z0-9_:.-]+", ".", text)
+    return "#" + text
+
+def md_heading(text, level=0):
+    return "#" * (level + 1) + " " + text
+
+class Context:
+    level = 0
+
+    def __init__(self, statements_by_refid={}):
+        self.statements_by_refid = statements_by_refid
+        self.level = 0
+
+class StmtBase:
+    level = 0
+    newline_before = True
+    newline_after = True
+    decorators = {}
+
+    def __init__(self, level=-1):
+        self.level = level
+
+    def set_decorators(self, decorators):
+        self.decorators = decorators
+
+    def get_decorator(self, key):
+        return self.decorators[key] if self.has_decorator(key) else None
+
+    def has_decorator(self, key):
+        return key in self.decorators
+
+    def is_internal(self):
+        return self.has_decorator("internal")
+
+    def is_deprecated(self):
+        return self.has_decorator("deprecated")
+
+    def is_visible(self):
+        return not self.is_internal() and not self.is_deprecated()
+
+    def get_refid(self):
+        return self.get_decorator("refid")
+
+    def get_ref_text(self):
+        return str(self)
+
+    def get_anchor(self):
+        if not self.is_visible() or self.level < 0:
+            return None
+        return to_anchor(str(self))
+
+    def get_refs(self, statements_by_refid):
+        ids = self.get_decorator("ref") or []
+        return [statements_by_refid[refid] for refid in ids if refid in statements_by_refid]
+
+    def to_ref(self):
+        return '<a href="{}">{}</a>'.format(self.get_anchor(), self.get_ref_text())
+
+    def to_md(self, context):
+        if not self.is_visible():
+            return ""
+
+        md = str(self)
+        if self.level > -1:
+            md = md_heading(md, self.level)
+
+        if self.newline_before:
+            md = "\n" + md
+
+        # availability
+        availability = self.get_decorator("availability")
+        if availability:
+            md += f"\n*Since v{availability}*"
+
+        # references
+        refs = self.get_refs(context.statements_by_refid)
+        if len(refs) > 0:
+            md += "\n\nSee also: "
+            md += ", ".join([ref.to_ref() for ref in refs])
+
+        if self.newline_after:
+            md += "\n"
+
+        return md
+
+    def __str__(self):
+        raise Execepion("Not implemented")
 
 
-class Function:
-    def __init__(self, name: str, arguments, returntype: str, returns_set: bool):
+class Argument:
+    def __init__(self, argmode, name, argtype, default):
+        self.argmode = argmode
         self.name = name
-        self.arguments = arguments
+        self.argtype = argtype
+        self.default = default
+
+    def get_typestr(self):
+        s = "`{}`".format(self.argtype)
+        if self.default:
+            s = "[{} = {}]".format(s, self.default)
+        return s
+
+    def __str__(self):
+        s = ""
+        if self.argmode:
+            s += self.argmode + " "
+        if self.name:
+            s += self.name + " "
+        s += "`{}`".format(self.argtype)
+        if self.default:
+            s = "[{} = {}]".format(s, self.default)
+        return s
+
+
+class CustomMd(StmtBase):
+    def __init__(self, line):
+        super().__init__()
+        self.newline_after = False
+        match = re.match(r"(#+)\s*(.*)", line)
+        if match:
+            self.newline_before = True
+            self.level = max(0, len(match[1]) - 1)
+            self.line = match[2]
+        else:
+            self.newline_before = False
+            self.level = -1
+            self.line = line
+
+    def update_level(self, context):
+        if self.level > -1:
+            context.level = max(0, self.level)
+
+    def __str__(self):
+        return self.line
+
+
+class CreateFunctionStmt(StmtBase):
+    def __init__(self, name: str, arguments, returntype: str, returns_set: bool):
+        super().__init__(2)
+        self.name = name
+        self.arguments = arguments or []
         self.returntype = returntype
         self.returns_set = returns_set
 
+    def get_ref_text(self):
+        return "{}({})".format(
+            self.name,
+            ", ".join([arg.get_typestr() for arg in self.arguments]))
+
     def __str__(self):
-        if self.name.startswith("__"):
-            return None
-        if self.arguments is None:
-            self.arguments = []
-        return "\n### {}({}) ⇒ {}`{}`".format(
-            self.name, ", ".join(self.arguments),
+        return "{}({}) ⇒ {}`{}`".format(
+            self.name,
+            ", ".join([str(arg) for arg in self.arguments]),
             "SETOF " if self.returns_set else "",
-            self.returntype
-        )
+            self.returntype)
 
 
-def get_deco(decorators, key):
-    if decorators and key in decorators:
-        return decorators[key]
-    return None
+class CreateAggregateStmt(StmtBase):
+    def __init__(self, name: str, arguments):
+        super().__init__(2)
+        self.name = name
+        self.arguments = arguments or []
+
+    def get_ref_text(self):
+        return "{}(setof {})".format(
+            self.name,
+            ", ".join([arg.get_typestr() for arg in self.arguments]))
+
+    def __str__(self):
+        return "{}(setof {})".format(
+            self.name,
+            ", ".join([str(arg) for arg in self.arguments]))
+
+
+class CreateTypeStmt(StmtBase):
+    def __str__(self):
+        return ""
+
+class CreateCastStmt(StmtBase):
+    def __init__(self, source, target):
+        super().__init__(2)
+        self.source = source
+        self.target = target
+
+    def __str__(self):
+        return "`{}` :: `{}`".format(self.source, self.target)
+
+
+class CreateOperatorStmt(StmtBase):
+    def __init__(self, name, left, right):
+        super().__init__(2)
+        self.name = name
+        self.left = left
+        self.right = right
+
+    def __str__(self):
+        return "Operator: `{}` {} `{}`".format(self.left, self.name, self.right)
+
+
+class CreateCommentStmt(StmtBase):
+    def __init__(self, text):
+        super().__init__()
+        self.text = text
+
+    def __str__(self):
+        return self.text
 
 
 class SQLTransformer(Transformer):
@@ -37,22 +249,23 @@ class SQLTransformer(Transformer):
         return flat
 
     @v_args(inline=True)
-    def custom_decorated_statement(self, decorators, statement):
-        text = str(statement)
-        availability = get_deco(decorators, "availability")
-        if get_deco(decorators, "internal") or get_deco(decorators, "deprecated"):
-            return ""
-        if availability:
-            text += f"\n*Since v{availability}*"
-        text += "\n\n"
-        return text
+    def custom_decorated_statement(self, decorators, statement = None):
+        if not statement:
+            raise visitors.Discard()
+        if decorators:
+            statement.set_decorators(decorators)
+        return statement
 
     def custom_decorators(self, lines):
         decorators = {}
         for line in lines:
             try:
                 key, value = line.split(":")
-                decorators[str(key).lower()] = value.strip()
+                key = str(key).lower()
+                if key in ["ref"]:
+                    decorators[key] = [v.strip() for v in value.split(",")]
+                else:
+                    decorators[key] = value.strip()
             except:
                 decorators[str(line).lower()] = True
         return decorators
@@ -63,27 +276,24 @@ class SQLTransformer(Transformer):
     # -- MARKDOWN --------------------------------------------------------------
     @v_args(inline=True)
     def custom_markdown(self, line=""):
-        return "" + line
+        return CustomMd(line)
 
     # -- CREATE TYPE -----------------------------------------------------------
     def create_type_stmt(self, children):
-        return ""
+        return CreateTypeStmt()
 
     # -- CREATE CAST -----------------------------------------------------------
     @v_args(inline=True)
     def create_cast_stmt(self, source, target, *children):
-        return f"### `{source}` :: `{target}`"
+        return CreateCastStmt(source, target)
 
     # -- CREATE OPERATOR -------------------------------------------------------
     @v_args(inline=True)
     def create_oper_stmt(self, name, options):
-        return f"### Operator: `{options['LEFTARG']}` {name} `{options['RIGHTARG']}`"
+        return CreateOperatorStmt(name, options['LEFTARG'], options['RIGHTARG'])
 
     def create_oper_opts(self, opts):
-        options = {}
-        for [k, v] in opts:
-            options[k] = v
-        return options
+        return {key: value for [key, value] in opts}
 
     @v_args(inline=True)
     def create_oper_opt(self, option, value=None):
@@ -98,37 +308,30 @@ class SQLTransformer(Transformer):
     def create_func_stmt(self, name: str, arguments, returntype, *opts):
         # skip internal functions
         if name.startswith("__"):
-            return None
+            raise visitors.Discard()
+        return CreateFunctionStmt(name, arguments, returntype[0], returntype[1])
 
-        # print("func")
-
-        return Function(name, arguments, returntype[0], returntype[1])
-
-    def argument_list(self, children):
-        return children
+    # -- CREATE AGGREGATE ------------------------------------------------------
+    @v_args(inline=True)
+    def create_agg_stmt(self, name: str, arguments, *params):
+        return CreateAggregateStmt(name, arguments)
 
     # -- CREATE COMMENT --------------------------------------------------------
     @v_args(inline=True)
     def comment_on_stmt(self, child, text):
-        child["type"] = "comment"
-        child["text"] = text
-        # print(child)
-        return text
+        return CreateCommentStmt(text)
 
-    # ... ON CAST
-    @v_args(inline=True)
-    def comment_on_cast(self, source, target):
-        return {"on": "cast", "source": source, "target": target}
+    # -- FUNCTION OR AGGREGATE ARGUMENTS ---------------------------------------
+    def argument_list(self, children):
+        return children
 
-    # ... ON FUNCTION
     @v_args(inline=True)
-    def comment_on_function(self, name, arguments):
-        return {"on": "function", "name": name, "arguments": arguments}
+    def argument(self, argmode, name, argtype, default=None):
+        return Argument(argmode, name, argtype, default)
 
-    # ... ON OPERATOR
-    @v_args(inline=True)
-    def comment_on_operator(self, name, left, right):
-        return {"on": "operator", "name": name, "left": left, "right": right}
+    # -- CREATE OPERATOR CLASS -------------------------------------------------
+    def create_opcl_stmt(self, children):
+        raise visitors.Discard()
 
     # -- SIMPLE RULES ----------------------------------------------------------
 
@@ -136,24 +339,12 @@ class SQLTransformer(Transformer):
     false = lambda self, _: "`false`"
     number = v_args(inline=True)(int)
 
-    @v_args(inline=True)
-    def string(self, s):
-        return s[1:-1].replace('\\"', '"')
-
     def fun_name(self, children):
         return children[1]
 
     @v_args(inline=True)
-    def argument(self, argmode, name, argtype, default=None):
-        out = ""
-        if argmode:
-            out += "{} ".format(argmode)
-        if name:
-            out += name + " "
-        out += "`{}`".format(argtype)
-        if default:
-            out = "[{} = {}]".format(out, default)
-        return out
+    def string(self, s):
+        return s[1:-1].replace('\\"', '"')
 
     # -- TERMINALS -------------------------------------------------------------
 
@@ -167,48 +358,69 @@ class SQLTransformer(Transformer):
         return str(name)
 
 
-"""
-The concept:
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '--group', '-g',
+        nargs=2, metavar=('header', 'glob'),
+        action='append',
+        help='Globs for each group of SQL install files')
+    return parser.parse_args()
 
-We don't want to manually keep API docs in sync with SQL files.
-
-So instead we should generate the docs from the sql/install/*.sql files.
-
-We have the following things to document:
-    * Type
-    * Cast (put in same section as the type)
-    * Operator
-    * Function
-
-Some functions do not need docs, we can signal this by not applying a comment.
-This is internal operator functions for example.
-
-We should parse the sql files, extract the above, and then document all things that
-have comments applied.
-
-We should probably hardcode a list of things that should not be documented, so we can
-fail if new function are undocumented.
-
-"""
-
-
-if __name__ == "__main__":
+def create_parser():
     here = Path(__file__).parent
-
     parser = Lark.open(
         here / "sql.lark",
         parser="lalr",
-        maybe_placeholders=True,
-    )
+        maybe_placeholders=True)
+    return parser
 
-    files = glob.glob(sys.argv[1])
-    markdown = "# API Reference\n\n"
+def process_group(parser, group, statements_by_refid):
+    [header, files_glob] = group
+    statements = []
+    paths = glob.glob(files_glob)
+    for path in sorted(paths):
+        group_statements = parse_file(parser, path)
+        # Add referenced statements to map
+        for statement in group_statements:
+            refid = statement.get_refid()
+            if refid:
+                statements_by_refid[refid] = statement
+        statements += group_statements
+    return (header, statements)
 
-    for file in sorted(files):
-        with open(file) as f:
-            sql = f.read()
-            parse_tree = parser.parse(sql)
-            statements = SQLTransformer(visit_tokens=True).transform(parse_tree)
-            markdown += "\n".join([str(stmt) for stmt in statements])
+# return flat list of statements in file
+def parse_file(parser, path):
+    with open(path) as fd:
+        sql = fd.read()
+        tree = parser.parse(sql)
+        statements = SQLTransformer(visit_tokens=True).transform(tree)
+        return statements
 
-    print(markdown)
+def statements_to_md(statements, context):
+    items = [stmt.to_md(context) for stmt in statements]
+    return [item for item in items if len(item) > 0]
+
+def main():
+    args = parse_args()
+    parser = create_parser()
+
+    groups = []
+    statements_by_refid = {}
+
+    # Process groups
+    for item in args.group:
+        group = process_group(parser, item, statements_by_refid)
+        groups.append(group)
+
+    # Output
+    md = ""
+    for group in groups:
+        [header, statements] = group
+        md += md_heading(header) + "\n"
+        md += "\n".join(statements_to_md(statements, Context(statements_by_refid))) + "\n"
+
+    print(md)
+
+if __name__ == "__main__":
+    main()

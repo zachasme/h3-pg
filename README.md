@@ -44,7 +44,7 @@ See [Advanced Install](#advanced-install) for other installation methods.
 
 Generally, all functions have been renamed from camelCase in H3 to snake\_case in SQL.
 
-See [API reference](docs/api.md) for all provided functions.
+See [API reference](https://pgxn.org/dist/h3/docs/api.html) for all provided functions.
 
 ## Building
 

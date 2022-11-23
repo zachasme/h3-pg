@@ -10,7 +10,7 @@ cd documentation
 poetry install
 
 # generate markdown from sql files
-poetry run -q -- python generate.py "../../h3/sql/install/*.sql" > "../../docs/api.md"
-
-# include table of contents
-npx doctoc "../../docs/api.md"
+poetry run -q -- python generate.py \
+       -g "API Reference" "../../h3/sql/install/*.sql" \
+       -g "PostGIS Integration" "../../h3_postgis/sql/install/*.sql" \
+       > "../../docs/api.md"
