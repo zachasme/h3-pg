@@ -11,10 +11,10 @@ Developed in collaboration with [Scandinavian Highlands](http://www.scandinavian
 
 ## Prerequisites
 
-- PostgreSQL 9.6+ (_including server headers_). It might work with earlier versions, we have not tested them.
-- C compiler (e.g., gcc)
+- PostgreSQL 11+ (_including server headers_). It might work with earlier versions, we have not tested them.
+- C compiler (e.g., `gcc`)
+- [CMake](https://cmake.org/)
 - GNU Make
-- Git & CMake (for libh3)
 
 ## Quick Overview
 
