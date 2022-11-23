@@ -64,9 +64,9 @@ h3_cell_to_boundary_wkb(PG_FUNCTION_ARGS)
 	H3Index		cell = PG_GETARG_H3INDEX(0);
 
 	H3Error		error;
-	bytea		*wkb;
+	bytea	   *wkb;
 	CellBoundary boundary;
-	int		crossNum;
+	int			crossNum;
 
 	error = cellToBoundary(cell, &boundary);
 	H3_ERROR(error, "cellToBoundary");
@@ -82,6 +82,7 @@ h3_cell_to_boundary_wkb(PG_FUNCTION_ARGS)
 	{
 		/* Cell boundary is crossed by antimeridian once */
 		CellBoundary split;
+
 		boundary_split_180_polar(&boundary, &split);
 		boundary_to_degs(&split);
 		wkb = boundary_to_wkb(&split);
@@ -120,7 +121,8 @@ boundary_crosses_180_num(const CellBoundary * boundary)
 	const int	numVerts = boundary->numVerts;
 	const LatLng *verts = boundary->verts;
 
-    int num = 0;
+	int			num = 0;
+
 	for (int v = 0; v < numVerts; v++)
 	{
 		double		lon = verts[v].lng;
@@ -145,7 +147,7 @@ boundary_split_180(const CellBoundary * boundary, CellBoundary * part1, CellBoun
 	part2->numVerts = 0;
 	for (int v = 0; v < numVerts; v++)
 	{
-		int		next = (v + 1) % numVerts;
+		int			next = (v + 1) % numVerts;
 		double		lon;
 		double		nextLon;
 		CellBoundary *part;
@@ -159,12 +161,12 @@ boundary_split_180(const CellBoundary * boundary, CellBoundary * part1, CellBoun
 
 		if (SIGN(lon) != SIGN(nextLon))
 		{
-			LatLng vert;
+			LatLng		vert;
 
 			SPLIT_ASSERT(
-				fabs(lon - nextLon) > M_PI,
-				"Cell boundaries crossed by the Prime meridian "
-				"must be handled in `boundary_split_180_polar`");
+						 fabs(lon - nextLon) > M_PI,
+						 "Cell boundaries crossed by the Prime meridian "
+						 "must be handled in `boundary_split_180_polar`");
 
 			vert.lat = split_180_lat(&verts[v], &verts[next]);
 			vert.lng = (lon < 0) ? -M_PI : M_PI;
@@ -189,7 +191,7 @@ boundary_split_180_polar(const CellBoundary * boundary, CellBoundary * res)
 	res->numVerts = 0;
 	for (int v = 0; v < numVerts; v++)
 	{
-		int		next = (v + 1) % numVerts;
+		int			next = (v + 1) % numVerts;
 		double		lon;
 		double		nextLon;
 
@@ -201,13 +203,13 @@ boundary_split_180_polar(const CellBoundary * boundary, CellBoundary * res)
 		if (SIGN(lon) != SIGN(nextLon)
 			&& fabs(lon - nextLon) > M_PI)
 		{
-			LatLng vert;
-			double splitLat;
+			LatLng		vert;
+			double		splitLat;
 
 			SPLIT_ASSERT(
-				v + 1 == res->numVerts,
-				"Cell boundaries crossed by antimeridian more than once "
-				"must be handled in `boundary_split_180`");
+						 v + 1 == res->numVerts,
+					"Cell boundaries crossed by antimeridian more than once "
+						 "must be handled in `boundary_split_180`");
 
 			splitLat = split_180_lat(&verts[v], &verts[next]);
 
