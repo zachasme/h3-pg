@@ -22,13 +22,5 @@ PostgreSQL_add_extension(postgresql_h3_postgis
 )
 
 if(BUILD_TESTING)
-  if(PostgreSQL_VALIDATE_EXTUPGRADE)
-    add_test(
-      NAME "h3_postgis_validate_extupgrade"
-      COMMAND pg_validate_extupgrade
-        --extname h3_postgis
-        --from 4.0.0
-        --to unreleased
-    )
-  endif()
+  add_subdirectory(test)
 endif()

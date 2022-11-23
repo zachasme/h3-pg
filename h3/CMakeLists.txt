@@ -86,31 +86,4 @@ target_link_libraries(postgresql_h3 h3)
 
 if(BUILD_TESTING)
   add_subdirectory(test)
-
-  if(PostgreSQL_VALIDATE_EXTUPGRADE)
-    add_test(
-      NAME h3_validate_extrupgrade
-      COMMAND pg_validate_extupgrade
-        --extname h3
-        --from 0.1.0
-        --to unreleased
-    )
-  endif()
-
-  # @TODO: Figure out how to inline on MacOS
-  if(NOT APPLE)
-    add_test(
-      NAME h3_inlined
-      COMMAND sh -c "! objdump -D ${PostgreSQL_PKG_LIBRARY_DIR}/h3.so | grep radsToDegs"
-      CONFIGURATIONS Release
-    )
-  endif()
 endif()
-
-#configure_file(h3.control h3.control)
-
-#install(
-#    FILES ${CMAKE_CURRENT_BINARY_DIR}/h3.control
-#    DESTINATION "${PostgreSQL_SHARE_DIR}/extension"
-#    COMPONENT extension
-#)

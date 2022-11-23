@@ -13,7 +13,7 @@ set(TESTS
   edge
 )
 
-if(BUILD_TESTING AND PostgreSQL_REGRESS)
+if(PostgreSQL_REGRESS)
   add_test(
     NAME h3_regress
     COMMAND ${PostgreSQL_REGRESS}
@@ -23,5 +23,24 @@ if(BUILD_TESTING AND PostgreSQL_REGRESS)
       --outputdir=${CMAKE_CURRENT_BINARY_DIR}
       --load-extension h3
       ${TESTS}
+  )
+endif()
+
+if(PostgreSQL_VALIDATE_EXTUPGRADE)
+  add_test(
+    NAME h3_validate_extrupgrade
+    COMMAND pg_validate_extupgrade
+      --extname h3
+      --from 0.1.0
+      --to unreleased
+  )
+endif()
+
+# @TODO: Figure out how to inline on MacOS
+if(NOT APPLE)
+  add_test(
+    NAME h3_inlined
+    COMMAND sh -c "! objdump -D ${PostgreSQL_PKG_LIBRARY_DIR}/h3.so | grep radsToDegs"
+    CONFIGURATIONS Release
   )
 endif()
