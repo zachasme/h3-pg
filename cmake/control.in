@@ -1,4 +1,4 @@
 comment = '@EXTENSION_COMMENT@'
-default_version = '@PROJECT_VERSION@'
+default_version = '@EXTENSION_VERSION@'
 relocatable = @EXTENSION_RELOCATABLE@
 requires = '@EXTENSION_REQUIRES@'

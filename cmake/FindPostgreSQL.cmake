@@ -102,7 +102,7 @@ set(PostgreSQL_VERSION "${PostgreSQL_VERSION_MAJOR}.${PostgreSQL_VERSION_MINOR}"
 if("PostGIS" IN_LIST PostgreSQL_FIND_COMPONENTS)
   find_library(
     POSTGIS
-    NAMES postgis postgis-3
+    NAMES postgis postgis-3 postgis-3.so
     PATHS ${PostgreSQL_PKG_LIBRARY_DIR}
   )
 

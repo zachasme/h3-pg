@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include <postgres.h>		 // Datum, etc.
-#include <fmgr.h>			 // PG_FUNCTION_ARGS, etc.
-#include <utils/geo_decls.h> // making native points
+#include <postgres.h>		 // Primary include file for PostgreSQL server .c files
+#include <fmgr.h>			 // PG_FUNCTION_INFO_V1
+#include <utils/geo_decls.h> // PG_GETARG_POINT_P
 
 #include <h3api.h> // Main H3 include
 #include "extension.h"

@@ -19,3 +19,9 @@
 
 DROP FUNCTION IF EXISTS h3_cell_to_boundary_wkb(h3index);
 DROP FUNCTION IF EXISTS h3_cells_to_multi_polygon_wkb(h3index[]);
+
+ALTER OPERATOR FAMILY btree_h3index_ops USING btree RENAME TO h3index_ops;
+ALTER OPERATOR CLASS  btree_h3index_ops USING btree RENAME TO h3index_ops;
+
+ALTER OPERATOR FAMILY hash_h3index_ops USING hash RENAME TO h3index_ops;
+ALTER OPERATOR CLASS  hash_h3index_ops USING hash RENAME TO h3index_ops;

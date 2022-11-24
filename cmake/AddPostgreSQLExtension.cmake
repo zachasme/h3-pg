@@ -11,7 +11,7 @@ find_program(PostgreSQL_VALIDATE_EXTUPGRADE pg_validate_extupgrade)
 # Helper command to add extensions
 function(PostgreSQL_add_extension LIBRARY_NAME)
   set(options RELOCATABLE)
-  set(oneValueArgs NAME COMMENT COMPONENT)
+  set(oneValueArgs NAME COMMENT VERSION COMPONENT)
   set(multiValueArgs REQUIRES SOURCES INSTALLS UPDATES)
   cmake_parse_arguments(EXTENSION "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
@@ -57,7 +57,7 @@ function(PostgreSQL_add_extension LIBRARY_NAME)
   )
 
   # Generate .sql install file
-  set(EXTENSION_INSTALL ${CMAKE_CURRENT_BINARY_DIR}/${EXTENSION_NAME}--${PROJECT_VERSION}.sql)
+  set(EXTENSION_INSTALL ${CMAKE_CURRENT_BINARY_DIR}/${EXTENSION_NAME}--${EXTENSION_VERSION}.sql)
   file(WRITE "${EXTENSION_INSTALL}.in" "")
   foreach(file ${EXTENSION_INSTALLS})
     file(READ ${file} CONTENTS)

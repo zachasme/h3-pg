@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 Bytes & Brains
+ * Copyright 2018-2022 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-#include <math.h> // cos, sin, etc.
-#include <assert.h>
-
-#include <postgres.h>			 // Datum, etc.
-#include <fmgr.h>				 // PG_FUNCTION_ARGS, etc.
-#include <funcapi.h>			 // Definitions for functions which return sets
+#include <postgres.h>			 // Primary include file for PostgreSQL server .c files
+#include <fmgr.h>				 // PG_FUNCTION_INFO_V1
+#include <funcapi.h>			 // SRF_IS_FIRSTCALL
 #include <access/htup_details.h> // Needed to return HeapTuple
 #include <utils/guc.h>			 // for GetConfigOption*
 #include <utils/builtins.h>
+
+#include <math.h> // cos, sin, etc.
+#include <assert.h>
 
 #include <h3api.h> // Main H3 include
 #include "extension.h"

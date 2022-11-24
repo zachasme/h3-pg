@@ -6,7 +6,6 @@ set(TESTS
   miscellaneous
   opclass_btree
   opclass_hash
-  #postgis
   regions
   traversal
   type

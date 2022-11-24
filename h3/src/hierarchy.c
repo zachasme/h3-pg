@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include <postgres.h>		// Datum, etc.
-#include <fmgr.h>			// PG_FUNCTION_ARGS, etc.
-#include <funcapi.h>		// Definitions for functions which return sets
+#include <postgres.h>		// Primary include file for PostgreSQL server .c files
+#include <fmgr.h>			// PG_FUNCTION_INFO_V1
+#include <funcapi.h>		// SRF_IS_FIRSTCALL
 #include <utils/array.h>	// Arrays
 #include <utils/memutils.h> // MaxAllocSize
 

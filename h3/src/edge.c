@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-#include <postgres.h>			 // Datum, etc.
-#include <fmgr.h>				 // PG_FUNCTION_ARGS, etc.
-#include <funcapi.h>			 // Needed to return HeapTuple
+#include <postgres.h>			 // Primary include file for PostgreSQL server .c files
+#include <fmgr.h>				 // PG_FUNCTION_INFO_V1
+#include <funcapi.h>			 // SRF_IS_FIRSTCALL
 #include <access/htup_details.h> // Needed to return HeapTuple
-#include <utils/geo_decls.h>	 // making native points
+#include <utils/geo_decls.h>	 // PG_GETARG_POINT_P
 
 #include <h3api.h> // Main H3 include
 #include "extension.h"
