@@ -14,26 +14,7 @@
  * limitations under the License.
  */
 
-#include <postgres.h>
-#include <fmgr.h>		// PG_FUNCTION_ARGS, etc.
-
-/*	Inspired by PostGIS legacy function handling */
-/*	https://github.com/postgis/postgis/blob/master/postgis/postgis_legacy.c */
-
-#define H3_DEPRECATE(version, funcname) \
-	PGDLLEXPORT PG_FUNCTION_INFO_V1(funcname); \
-	Datum funcname(PG_FUNCTION_ARGS) \
-	{ \
-		ereport(ERROR, (\
-			errcode(ERRCODE_FEATURE_NOT_SUPPORTED), \
-			errmsg("A stored procedure tried to use deprecated C function '%s'", \
-				   __func__), \
-			errdetail("Library function '%s' was deprecated in h3 %s", \
-					  __func__, version), \
-			errhint("Consider running: ALTER EXTENSION h3 UPDATE") \
-		)); \
-		PG_RETURN_POINTER(NULL); \
-	}
+#include "deprecated.h"
 
 H3_DEPRECATE("1.0.0", h3_basecells);
 H3_DEPRECATE("1.0.0", h3_h3_get_base_cell);
@@ -93,3 +74,5 @@ H3_DEPRECATE("4.0.0", h3_to_geo_boundary);
 H3_DEPRECATE("4.0.0", h3_to_geo);
 H3_DEPRECATE("4.0.0", h3_uncompact);
 H3_DEPRECATE("4.0.0", h3_unidirectional_edge_is_valid);
+H3_DEPRECATE("unreleased", h3_cell_to_boundary_wkb);
+H3_DEPRECATE("unreleased", h3_cells_to_multi_polygon_wkb);
