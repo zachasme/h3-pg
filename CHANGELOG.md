@@ -27,6 +27,7 @@ avoid adding features or APIs which do not map onto the
   </summary>
 
 - Use CMake for entire build (see [#70])
+- Add helper to fix pass-by-value migration (see [#111])
 
 </details>
 
@@ -89,7 +90,7 @@ avoid adding features or APIs which do not map onto the
 
 ## [3.6.2] - 2020-04-07
 
-**This update might corrupt your h3indexes (see [#31]).**
+**This update will corrupt your h3indexes unless your are using a 32-bit build of PostgreSQL (see [#31]). If you upgrade to `4.0.4` you can use the function `h3_pg_migrate_pass_by_reference(h3index)` to retrieve your old h3 cells. See [#111].**
 
 - Add parallel safety flags to PostGIS functions (see [#19], thanks [@komzpa])
 - Add B-Tree sort support (see [#24], thanks [@komzpa])
@@ -230,6 +231,7 @@ avoid adding features or APIs which do not map onto the
 [#91]: https://github.com/zachasme/h3-pg/pull/91
 [#93]: https://github.com/zachasme/h3-pg/pull/93
 [#97]: https://github.com/zachasme/h3-pg/pull/97
+[#111]: https://github.com/zachasme/h3-pg/pull/111
 [@abelvm]: https://github.com/AbelVM
 [@kalenikaliaksandr]: https://github.com/kalenikaliaksandr
 [@kmacdough]: https://github.com/kmacdough
