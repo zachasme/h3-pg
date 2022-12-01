@@ -90,7 +90,7 @@ Datum		srf_return_h3_index_distances_from_user_fctx(PG_FUNCTION_ARGS);
 	if (error) ereport(ERROR, (						 \
 		errcode(ERRCODE_EXTERNAL_ROUTINE_EXCEPTION), \
 		errmsg("%s error code: %i", func, error),		 \
-		errhint("https://h3geo.org/docs/next/library/errors/#table-of-error-codes") \
+		errhint("https://h3geo.org/docs/library/errors#table-of-error-codes") \
 	))
 
 #define ASSERT(condition, code, msg, ...)  \
