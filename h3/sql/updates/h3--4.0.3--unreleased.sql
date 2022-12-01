@@ -30,3 +30,16 @@ CREATE OR REPLACE FUNCTION h3_pg_migrate_pass_by_reference(h3index) RETURNS h3in
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
     COMMENT ON FUNCTION h3_pg_migrate_pass_by_reference(h3index) IS
 'Migrate h3index from pass-by-reference to pass-by-value.';
+
+-- make distance operator allow different resolutions
+CREATE OR REPLACE FUNCTION h3index_distance(h3index, h3index) RETURNS bigint
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+DROP OPERATOR IF EXISTS <-> (h3index, h3index);
+CREATE OPERATOR <-> (
+  LEFTARG = h3index,
+  RIGHTARG = h3index,
+  PROCEDURE = h3index_distance,
+  COMMUTATOR = <->
+);
+COMMENT ON OPERATOR <-> (h3index, h3index) IS
+  'Returns the distance in grid cells between the two indices (at the lowest resolution of the two).';

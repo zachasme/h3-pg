@@ -20,6 +20,8 @@
 #include <h3api.h> // Main H3 include
 #include "extension.h"
 
+PGDLLEXPORT PG_FUNCTION_INFO_V1(h3index_distance);
+
 /* b-tree */
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3index_eq);
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3index_ne);
@@ -60,6 +62,37 @@ containment(H3Index a, H3Index b)
 
 	/* no overlap */
 	return 0;
+}
+
+/* distance operator allowing for different resolutions */
+Datum
+h3index_distance(PG_FUNCTION_ARGS)
+{
+	H3Index		a = PG_GETARG_H3INDEX(0);
+	H3Index		b = PG_GETARG_H3INDEX(1);
+	int			resA = getResolution(a);
+	int			resB = getResolution(b);
+	H3Error		error;
+	int64_t		distance;
+
+	if (resA < resB)
+	{
+		error = cellToCenterChild(a, resB, &a);
+		H3_ERROR(error, "cellToCenterChild");
+	}
+
+	if (resB < resA)
+	{
+		error = cellToCenterChild(b, resA, &b);
+		H3_ERROR(error, "cellToCenterChild");
+	}
+
+	error = gridDistance(a, b, &distance);
+	/* H3_ERROR(error, "gridDistance"); */
+	if (error)
+		distance = -1;
+
+	PG_RETURN_INT64(distance);
 }
 
 /* b-tree operators */

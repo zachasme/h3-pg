@@ -402,6 +402,13 @@ All the pentagon H3 indexes at the specified resolution.
 
 # Operators
 
+### Operator: `h3index` <-> `h3index`
+*Since v3.7.0*
+
+
+Returns the distance in grid cells between the two indices (at the lowest resolution of the two).
+
+
 ## B-tree operators
 
 ### Operator: `h3index` = `h3index`
@@ -436,13 +443,6 @@ Returns true if A containts B.
 
 
 Returns true if A is contained by B.
-
-
-### Operator: `h3index` <-> `h3index`
-*Since v3.7.0*
-
-
-Returns the distance in grid cells between the two indices.
 
 
 # Type casts

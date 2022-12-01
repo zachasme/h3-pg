@@ -28,6 +28,7 @@ avoid adding features or APIs which do not map onto the
 
 - Use CMake for entire build (see [#70])
 - Add helper to fix pass-by-value migration (see [#111])
+- Allow distance operator `<->` to work for cells at different resolutions (using center child).
 
 </details>
 

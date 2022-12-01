@@ -16,6 +16,19 @@
 
 --| # Operators
 
+--@ internal
+CREATE OR REPLACE FUNCTION h3index_distance(h3index, h3index) RETURNS bigint
+    AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ availability: 3.7.0
+CREATE OPERATOR <-> (
+  LEFTARG = h3index,
+  RIGHTARG = h3index,
+  PROCEDURE = h3index_distance,
+  COMMUTATOR = <->
+);
+COMMENT ON OPERATOR <-> (h3index, h3index) IS
+  'Returns the distance in grid cells between the two indices (at the lowest resolution of the two).';
+
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 --| ## B-tree operators
 
@@ -148,13 +161,3 @@ CREATE OPERATOR <@ (
 );
 COMMENT ON OPERATOR <@ (h3index, h3index) IS
   'Returns true if A is contained by B.';
-
---@ availability: 3.7.0
-CREATE OPERATOR <-> (
-  LEFTARG = h3index,
-  RIGHTARG = h3index,
-  PROCEDURE = h3_grid_distance,
-  COMMUTATOR = <->
-);
-COMMENT ON OPERATOR <-> (h3index, h3index) IS
-  'Returns the distance in grid cells between the two indices.';
