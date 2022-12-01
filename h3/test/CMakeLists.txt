@@ -4,6 +4,7 @@ set(TESTS
   indexing
   inspection
   miscellaneous
+  opclass_brin
   opclass_btree
   opclass_hash
   regions
