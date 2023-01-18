@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Bump `h3` to `v4.1.0`
+- Add bindings for `h3_cell_to_child_pos` and `h3_child_pos_to_cell`.
 - Use CMake for entire build (see [#70])
 - Add helper to fix pass-by-value migration (see [#111])
 - Allow distance operator `<->` to work for cells at different resolutions (using center child).

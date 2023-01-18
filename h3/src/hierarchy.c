@@ -26,6 +26,8 @@
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_cell_to_parent);
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_cell_to_children);
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_cell_to_center_child);
+PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_cell_to_child_pos);
+PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_child_pos_to_cell);
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_compact_cells);
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_uncompact_cells);
 
@@ -105,6 +107,35 @@ h3_cell_to_center_child(PG_FUNCTION_ARGS)
 
 	error = cellToCenterChild(origin, resolution, &child);
 	H3_ERROR(error, "cellToCenterChild");
+
+	PG_RETURN_H3INDEX(child);
+}
+
+Datum
+h3_cell_to_child_pos(PG_FUNCTION_ARGS)
+{
+	H3Index		child = PG_GETARG_H3INDEX(0);
+	int			parentRes = PG_GETARG_INT32(1);
+	int64_t		childPos;
+
+	H3Error		error = cellToChildPos(child, parentRes, &childPos);
+
+	H3_ERROR(error, "cellToChildPos");
+
+	PG_RETURN_INT64(childPos);
+}
+
+Datum
+h3_child_pos_to_cell(PG_FUNCTION_ARGS)
+{
+	int64_t		childPos = PG_GETARG_INT64(0);
+	H3Index		parent = PG_GETARG_H3INDEX(1);
+	int			childRes = PG_GETARG_INT32(2);
+	H3Index		child;
+
+	H3Error		error = childPosToCell(childPos, parent, childRes, &child);
+
+	H3_ERROR(error, "childPosToCell");
 
 	PG_RETURN_H3INDEX(child);
 }

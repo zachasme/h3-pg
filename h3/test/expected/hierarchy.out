@@ -57,6 +57,23 @@ SELECT :hexagon = h3_cell_to_parent(h3_cell_to_center_child(:hexagon, 15), :reso
  t
 
 --
+-- TEST h3_cell_to_child_pos and h3_child_pos_to_cell
+--
+SELECT :hexagon = h3_child_pos_to_cell(
+	h3_cell_to_child_pos(:hexagon, :resolution - 1),
+	h3_cell_to_parent(:hexagon),
+	:resolution
+);
+ t
+
+SELECT COUNT(*) = 7 FROM (
+	SELECT h3_cell_to_child_pos(
+		h3_cell_to_children(:hexagon), :resolution - 1
+	)
+) q;
+ t
+
+--
 -- TEST h3_compact_cells and h3_uncompact_cells
 --
 -- compacts the children of two hexes into the original two hexes

@@ -50,6 +50,22 @@ SELECT bool_and(r = :resolution +1) FROM (
 SELECT :hexagon = h3_cell_to_parent(h3_cell_to_center_child(:hexagon, 15), :resolution);
 
 --
+-- TEST h3_cell_to_child_pos and h3_child_pos_to_cell
+--
+
+SELECT :hexagon = h3_child_pos_to_cell(
+	h3_cell_to_child_pos(:hexagon, :resolution - 1),
+	h3_cell_to_parent(:hexagon),
+	:resolution
+);
+
+SELECT COUNT(*) = 7 FROM (
+	SELECT h3_cell_to_child_pos(
+		h3_cell_to_children(:hexagon), :resolution - 1
+	)
+) q;
+
+--
 -- TEST h3_compact_cells and h3_uncompact_cells
 --
 

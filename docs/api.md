@@ -181,6 +181,20 @@ Returns the center child (finer) index contained by input index at given resolut
 Compacts the given array as best as possible.
 
 
+### h3_cell_to_child_pos(child `h3index`, parentRes `integer`) ⇒ `int8`
+*Since vunreleased*
+
+
+Returns the position of the child cell within an ordered list of all children of the cells parent at the specified resolution parentRes. The order of the ordered list is the same as that returned by cellToChildren. This is the complement of childPosToCell.
+
+
+### h3_child_pos_to_cell(childPos `int8`, parent `h3index`, childRes `int`) ⇒ `h3index`
+*Since vunreleased*
+
+
+Returns the child cell at a given position within an ordered list of all children of parent at the specified resolution childRes. The order of the ordered list is the same as that returned by cellToChildren. This is the complement of cellToChildPos.
+
+
 ### h3_uncompact_cells(cells `h3index[]`, resolution `integer`) ⇒ SETOF `h3index`
 *Since v4.0.0*
 

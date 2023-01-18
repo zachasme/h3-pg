@@ -47,6 +47,20 @@ AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
     h3_compact_cells(cells h3index[])
 IS 'Compacts the given array as best as possible.';
 
+--@ availability: unreleased
+CREATE OR REPLACE FUNCTION
+    h3_cell_to_child_pos(child h3index, parentRes integer) RETURNS int8
+AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
+    h3_cell_to_child_pos(child h3index, parentRes integer)
+IS 'Returns the position of the child cell within an ordered list of all children of the cells parent at the specified resolution parentRes. The order of the ordered list is the same as that returned by cellToChildren. This is the complement of childPosToCell.';
+
+--@ availability: unreleased
+CREATE OR REPLACE FUNCTION
+    h3_child_pos_to_cell(childPos int8, parent h3index, childRes int) RETURNS h3index
+AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE; COMMENT ON FUNCTION
+    h3_child_pos_to_cell(childPos int8, parent h3index, childRes int)
+IS 'Returns the child cell at a given position within an ordered list of all children of parent at the specified resolution childRes. The order of the ordered list is the same as that returned by cellToChildren. This is the complement of cellToChildPos.';
+
 --@ availability: 4.0.0
 CREATE OR REPLACE FUNCTION
     h3_uncompact_cells(cells h3index[], resolution integer) RETURNS SETOF h3index
@@ -121,4 +135,3 @@ CREATE OR REPLACE FUNCTION h3_cell_to_children_slow(index h3index) RETURNS SETOF
     AS $$ SELECT __h3_cell_to_children_aux($1, -1, -1) $$ LANGUAGE SQL;
     COMMENT ON FUNCTION h3_cell_to_children_slow(index h3index) IS
 'Slower version of H3ToChildren but allocates less memory.';
-
