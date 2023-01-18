@@ -64,17 +64,6 @@ configure_file(include/extension.in.h include/extension.h)
 add_subdirectory(h3)
 add_subdirectory(h3_postgis)
 
-# Automatic formatting
-find_program(PostgreSQL_INDENT pgindent)
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND PostgreSQL_INDENT)
-  add_custom_target(format
-    COMMAND ${PostgreSQL_INDENT}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/h3
-    COMMENT "Formatting sources"
-  )
-  add_dependencies(postgresql_h3 format)
-endif()
-
 add_custom_target(pgxn
   COMMAND git archive --format zip --prefix="h3-${PROJECT_VERSION}/" -o h3-${PROJECT_VERSION}.zip HEAD
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}

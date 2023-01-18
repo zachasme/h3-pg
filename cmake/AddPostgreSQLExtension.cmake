@@ -8,6 +8,9 @@ find_program(PostgreSQL_REGRESS pg_regress
 # Add pg_validate_extupgrade binary
 find_program(PostgreSQL_VALIDATE_EXTUPGRADE pg_validate_extupgrade)
 
+# Add pgindent binary
+find_program(PostgreSQL_INDENT pgindent)
+
 # Helper command to add extensions
 function(PostgreSQL_add_extension LIBRARY_NAME)
   set(options RELOCATABLE)
@@ -74,4 +77,14 @@ function(PostgreSQL_add_extension LIBRARY_NAME)
     DESTINATION "${PostgreSQL_SHARE_DIR}/extension"
     COMPONENT ${EXTENSION_COMPONENT}
   )
+
+  # Setup auto-format
+  if(PostgreSQL_INDENT)
+    add_custom_target("format_${EXTENSION_NAME}"
+      COMMAND ${PostgreSQL_INDENT} ${EXTENSION_SOURCES}
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+      COMMENT "Formatting ${EXTENSION_NAME} sources"
+    )
+    add_dependencies(${LIBRARY_NAME} "format_${EXTENSION_NAME}")
+  endif()
 endfunction()
