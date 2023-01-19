@@ -33,6 +33,9 @@ project(
   VERSION 4.1.0
   LANGUAGES C
 )
+set(INSTALL_VERSION unreleased)
+set(H3_CORE_VERSION 4.1.0)
+set(H3_CORE_SHA256 ec99f1f5974846bde64f4513cf8d2ea1b8d172d2218ab41803bf6a63532272bc)
 
 # If you set any CMAKE_ variables, that can go here.
 # (But usually don't do this, except maybe for C++ standard)
