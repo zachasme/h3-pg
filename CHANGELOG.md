@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Add `postgis_raster` integration (see [#112], thanks [@mngr777])
+
 </details>
 
 ## [4.1.0] - 2023-01-18
@@ -238,6 +240,7 @@ avoid adding features or APIs which do not map onto the
 [#93]: https://github.com/zachasme/h3-pg/pull/93
 [#97]: https://github.com/zachasme/h3-pg/pull/97
 [#111]: https://github.com/zachasme/h3-pg/pull/111
+[#112]: https://github.com/zachasme/h3-pg/pull/112
 [@abelvm]: https://github.com/AbelVM
 [@kalenikaliaksandr]: https://github.com/kalenikaliaksandr
 [@kmacdough]: https://github.com/kmacdough

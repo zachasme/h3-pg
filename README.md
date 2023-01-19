@@ -3,7 +3,7 @@
 [![test-linux](https://github.com/zachasme/postgresql-extensions-cmake/workflows/test-linux/badge.svg)](https://github.com/zachasme/postgresql-extensions-cmake/actions)
 [![test-macos](https://github.com/zachasme/postgresql-extensions-cmake/workflows/test-macos/badge.svg)](https://github.com/zachasme/postgresql-extensions-cmake/actions/workflows/test-macos.yml)
 [![test-windows](https://github.com/zachasme/postgresql-extensions-cmake/workflows/test-windows/badge.svg)](https://github.com/zachasme/postgresql-extensions-cmake/actions/workflows/test-windows.yml)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache2-blue.svg)](LICENSE)
 
 This library provides PostgreSQL bindings for the [H3 Core Library](https://github.com/uber/h3). For API reference, please see the [H3 Documentation](https://uber.github.io/h3).
 
@@ -11,9 +11,9 @@ Developed in collaboration with [Scandinavian Highlands](http://www.scandinavian
 
 ## Prerequisites
 
-- PostgreSQL 11+ (_including server headers_). It might work with earlier versions, we have not tested them.
+- PostgreSQL 11+ (_including server headers_, e.g. `postgresql-server-dev-14`)
 - C compiler (e.g., `gcc`)
-- [CMake](https://cmake.org/)
+- [CMake](https://cmake.org/) 3.20+
 - GNU Make
 
 ## Quick Overview
@@ -33,7 +33,7 @@ $ psql
 
 (You can install a specific version using `pgxn install 'h3=3.7.2'` and `pgxn load 'h3=3.7.2'` for example)
 
-See [Advanced Install](#advanced-install) for other installation methods.
+See [Building](#building) for other installation methods.
 
 ## Usage
 
