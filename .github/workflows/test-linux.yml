@@ -24,7 +24,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~/.cargo
-          key: ${{ runner.os }}-cargo-2022
+          key: ${{ runner.os }}-cargo-2023
 
       - name: Install pg_validate_extupgrade
         run: cargo install --locked --git https://github.com/rjuju/pg_validate_extupgrade.git
