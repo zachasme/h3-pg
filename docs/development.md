@@ -9,7 +9,7 @@ Documentation is generated from the sql files, using the script `scripts/documen
 1. Update version number
    - Don't follow semver, simply use major and minor from H3 core and increment patch.
    - Version number should be changed in root `CMakeLists.txt`.
-   - Set INSTALL_VERSION to "${PROJECT_VERSION}".
+   - Set `INSTALL_VERSION` to "${PROJECT_VERSION}".
    - Update files suffixed `--unreleased` should be renamed.
    - Installer `.sql` files should have `@ availability` comments updated.
    - Update changelog by moving from `Unreleased` to a new section
@@ -21,5 +21,7 @@ Documentation is generated from the sql files, using the script `scripts/documen
    - Run `scripts/bundle` to package the release
    - Upload the distribution on [PGXN Manager](https://manager.pgxn.org/) (username: `bytesandbrains`)
 4. Prepare for development
-   - Reset version numbers in root `CMakeLists.txt` and `META.json` to `unreleased`
+   - Reset version number in root `CMakeLists.txt` to `unreleased`
+   - Set `INSTALL_VERSION` to `unreleased`.
    - Create new update files with `--unreleased` suffix.
+   - Add them to relevant `CMakeLists.txt` files.
