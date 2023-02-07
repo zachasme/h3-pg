@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- *Actually* fix `h3_postgis` upgrade path (see [#117], thanks [@mngr777])
+
 </details>
 
 ## [4.1.1] - 2023-02-07
@@ -189,7 +191,8 @@ avoid adding features or APIs which do not map onto the
 
 - Initial public release
 
-[unreleased]: https://github.com/zachasme/h3-pg/compare/v4.1.0...HEAD
+[unreleased]: https://github.com/zachasme/h3-pg/compare/v4.1.1...HEAD
+[4.1.1]: https://github.com/zachasme/h3-pg/compare/v4.1.0...v4.1.1
 [4.1.0]: https://github.com/zachasme/h3-pg/compare/v4.0.3...v4.1.0
 [4.0.3]: https://github.com/zachasme/h3-pg/compare/v4.0.2...v4.0.3
 [4.0.2]: https://github.com/zachasme/h3-pg/compare/v4.0.1...v4.0.2
