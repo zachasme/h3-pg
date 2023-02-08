@@ -15,7 +15,9 @@
  */
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "ALTER EXTENSION h3_postgis UPDATE TO 'unreleased'" to load this file. \quit
+\echo Use "ALTER EXTENSION h3_postgis UPDATE TO '4.1.2'" to load this file. \quit
+
+-- fix wrong shared lib #117
 
 CREATE OR REPLACE FUNCTION
     h3_cell_to_boundary_wkb(cell h3index) RETURNS bytea
