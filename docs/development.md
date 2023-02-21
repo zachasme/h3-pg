@@ -21,7 +21,6 @@ Documentation is generated from the sql files, using the script `scripts/documen
    - Run `scripts/bundle` to package the release
    - Upload the distribution on [PGXN Manager](https://manager.pgxn.org/) (username: `bytesandbrains`)
 4. Prepare for development
-   - Reset version number in root `CMakeLists.txt` to `unreleased`
-   - Set `INSTALL_VERSION` to `unreleased`.
+   - Set `INSTALL_VERSION` to `unreleased` in root `CMakeLists.txt`.
    - Create new update files with `--unreleased` suffix.
    - Add them to relevant `CMakeLists.txt` files.
