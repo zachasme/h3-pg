@@ -21,6 +21,7 @@ PostgreSQL_add_extension(postgresql_h3_postgis
     sql/install/01-indexing.sql
     sql/install/03-traversal.sql
     sql/install/05-regions.sql
+    sql/install/10-operators.sql
     sql/install/20-casts.sql
     sql/install/30-wkb.sql
     sql/install/40-rasters.sql
