@@ -28,6 +28,8 @@ avoid adding features or APIs which do not map onto the
 
 </details>
 
+- Add `geometry @ int` and `geography @ int` operators, as shortcuts for `h3_lat_lng_to_cell`.
+
 ## [4.1.2] - 2023-02-08
 
 - *Actually* fix `h3_postgis` upgrade path (see [#117], thanks [@mngr777])
