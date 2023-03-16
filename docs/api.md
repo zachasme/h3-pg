@@ -584,6 +584,22 @@ Splits polygons when crossing 180th meridian.
 *Since v4.1.0*
 
 
+# PostGIS Operators
+
+### Operator: `geometry` @ `integer`
+*Since vunavailable*
+
+
+Index geometry at specified resoltuion.
+
+
+### Operator: `geography` @ `integer`
+*Since vunavailable*
+
+
+Index geography at specified resoltuion.
+
+
 # PostGIS casts
 
 ### `h3index` :: `geometry`

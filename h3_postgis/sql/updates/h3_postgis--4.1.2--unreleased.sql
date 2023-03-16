@@ -16,3 +16,20 @@
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
 \echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
+
+--@ availability: unavailable
+CREATE OPERATOR @ (
+    PROCEDURE = h3_lat_lng_to_cell,
+    LEFTARG = geometry, RIGHTARG = integer
+);
+COMMENT ON OPERATOR @ (geometry, integer) IS
+  'Index geometry at specified resoltuion.';
+
+--@ availability: unavailable
+CREATE OPERATOR @ (
+    PROCEDURE = h3_lat_lng_to_cell,
+    LEFTARG = geography, RIGHTARG = integer
+);
+COMMENT ON OPERATOR @ (geography, integer) IS
+  'Index geography at specified resoltuion.';
+
