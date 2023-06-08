@@ -1,8 +1,8 @@
 # API Reference
-
-The `h3-pg` extension wraps the [H3 Core Library](https://github.com/uber/h3). The detailed API reference is in the core [H3 Documentation](https://uber.github.io/h3) under the API Reference section.
-The `h3-pg` functions have been renamed from camelCase in H3 to snake\_case in SQL.  The SQL function name is prefixed with `h3_`.
-
+The `h3` extension wraps the [H3 Core Library](https://github.com/uber/h3).
+The detailed API reference is in the core [H3 Documentation](https://uber.github.io/h3) under the API Reference section.
+The `h3` core functions have been renamed from camelCase in H3 core to snake\_case in SQL.
+The SQL function name is prefixed with `h3_`.
 
 # Base type
 An unsigned 64-bit integer representing any H3 object (hexagon, pentagon, directed edge ...)
@@ -507,15 +507,13 @@ Migrate h3index from pass-by-reference to pass-by-value.
 DEPRECATED: Use `SET h3.extend_antimeridian TO true` instead.
 
 # PostGIS Integration
-
 The `GEOMETRY` data passed to `h3-pg` PostGIS functions should
 be in SRID 4326. This is an expectation of the core H3 library.
 Using other SRIDs, such as 3857, can result in either errors or
 invalid data depending on the function.
-For example,, the `h3_polygon_to_cells()` function will fail with
+For example, the `h3_polygon_to_cells()` function will fail with
 an error in this scenario while the `h3_lat_lng_to_cell()` function
 will return an invalid geometry.
-
 
 # PostGIS Indexing Functions
 
@@ -610,7 +608,7 @@ Index geometry at specified resoltuion.
 *Since vunavailable*
 
 
-Index geography at specified resolution.
+Index geography at specified resoltuion.
 
 
 # PostGIS casts

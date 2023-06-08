@@ -147,7 +147,7 @@ CREATE OPERATOR @> (
     RESTRICT = contsel, JOIN = contjoinsel
 );
 COMMENT ON OPERATOR @> (h3index, h3index) IS
-  'Returns true if A containts B.';
+  'Returns true if A contains B.';
 
 --@ internal
 CREATE OR REPLACE FUNCTION h3index_contained_by(h3index, h3index) RETURNS boolean
