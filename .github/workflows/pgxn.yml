@@ -17,7 +17,9 @@ jobs:
         run: sudo pip install pgxnclient
 
       - name: Install PostgreSQL server dependencies
-        run: sudo apt install postgresql-server-dev-14 postgis
+        run: |
+          sudo apt-get update
+          sudo apt-get install postgresql-server-dev-14 postgis
 
       - name: Prepare PostgreSQL
         run: |
