@@ -18,6 +18,12 @@
 \echo Use "CREATE EXTENSION h3" to load this file. \quit
 
 -- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+--| The `h3` extension wraps the [H3 Core Library](https://github.com/uber/h3).
+--| The detailed API reference is in the core [H3 Documentation](https://uber.github.io/h3) under the API Reference section.
+--|
+--| The `h3` core functions have been renamed from camelCase in H3 core to snake\_case in SQL.
+--| The SQL function name is prefixed with `h3_`.
+--|
 --| # Base type
 --|
 --| An unsigned 64-bit integer representing any H3 object (hexagon, pentagon, directed edge ...)

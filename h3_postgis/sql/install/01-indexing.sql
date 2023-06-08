@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
+--| The `GEOMETRY` data passed to `h3-pg` PostGIS functions should
+--| be in SRID 4326. This is an expectation of the core H3 library.
+--| Using other SRIDs, such as 3857, can result in either errors or
+--| invalid data depending on the function.
+--| For example, the `h3_polygon_to_cells()` function will fail with
+--| an error in this scenario while the `h3_lat_lng_to_cell()` function
+--| will return an invalid geometry.
+
 --| # PostGIS Indexing Functions
 
 --@ availability: 4.0.0
