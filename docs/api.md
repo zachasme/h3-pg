@@ -601,14 +601,14 @@ Splits polygons when crossing 180th meridian.
 *Since vunavailable*
 
 
-Index geometry at specified resoltuion.
+Index geometry at specified resolution.
 
 
 ### Operator: `geography` @ `integer`
 *Since vunavailable*
 
 
-Index geography at specified resoltuion.
+Index geography at specified resolution.
 
 
 # PostGIS casts
