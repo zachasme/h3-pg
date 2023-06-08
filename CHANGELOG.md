@@ -26,9 +26,10 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
-</details>
-
 - Add `geometry @ int` and `geography @ int` operators, as shortcuts for `h3_lat_lng_to_cell`.
+- Explain PostGIS SRID expectations (see [#131], thanks [@rustprooflabs])
+
+</details>
 
 ## [4.1.2] - 2023-02-08
 
@@ -253,6 +254,7 @@ avoid adding features or APIs which do not map onto the
 [#111]: https://github.com/zachasme/h3-pg/pull/111
 [#112]: https://github.com/zachasme/h3-pg/pull/112
 [#117]: https://github.com/zachasme/h3-pg/issues/117
+[#131]: https://github.com/zachasme/h3-pg/pull/131
 [@abelvm]: https://github.com/AbelVM
 [@kalenikaliaksandr]: https://github.com/kalenikaliaksandr
 [@kmacdough]: https://github.com/kmacdough
@@ -260,3 +262,4 @@ avoid adding features or APIs which do not map onto the
 [@lokks]: https://github.com/Lokks
 [@mngr777]: https://github.com/mngr777
 [@trylinka]: https://github.com/trylinka
+[@rustprooflabs]: https://github.com/rustprooflabs
