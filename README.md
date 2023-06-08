@@ -18,7 +18,7 @@ Developed in collaboration with [Scandinavian Highlands](http://www.scandinavian
 
 ## Quick Overview
 
-If the prerequisites are met you can use the PGXN Client to download, build, and install, e.g.:
+If the prerequisites are met you can use the [PGXN Client](docs/pgxnclient.md) to download, build, and install, e.g.:
 
 ```shell
 $ pgxn install h3
