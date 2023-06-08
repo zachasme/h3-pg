@@ -22,7 +22,7 @@ CREATE OPERATOR @ (
     LEFTARG = geometry, RIGHTARG = integer
 );
 COMMENT ON OPERATOR @ (geometry, integer) IS
-  'Index geometry at specified resoltuion.';
+  'Index geometry at specified resolution.';
 
 --@ availability: unavailable
 CREATE OPERATOR @ (
@@ -30,5 +30,5 @@ CREATE OPERATOR @ (
     LEFTARG = geography, RIGHTARG = integer
 );
 COMMENT ON OPERATOR @ (geography, integer) IS
-  'Index geography at specified resoltuion.';
+  'Index geography at specified resolution.';
 
