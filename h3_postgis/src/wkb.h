@@ -22,6 +22,10 @@
 
 #include <fmgr.h>
 
+#if POSTGRESQL_VERSION_MAJOR >= 16
+#include "varatt.h" //VAR_SIZE and friends moved to here from postgres.h
+#endif
+
 bytea *
 			boundary_array_to_wkb(const CellBoundary * boundaries, size_t num);
 

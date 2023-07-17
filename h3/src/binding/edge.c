@@ -26,6 +26,10 @@
 #include "type.h"
 #include "srf.h"
 
+#if POSTGRESQL_VERSION_MAJOR >= 16
+#include "varatt.h" //VAR_SIZE and friends moved to here from postgres.h
+#endif
+
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_are_neighbor_cells);
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_cells_to_directed_edge);
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_is_valid_directed_edge);

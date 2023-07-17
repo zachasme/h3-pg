@@ -15,6 +15,11 @@
  */
 
 #include <postgres.h>
+
+#if POSTGRESQL_VERSION_MAJOR >= 16
+#include "varatt.h" //VAR_SIZE and friends moved to here from postgres.h
+#endif
+
 #include <h3api.h>
 
 #include <fmgr.h>			 // PG_FUNCTION_INFO_V1

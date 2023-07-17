@@ -52,6 +52,8 @@ find_package(PostgreSQL ${POSTGRESQL_VERSION} REQUIRED
 )
 include(AddPostgreSQLExtension)
 
+add_definitions(-DPOSTGRESQL_VERSION_MAJOR=${PostgreSQL_VERSION_MAJOR})
+
 # https://cliutils.gitlab.io/modern-cmake/chapters/testing.html
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   include(CTest)
