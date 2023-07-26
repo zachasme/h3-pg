@@ -33,7 +33,6 @@ avoid adding features or APIs which do not map onto the
 - Add `geometry @ int` and `geography @ int` operators, as shortcuts for `h3_lat_lng_to_cell`.
 - Explain PostGIS SRID expectations (see [#131], thanks [@rustprooflabs])
 
-
 ## [4.1.2] - 2023-02-08
 
 - *Actually* fix `h3_postgis` upgrade path (see [#117], thanks [@mngr777])

@@ -15,21 +15,4 @@
  */
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "ALTER EXTENSION h3_postgis UPDATE TO '4.1.3'" to load this file. \quit
-
---@ availability: 4.1.3
-CREATE OPERATOR @ (
-    PROCEDURE = h3_lat_lng_to_cell,
-    LEFTARG = geometry, RIGHTARG = integer
-);
-COMMENT ON OPERATOR @ (geometry, integer) IS
-  'Index geometry at specified resolution.';
-
---@ availability: 4.1.3
-CREATE OPERATOR @ (
-    PROCEDURE = h3_lat_lng_to_cell,
-    LEFTARG = geography, RIGHTARG = integer
-);
-COMMENT ON OPERATOR @ (geography, integer) IS
-  'Index geography at specified resolution.';
-
+\echo Use "ALTER EXTENSION h3_postgis UPDATE TO 'unreleased'" to load this file. \quit
