@@ -12,7 +12,7 @@ Developed in collaboration with [Scandinavian Highlands](http://www.scandinavian
 ## Binary distributions
 These don't require you have the development headers or cmake installed.
 
-### Debian/Ubuntu
+### Debian/Ubuntu (Ubuntu 22.04 LTS (Jammy Jellyfish) +)
 Replace 16 with your postgresql version.
 Refer to [PGDG Ubuntu](https://www.postgresql.org/download/linux/ubuntu/) and [PGDG Debian](https://www.postgresql.org/download/linux/debian/) for installing PostgreSQL.
 More details about the various packages at https://apt.postgresql.org
