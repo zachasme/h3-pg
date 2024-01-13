@@ -4,7 +4,7 @@
 
 # https://www.postgresql.org/support/versioning/
 set(PostgreSQL_SUPPORTED_VERSIONS ${PostgreSQL_ADDITIONAL_VERSIONS}
-  "15" "14" "13" "12" "11")
+  "16" "15" "14" "13" "12" "11")
 
 # Use `FIND_VERSION` to locate specific version of pg_config, or fallback to known versions
 if(PostgreSQL_FIND_VERSION)
@@ -41,7 +41,7 @@ execute_process(COMMAND ${PostgreSQL_CONFIG} --pkglibdir         OUTPUT_VARIABLE
 # @TODO: Figure out if we need _INCLUDE_DIR and/or _PKG_INCLUDE_DIR
 
 # Create include dirs list
-list(APPEND PostgreSQL_INCLUDE_DIRS "${PostgreSQL_INCLUDE_DIR}" "${PostgreSQL_PKG_INCLUDE_DIR}" "${PostgreSQL_SERVER_INCLUDE_DIR}")
+list(APPEND PostgreSQL_INCLUDE_DIRS "${PostgreSQL_INCLUDE_DIR}" "/usr/local/include" "${PostgreSQL_PKG_INCLUDE_DIR}" "${PostgreSQL_SERVER_INCLUDE_DIR}")
 list(APPEND PostgreSQL_LIBRARY_DIRS "${PostgreSQL_LIBRARY_DIR}")
 
 # Set library to search for (which is different on WIN32)
