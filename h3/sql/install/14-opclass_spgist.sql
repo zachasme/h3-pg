@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Bytes & Brains
+ * Copyright 2019-2023 Bytes & Brains
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
--- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
+-- SP-GiST Operator Class (opclass_spgist.c)
+-- ---------- ---------- ---------- ---------- ---------- ---------- ----------
 
 -- SP-GiST operator class
 CREATE OR REPLACE FUNCTION h3index_spgist_config(internal, internal) RETURNS void
