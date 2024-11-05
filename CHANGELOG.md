@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Add support for binary I/O (see [#160], thanks [@robertozimek])
+
 </details>
 
 ## [4.1.3] - 2023-07-26
@@ -258,6 +260,7 @@ avoid adding features or APIs which do not map onto the
 [#112]: https://github.com/zachasme/h3-pg/pull/112
 [#117]: https://github.com/zachasme/h3-pg/issues/117
 [#131]: https://github.com/zachasme/h3-pg/pull/131
+[#160]: https://github.com/zachasme/h3-pg/pull/160
 [@abelvm]: https://github.com/AbelVM
 [@kalenikaliaksandr]: https://github.com/kalenikaliaksandr
 [@kmacdough]: https://github.com/kmacdough
@@ -266,3 +269,4 @@ avoid adding features or APIs which do not map onto the
 [@mngr777]: https://github.com/mngr777
 [@trylinka]: https://github.com/trylinka
 [@rustprooflabs]: https://github.com/rustprooflabs
+[@robertozimek]: https://github.com/robertozimek

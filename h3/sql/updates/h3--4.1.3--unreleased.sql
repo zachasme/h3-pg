@@ -16,3 +16,18 @@
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
 \echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
+
+--@ internal
+CREATE OR REPLACE FUNCTION
+    h3index_recv(internal) RETURNS h3index
+AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+--@ internal
+CREATE OR REPLACE FUNCTION
+    h3index_send(h3index) RETURNS bytea
+AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+ALTER TYPE h3index SET (
+    RECEIVE = h3index_recv,
+    SEND    = h3index_send
+);

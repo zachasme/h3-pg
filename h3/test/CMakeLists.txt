@@ -28,7 +28,7 @@ endif()
 
 if(PostgreSQL_VALIDATE_EXTUPGRADE)
   add_test(
-    NAME h3_validate_extrupgrade
+    NAME h3_validate_extupgrade
     COMMAND pg_validate_extupgrade
       --extname h3
       --from 0.1.0

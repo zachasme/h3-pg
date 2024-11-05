@@ -24,6 +24,7 @@
 
 #include <fmgr.h>			 // PG_FUNCTION_INFO_V1
 #include <utils/geo_decls.h> // PG_GETARG_POINT_P
+#include <math.h> // fabs
 
 #include "constants.h"
 #include "error.h"

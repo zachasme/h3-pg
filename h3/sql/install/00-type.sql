@@ -44,8 +44,20 @@ CREATE OR REPLACE FUNCTION
     h3index_out(h3index) RETURNS cstring
 AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
+--@ internal
+CREATE OR REPLACE FUNCTION
+    h3index_recv(internal) RETURNS h3index
+AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+--@ internal
+CREATE OR REPLACE FUNCTION
+    h3index_send(h3index) RETURNS bytea
+AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
 CREATE TYPE h3index (
   INPUT          = h3index_in,
   OUTPUT         = h3index_out,
+  RECEIVE        = h3index_recv,
+  SEND           = h3index_send,
   LIKE           = int8
 );
