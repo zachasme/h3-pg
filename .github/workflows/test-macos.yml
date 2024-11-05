@@ -11,23 +11,24 @@ jobs:
     strategy:
       matrix:
         config: [Release, Debug]
+        pg: [14]
 
-    runs-on: macos-12
+    runs-on: macos-14
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Cache Cargo
-        uses: actions/cache@v3
-        with:
-          path: ~/.cargo
-          key: ${{ runner.os }}-cargo-2023
+      # - name: Cache Cargo
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ~/.cargo
+      #     key: ${{ runner.os }}-cargo-2023
 
-      - name: Install pg_validate_extupgrade
-        run: cargo install --locked --git https://github.com/rjuju/pg_validate_extupgrade.git
+      # - name: Install pg_validate_extupgrade
+      #   run: cargo install --locked --git https://github.com/rjuju/pg_validate_extupgrade.git
 
-      - name: Install PostgreSQL server dependencies
-        run: brew install postgis
+      - name: Install PostgreSQL and PostGIS
+        run: brew install postgresql@${{ matrix.pg }} postgis
 
       - name: Generate
         run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }}
@@ -39,9 +40,7 @@ jobs:
         run: sudo cmake --install build --component h3-pg --config ${{ matrix.config }}
 
       - name: Prepare PostgreSQL
-        run: |
-          pg_ctl start -D /usr/local/var/postgresql@14 --wait
-          createdb runner
+        run: brew services start postgresql@${{ matrix.pg }}
 
       - name: Test
         run: ctest --test-dir build --output-on-failure --build-config ${{ matrix.config }}
