@@ -36,8 +36,21 @@ project(
 # set this to "${PROJECT_VERSION}" on release
 #set(INSTALL_VERSION "${PROJECT_VERSION}")
 set(INSTALL_VERSION "unreleased")
-set(H3_CORE_VERSION 4.1.0)
-set(H3_CORE_SHA256 ec99f1f5974846bde64f4513cf8d2ea1b8d172d2218ab41803bf6a63532272bc)
+#set(H3_CORE_VERSION 4.1.0)
+set(H3_CORE_BRANCH master)
+set(H3_CORE_SHA256 e8b16611b582275bdb9815bc5a80e0559a811758)
+
+if(H3_CORE_VERSION)
+  set(H3_ARCHIVE_URL, https://github.com/uber/h3/archive/refs/tags/v${H3_CORE_VERSION}.tar.gz)
+endif()
+
+if(H3_CORE_BRANCH)
+  set(H3_ARCHIVE_URL, https://github.com/uber/h3/archive/refs/heads/${H3_CORE_BRANCH}.zip)
+endif()
+
+if(H3_CORE_BRANCH AND H3_CORE_VERSION)
+    message(FATAL_ERROR "Cannot specify both H3_CORE_BRANCH and H3_CORE_VERSION")
+endif()
 
 # If you set any CMAKE_ variables, that can go here.
 # (But usually don't do this, except maybe for C++ standard)

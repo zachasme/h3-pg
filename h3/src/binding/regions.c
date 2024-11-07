@@ -29,6 +29,8 @@
 #include "type.h"
 #include "srf.h"
 
+H3Error polygonToCellsExperimental(const GeoPolygon* geoPolygon, int res, uint32_t flags, H3Index* out);
+
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_polygon_to_cells);
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_cells_to_multi_polygon);
 
@@ -91,6 +93,7 @@ h3_polygon_to_cells(PG_FUNCTION_ARGS)
 		H3Index    *indices;
 		ArrayType  *holes;
 		int			nelems = 0;
+		uint32_t    flags = 2;  // Default to CONTAINMENT_OVERLAPPING
 		int			resolution;
 		GeoPolygon	polygon;
 		Datum		value;
@@ -109,6 +112,12 @@ h3_polygon_to_cells(PG_FUNCTION_ARGS)
 			nelems = ArrayGetNItems(ARR_NDIM(holes), ARR_DIMS(holes));
 		}
 		resolution = PG_GETARG_INT32(2);
+
+		// Check if flags argument is provided
+		if (PG_NARGS() > 3 && !PG_ARGISNULL(3))
+		{
+			flags = PG_GETARG_UINT32(3);
+		}
 
 		/* build polygon */
 		polygonToGeoLoop(exterior, &(polygon.geoloop));
@@ -142,10 +151,10 @@ h3_polygon_to_cells(PG_FUNCTION_ARGS)
 		}
 
 		/* produce hexagons into allocated memory */
-		h3_assert(maxPolygonToCellsSize(&polygon, resolution, 0, &maxSize));
+		h3_assert(maxPolygonToCellsSize(&polygon, resolution, flags, &maxSize));
 		indices = palloc_extended(maxSize * sizeof(H3Index),
 								  MCXT_ALLOC_HUGE | MCXT_ALLOC_ZERO);
-		h3_assert(polygonToCells(&polygon, resolution, 0, indices));
+		h3_assert(polygonToCellsExperimental(&polygon, resolution, flags, indices));
 
 		funcctx->user_fctx = indices;
 		funcctx->max_calls = maxSize;
@@ -339,4 +348,15 @@ struct LinkedGeoPolygon
 	LinkedGeoLoop *last;
 	LinkedGeoPolygon *next;
 };
+
+**
+ * Values representing polyfill containment modes, to be used in
+ * the `flags` bit field.
+ *
+typedef enum {
+	CONTAINMENT_CENTER = 0,       ///< Cell center is contained in the shape
+	CONTAINMENT_FULL = 1,         ///< Cell is fully contained in the shape
+	CONTAINMENT_OVERLAPPING = 2,  ///< Cell overlaps the shape at any point
+	CONTAINMENT_INVALID = 3  ///< This mode is invalid and should not be used
+} ContainmentMode;
 */
