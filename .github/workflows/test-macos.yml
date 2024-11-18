@@ -10,12 +10,13 @@ jobs:
   macos:
     strategy:
       matrix:
-        config: [Release, Debug]
+        os: [macos-13]
         pg: [17, 16, 15, 14, 13]
+        config: [Release, Debug]
 
-    runs-on: macos-13
+    runs-on: ${{ matrix.os }}
 
-    name: macos 🐘${{ matrix.pg }} (${{ matrix.config }})
+    name: ${{ matrix.os }} 🐘${{ matrix.pg }} (${{ matrix.config }})
 
     steps:
       - uses: actions/checkout@v4
@@ -42,7 +43,10 @@ jobs:
         if: ${{ matrix.pg >= 15 }}
 
       - name: Generate
-        run: VERBOSE=true cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+        run: cmake -B build -DCMAKE_BUILD_TYPE=${{ matrix.config }}
+        env:
+          # Fixes missing libintl.h on some runners
+          CFLAGS: "-I /usr/local/include"
 
       - name: Build
         run: cmake --build build --config ${{ matrix.config }}

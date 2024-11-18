@@ -10,12 +10,13 @@ jobs:
   linux:
     strategy:
       matrix:
-        config: [Release, Debug]
+        os: [ubuntu-24.04, ubuntu-22.04]
         pg: [17, 16, 15, 14, 13]
+        config: [Release, Debug]
 
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
 
-    name: linux 🐘${{ matrix.pg }} (${{ matrix.config }})
+    name: ${{ matrix.os }} 🐘${{ matrix.pg }} (${{ matrix.config }})
 
     steps:
       - uses: actions/checkout@v4
