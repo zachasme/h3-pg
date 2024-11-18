@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Fix for MacOS in nixpkgs / NixOS (see [#141], thanks [@wolfgangwalther])
+
 </details>
 
 ## [4.1.4] - 2024-11-06
@@ -265,6 +267,7 @@ avoid adding features or APIs which do not map onto the
 [#117]: https://github.com/zachasme/h3-pg/issues/117
 [#131]: https://github.com/zachasme/h3-pg/pull/131
 [#140]: https://github.com/zachasme/h3-pg/pull/140
+[#141]: https://github.com/zachasme/h3-pg/pull/141
 [#160]: https://github.com/zachasme/h3-pg/pull/160
 [@abelvm]: https://github.com/AbelVM
 [@kalenikaliaksandr]: https://github.com/kalenikaliaksandr
@@ -276,3 +279,4 @@ avoid adding features or APIs which do not map onto the
 [@rustprooflabs]: https://github.com/rustprooflabs
 [@bayandin]: https://github.com/bayandin
 [@robertozimek]: https://github.com/robertozimek
+[@wolfgangwalther]: https://github.com/wolfgangwalther
