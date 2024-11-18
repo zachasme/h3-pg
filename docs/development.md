@@ -19,7 +19,7 @@ Documentation is generated from the sql files, using the script `scripts/documen
    - Copy CHANGELOG.md entry into release description
 3. Distribute the extension on PGXN
    - Run `scripts/bundle` to package the release
-   - Upload the distribution on [PGXN Manager](https://manager.pgxn.org/) (username: `bytesandbrains`)
+   - Upload the distribution on [PGXN Manager](https://manager.pgxn.org/)
 4. Prepare for development
    - Set `INSTALL_VERSION` to `unreleased` in root `CMakeLists.txt`.
    - Create new update files with `--unreleased` suffix.
