@@ -41,8 +41,8 @@ SELECT h3_cell_area(h3_lat_lng_to_cell(POINT(0, 0), 10), 'km^2') = h3_cell_area(
 -- TEST h3_get_hexagon_edge_length_avg
 --
 
-SELECT h3_get_hexagon_edge_length_avg(10, 'm') = 65.90780749;
-SELECT h3_get_hexagon_edge_length_avg(10, 'km') = 0.065907807;
+SELECT h3_get_hexagon_edge_length_avg(10, 'm') - 75.86378287 < :epsilon;
+SELECT h3_get_hexagon_edge_length_avg(10, 'km') - 0.075863783 < :epsilon;
 SELECT h3_get_hexagon_edge_length_avg(10, 'km') = h3_get_hexagon_edge_length_avg(10);
 
 --

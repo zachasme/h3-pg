@@ -26,6 +26,7 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Bump `h3` to `v4.2.0`
 - Fix for MacOS in nixpkgs / NixOS (see [#141], thanks [@wolfgangwalther])
 
 </details>
