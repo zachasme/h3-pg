@@ -259,6 +259,13 @@ See also: <a href="#h3_polygon_to_cells.multi.geometry.resolution.integer.SETOF.
 Takes an exterior polygon [and a set of hole polygon] and returns the set of hexagons that best fit the structure.
 
 
+### h3_polygon_to_cells_experimental(exterior `polygon`, holes `polygon[]`, [resolution `integer` = 1], [containment_mode `text` = center]) ⇒ SETOF `h3index`
+*Since v4.2.0*
+
+
+Takes an exterior polygon [and a set of hole polygon] and returns the set of hexagons that best fit the structure.
+
+
 ### h3_cells_to_multi_polygon(`h3index[]`, OUT exterior `polygon`, OUT holes `polygon[]`) ⇒ SETOF `record`
 *Since v4.0.0*
 
