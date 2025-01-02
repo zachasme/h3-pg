@@ -24,6 +24,7 @@
 #include <utils/geo_decls.h>	 // PG_GETARG_POLYGON_P
 #include <utils/lsyscache.h>	 // get_typlenbyvalalign
 #include <catalog/pg_type.h>	 // POLYGONOID
+#include <utils/builtins.h>		 // text_to_cstring
 
 #include "error.h"
 #include "type.h"
@@ -168,7 +169,7 @@ h3_polygon_to_cells_experimental(PG_FUNCTION_ARGS)
 		MemoryContext oldcontext =
 		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
 
-		char       *containment_mode
+		char       *containment_mode;
 		int64_t		maxSize;
 		H3Index    *indices;
 		ArrayType  *holes;
