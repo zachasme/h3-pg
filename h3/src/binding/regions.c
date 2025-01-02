@@ -30,6 +30,7 @@
 #include "srf.h"
 
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_polygon_to_cells);
+PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_polygon_to_cells_experimental);
 PGDLLEXPORT PG_FUNCTION_INFO_V1(h3_cells_to_multi_polygon);
 
 static void
@@ -76,7 +77,7 @@ linkedGeoLoopToNativePolygon(LinkedGeoLoop * linkedLoop, POLYGON *polygon)
 }
 
 /*
- * void polyfill(const GeoPolygon* geoPolygon, int res, H3Index* out);
+ * H3Error polygonToCells(const GeoPolygon *geoPolygon, int res, uint32_t flags, H3Index *out);
  */
 Datum
 h3_polygon_to_cells(PG_FUNCTION_ARGS)
@@ -156,8 +157,102 @@ h3_polygon_to_cells(PG_FUNCTION_ARGS)
 }
 
 /*
- * void polyfill(const GeoPolygon* geoPolygon, int res, H3Index* out);
- *
+ * H3Error polygonToCells(const GeoPolygon *geoPolygon, int res, uint32_t flags, H3Index *out);
+ */
+Datum
+h3_polygon_to_cells_experimental(PG_FUNCTION_ARGS)
+{
+	if (SRF_IS_FIRSTCALL())
+	{
+		FuncCallContext *funcctx = SRF_FIRSTCALL_INIT();
+		MemoryContext oldcontext =
+		MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);
+
+		char       *containment_mode
+		int64_t		maxSize;
+		H3Index    *indices;
+		ArrayType  *holes;
+		int			nelems = 0;
+		uint32_t	flags = 0;
+		int			resolution;
+		GeoPolygon	polygon;
+		Datum		value;
+		bool		isnull;
+		POLYGON    *exterior;
+
+		if (PG_ARGISNULL(0))
+			ASSERT(0, ERRCODE_INVALID_PARAMETER_VALUE, "No polygon given to polyfill");
+
+		/* get function arguments */
+		exterior = PG_GETARG_POLYGON_P(0);
+
+		if (!PG_ARGISNULL(1))
+		{
+			holes = PG_GETARG_ARRAYTYPE_P(1);
+			nelems = ArrayGetNItems(ARR_NDIM(holes), ARR_DIMS(holes));
+		}
+		resolution = PG_GETARG_INT32(2);
+		if (!PG_ARGISNULL(3))
+		{
+			containment_mode = text_to_cstring(PG_GETARG_TEXT_PP(3));
+			if (strcmp(containment_mode, "center") == 0)
+				flags = 0;
+			else if (strcmp(containment_mode, "full") == 0)
+				flags = 1;
+			else if (strcmp(containment_mode, "overlapping") == 0)
+				flags = 2;
+			else if (strcmp(containment_mode, "overlapping_bbox") == 0)
+				flags = 3;
+			else
+				ASSERT(0, ERRCODE_INVALID_PARAMETER_VALUE, "Containment Mode must be center, full, overlapping, or overlapping_bbox.");
+		}
+
+		/* build polygon */
+		polygonToGeoLoop(exterior, &(polygon.geoloop));
+
+		if (nelems)
+		{
+			int			i = 0;
+			ArrayIterator iterator = array_create_iterator(holes, 0, NULL);
+
+			polygon.numHoles = nelems;
+			polygon.holes = (GeoLoop *) palloc(polygon.numHoles * sizeof(GeoLoop));
+
+			while (array_iterate(iterator, &value, &isnull))
+			{
+				if (isnull)
+				{
+					polygon.numHoles--;
+				}
+				else
+				{
+					POLYGON    *hole = DatumGetPolygonP(value);
+
+					polygonToGeoLoop(hole, &(polygon.holes[i]));
+					i++;
+				}
+			}
+		}
+		else
+		{
+			polygon.numHoles = 0;
+		}
+
+		/* produce hexagons into allocated memory */
+		h3_assert(maxPolygonToCellsSizeExperimental(&polygon, resolution, flags, &maxSize));
+		indices = palloc_extended(maxSize * sizeof(H3Index),
+								  MCXT_ALLOC_HUGE | MCXT_ALLOC_ZERO);
+		h3_assert(polygonToCellsExperimental(&polygon, resolution, flags, maxSize, indices));
+
+		funcctx->user_fctx = indices;
+		funcctx->max_calls = maxSize;
+		MemoryContextSwitchTo(oldcontext);
+	}
+
+	SRF_RETURN_H3_INDEXES_FROM_USER_FCTX();
+}
+
+/*
  * https://stackoverflow.com/questions/51127189/how-to-return-array-into-array-with-custom-type-in-postgres-c-function
  */
 Datum
