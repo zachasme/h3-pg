@@ -27,6 +27,7 @@ avoid adding features or APIs which do not map onto the
   </summary>
 
 - Bump `h3` to `v4.2.0`
+- Add `h3_polygon_to_cells_experimental` (see [#159], thanks [@jmealo])
 - Fix for MacOS in nixpkgs / NixOS (see [#141], thanks [@wolfgangwalther])
 
 </details>
@@ -269,15 +270,17 @@ avoid adding features or APIs which do not map onto the
 [#131]: https://github.com/zachasme/h3-pg/pull/131
 [#140]: https://github.com/zachasme/h3-pg/pull/140
 [#141]: https://github.com/zachasme/h3-pg/pull/141
+[#159]: https://github.com/zachasme/h3-pg/pull/159
 [#160]: https://github.com/zachasme/h3-pg/pull/160
 [@abelvm]: https://github.com/AbelVM
+[@bayandin]: https://github.com/bayandin
+[@jmealo]: https://github.com/jmealo
 [@kalenikaliaksandr]: https://github.com/kalenikaliaksandr
 [@kmacdough]: https://github.com/kmacdough
 [@komzpa]: https://github.com/Komzpa
 [@lokks]: https://github.com/Lokks
 [@mngr777]: https://github.com/mngr777
-[@trylinka]: https://github.com/trylinka
-[@rustprooflabs]: https://github.com/rustprooflabs
-[@bayandin]: https://github.com/bayandin
 [@robertozimek]: https://github.com/robertozimek
+[@rustprooflabs]: https://github.com/rustprooflabs
+[@trylinka]: https://github.com/trylinka
 [@wolfgangwalther]: https://github.com/wolfgangwalther
