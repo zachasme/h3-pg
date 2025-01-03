@@ -1,8 +1,8 @@
 # h3-pg: Uber's H3 Hexagonal Hierarchical Geospatial Indexing System in PostgreSQL
 
-[![test-linux](https://github.com/zachasme/postgresql-extensions-cmake/workflows/test-linux/badge.svg)](https://github.com/zachasme/postgresql-extensions-cmake/actions)
-[![test-macos](https://github.com/zachasme/postgresql-extensions-cmake/workflows/test-macos/badge.svg)](https://github.com/zachasme/postgresql-extensions-cmake/actions/workflows/test-macos.yml)
-[![test-windows](https://github.com/zachasme/postgresql-extensions-cmake/workflows/test-windows/badge.svg)](https://github.com/zachasme/postgresql-extensions-cmake/actions/workflows/test-windows.yml)
+[![test-linux](https://github.com/zachasme/h3-pg/workflows/test-linux/badge.svg)](https://github.com/zachasme/h3-pg/actions)
+[![test-macos](https://github.com/zachasme/h3-pg/workflows/test-macos/badge.svg)](https://github.com/zachasme/h3-pg/actions/workflows/test-macos.yml)
+[![test-windows](https://github.com/zachasme/h3-pg/workflows/test-windows/badge.svg)](https://github.com/zachasme/h3-pg/actions/workflows/test-windows.yml)
 [![License](https://img.shields.io/badge/License-Apache2-blue.svg)](LICENSE)
 
 This library provides PostgreSQL bindings for the [H3 Core Library](https://github.com/uber/h3). For API reference, please see the [H3 Documentation](https://uber.github.io/h3).
