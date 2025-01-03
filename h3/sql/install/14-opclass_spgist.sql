@@ -14,36 +14,49 @@
  * limitations under the License.
  */
 
--- complain if script is sourced in psql, rather than via CREATE EXTENSION
-\echo Use "ALTER EXTENSION h3 UPDATE TO 'unreleased'" to load this file. \quit
+--| ## SP-GiST operator class (experimental)
+--|
+--| *This is still an experimental feature and may change in future versions.*
+--| Add an SP-GiST index using the `h3index_ops_experimental` operator class:
+--|
+--| ```sql
+--| -- CREATE INDEX [indexname] ON [tablename] USING spgist([column] h3index_ops_experimental);
+--| CREATE INDEX spgist_idx ON h3_data USING spgist(hex h3index_ops_experimental);
+--| ```
 
---@ availability: 4.2.0
-CREATE OR REPLACE FUNCTION
-    h3_polygon_to_cells_experimental(exterior polygon, holes polygon[], resolution integer DEFAULT 1, containment_mode text DEFAULT 'center') RETURNS SETOF h3index
-AS 'h3' LANGUAGE C IMMUTABLE
--- intentionally NOT STRICT
-CALLED ON NULL INPUT PARALLEL SAFE; COMMENT ON FUNCTION
-    h3_polygon_to_cells_experimental(polygon, polygon[], integer, text)
-IS 'Takes an exterior polygon [and a set of hole polygon] and returns the set of hexagons that best fit the structure.';
-
--- SP-GiST operator class
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_spgist_config(internal, internal) RETURNS void
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_spgist_choose(internal, internal) RETURNS void
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_spgist_picksplit(internal, internal) RETURNS void
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_spgist_inner_consistent(internal, internal) RETURNS void
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+--@ internal
 CREATE OR REPLACE FUNCTION h3index_spgist_leaf_consistent(internal, internal) RETURNS boolean
     AS 'h3' LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
--- intentionally *not* marked as DEFAULT
-CREATE OPERATOR CLASS h3index_ops_experimental FOR TYPE h3index USING spgist AS
-    OPERATOR  6   =   ,
-    OPERATOR  7   @>  ,
-    OPERATOR  8  <@   ,
-
+-- intentionally *not* marked as DEFAULT,
+-- until we are satisfied with the implementation
+CREATE OPERATOR CLASS h3index_ops_experimental
+FOR TYPE h3index USING spgist
+AS
+ -- OPERATOR   1  <<  ,  -- RTLeftStrategyNumber
+ -- OPERATOR   2  &<  ,  -- RTOverLeftStrategyNumber
+ -- OPERATOR   3  &&  ,  -- RTOverlapStrategyNumber
+ -- OPERATOR   4  &>  ,  -- RTOverRightStrategyNumber
+ -- OPERATOR   5  >>  ,  -- RTRightStrategyNumber
+    OPERATOR   6   =  ,  -- RTSameStrategyNumber
+    OPERATOR   7  @>  ,  -- RTContainsStrategyNumber
+    OPERATOR   8  <@  ,  -- RTContainedByStrategyNumber
+ -- OPERATOR   9  &<| ,  -- RTOverBelowStrategyNumber
+ -- OPERATOR  10  <<| ,  -- RTBelowStrategyNumber
+ -- OPERATOR  11  |>> ,  -- RTAboveStrategyNumber
+ -- OPERATOR  12  |&> ,  -- RTOverAboveStrategyNumber
     FUNCTION  1  h3index_spgist_config(internal, internal),
     FUNCTION  2  h3index_spgist_choose(internal, internal),
     FUNCTION  3  h3index_spgist_picksplit(internal, internal),
