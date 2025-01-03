@@ -18,4 +18,5 @@ h3/test/results
 *.BAK
 
 # IDEs
-.vscode
+.vscode/*
+!.vscode/settings.json
