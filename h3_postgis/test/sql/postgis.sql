@@ -112,3 +112,12 @@ WITH split AS (
             array(SELECT h3_polygon_to_cells(:transmeridianMulti, 3)))::geometry AS multi),
      dp AS (SELECT ST_Dump(multi) AS dp FROM split)
 SELECT COUNT(*) = 3 FROM dp;
+
+-- h3_polygon_to_cells_experimental
+SELECT COUNT(*) = 48 FROM (
+    SELECT h3_polygon_to_cells_experimental(:with2holes, 10, 'center')
+) q;
+
+SELECT COUNT(*) = 76 FROM (
+    SELECT h3_polygon_to_cells_experimental(:with2holes, 10, 'overlapping')
+) q;

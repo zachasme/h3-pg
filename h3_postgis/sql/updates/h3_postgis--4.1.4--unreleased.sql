@@ -16,3 +16,26 @@
 
 -- complain if script is sourced in psql, rather than via CREATE EXTENSION
 \echo Use "ALTER EXTENSION h3_postgis UPDATE TO 'unreleased'" to load this file. \quit
+
+CREATE OR REPLACE FUNCTION h3_polygon_to_cells_experimental(multi geometry, resolution integer, containment_mode text DEFAULT 'center') RETURNS SETOF h3index
+    AS $$ SELECT h3_polygon_to_cells_experimental(exterior, holes, resolution, containment_mode) FROM (
+        SELECT 
+            -- extract exterior ring of each polygon
+            ST_MakePolygon(ST_ExteriorRing(poly))::polygon exterior,
+            -- extract holes of each polygon
+            (SELECT array_agg(hole)
+                FROM (
+                    SELECT ST_MakePolygon(ST_InteriorRingN(
+                        poly,
+                        generate_series(1, ST_NumInteriorRings(poly))
+                    ))::polygon AS hole
+                ) q_hole
+            ) holes
+        -- extract single polygons from multipolygon
+        FROM (
+            select (st_dump(multi)).geom as poly
+        ) q_poly GROUP BY poly
+    ) h3_polygon_to_cells; $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
+
+CREATE OR REPLACE FUNCTION h3_polygon_to_cells_experimental(multi geography, resolution integer, containment_mode text DEFAULT 'center') RETURNS SETOF h3index
+AS $$ SELECT h3_polygon_to_cells_experimental($1::geometry, $2, $3) $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT

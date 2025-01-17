@@ -129,3 +129,14 @@ WITH split AS (
 SELECT COUNT(*) = 3 FROM dp;
  t
 
+-- h3_polygon_to_cells_experimental
+SELECT COUNT(*) = 48 FROM (
+    SELECT h3_polygon_to_cells_experimental(:with2holes, 10, 'center')
+) q;
+ t
+
+SELECT COUNT(*) = 76 FROM (
+    SELECT h3_polygon_to_cells_experimental(:with2holes, 10, 'overlapping')
+) q;
+ t
+

@@ -67,3 +67,15 @@ SELECT h3_test_polyfill_bad2();
 
 DROP FUNCTION h3_test_polyfill_bad1;
 DROP FUNCTION h3_test_polyfill_bad2;
+--
+-- TEST h3_polygon_to_cells_experimental
+--
+-- h3_polygon_to_cells is inverse of h3_cells_to_multi_polygon for set without holes
+SELECT array_agg(result) is null FROM (
+    SELECT h3_polygon_to_cells_experimental(exterior, holes, 1, 'overlapping') result FROM (
+        SELECT exterior, holes FROM h3_cells_to_multi_polygon(:solid)
+    ) qq
+    EXCEPT SELECT h3_grid_disk(h3_cell_to_center_child(:res0index), 2) result
+) q;
+ t
+

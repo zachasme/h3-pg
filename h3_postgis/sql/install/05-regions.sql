@@ -72,3 +72,30 @@ CREATE AGGREGATE h3_cells_to_multi_polygon_geography(h3index) (
     finalfunc = h3_cells_to_multi_polygon_geography,
     parallel = safe
 );
+
+--@ availability: 4.2.0
+--@ refid: h3_polygon_to_cells_geometry_experimental
+CREATE OR REPLACE FUNCTION h3_polygon_to_cells_experimental(multi geometry, resolution integer, containment_mode text DEFAULT 'center') RETURNS SETOF h3index
+    AS $$ SELECT h3_polygon_to_cells_experimental(exterior, holes, resolution, containment_mode) FROM (
+        SELECT 
+            -- extract exterior ring of each polygon
+            ST_MakePolygon(ST_ExteriorRing(poly))::polygon exterior,
+            -- extract holes of each polygon
+            (SELECT array_agg(hole)
+                FROM (
+                    SELECT ST_MakePolygon(ST_InteriorRingN(
+                        poly,
+                        generate_series(1, ST_NumInteriorRings(poly))
+                    ))::polygon AS hole
+                ) q_hole
+            ) holes
+        -- extract single polygons from multipolygon
+        FROM (
+            select (st_dump(multi)).geom as poly
+        ) q_poly GROUP BY poly
+    ) h3_polygon_to_cells; $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
+
+--@ availability: 4.2.0
+--@ refid: h3_polygon_to_cells_geography_experimental
+CREATE OR REPLACE FUNCTION h3_polygon_to_cells_experimental(multi geography, resolution integer, containment_mode text DEFAULT 'center') RETURNS SETOF h3index
+AS $$ SELECT h3_polygon_to_cells_experimental($1::geometry, $2, $3) $$ LANGUAGE SQL IMMUTABLE PARALLEL SAFE CALLED ON NULL INPUT; -- NOT STRICT
