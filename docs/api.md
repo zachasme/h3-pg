@@ -610,6 +610,14 @@ Splits polygons when crossing 180th meridian.
 *Since v4.1.0*
 
 
+### h3_polygon_to_cells_experimental(multi `geometry`, resolution `integer`, [containment_mode `text` = center]) ⇒ SETOF `h3index`
+*Since v4.2.0*
+
+
+### h3_polygon_to_cells_experimental(multi `geography`, resolution `integer`, [containment_mode `text` = center]) ⇒ SETOF `h3index`
+*Since v4.2.0*
+
+
 # PostGIS Operators
 
 ### Operator: `geometry` @ `integer`
