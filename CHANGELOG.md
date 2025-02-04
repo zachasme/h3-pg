@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Copy `h3Index.h` from upstream in support of Debian package (see [#169], thanks [@df7cb])
+
 </details>
 
 ## 4.2.0 - 2025-01-17
@@ -276,9 +278,11 @@ avoid adding features or APIs which do not map onto the
 [#141]: https://github.com/zachasme/h3-pg/pull/141
 [#159]: https://github.com/zachasme/h3-pg/pull/159
 [#160]: https://github.com/zachasme/h3-pg/pull/160
+[#169]: https://github.com/zachasme/h3-pg/issues/169
 [@abelvm]: https://github.com/AbelVM
 [@bayandin]: https://github.com/bayandin
 [@BielStela]: https://github.com/BielStela
+[@ddf7cb]: https://github.com/ddf7cb
 [@jmealo]: https://github.com/jmealo
 [@kalenikaliaksandr]: https://github.com/kalenikaliaksandr
 [@kmacdough]: https://github.com/kmacdough
