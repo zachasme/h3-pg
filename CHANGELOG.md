@@ -286,7 +286,7 @@ avoid adding features or APIs which do not map onto the
 [@abelvm]: https://github.com/AbelVM
 [@bayandin]: https://github.com/bayandin
 [@BielStela]: https://github.com/BielStela
-[@ddf7cb]: https://github.com/ddf7cb
+[@df7cb]: https://github.com/df7cb
 [@jmealo]: https://github.com/jmealo
 [@kalenikaliaksandr]: https://github.com/kalenikaliaksandr
 [@kmacdough]: https://github.com/kmacdough
