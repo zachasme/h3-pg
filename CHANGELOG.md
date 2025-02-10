@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- More upstream copy/paste in support of Debian package (see [#169], thanks [@df7cb])
+
 </details>
 
 ## [4.2.1] - 2025-02-04
