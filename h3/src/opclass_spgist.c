@@ -81,16 +81,16 @@ Datum
 h3index_spgist_config(PG_FUNCTION_ARGS)
 {
 	// struct {
-	//   Oid  attType  /* data type to be indexed */
+	//   Oid  attType  data type to be indexed
 	// }
 	spgConfigIn *in = (spgConfigIn *) PG_GETARG_POINTER(0);
 
 	// struct {
-	//   Oid	prefixType		/* data type of inner-tuple prefixes */
-	//   Oid	labelType		/* data type of inner-tuple node labels */
-	//   Oid	leafType		/* data type of leaf-tuple values */
-	//   bool	canReturnData	/* opclass can reconstruct original data */
-	//   bool	longValuesOK	/* opclass can cope with values > 1 page */
+	//   Oid	prefixType		data type of inner-tuple prefixes
+	//   Oid	labelType		data type of inner-tuple node labels
+	//   Oid	leafType		data type of leaf-tuple values
+	//   bool	canReturnData	opclass can reconstruct original data
+	//   bool	longValuesOK	opclass can cope with values > 1 page
 	// }
 	spgConfigOut *out = (spgConfigOut *) PG_GETARG_POINTER(1);
 
