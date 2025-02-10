@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
+set -u
 VERSION="$1"
+: "$VERSION"
 
 # Version number should be changed in root `CMakeLists.txt`.
 sed -i -r "s/(  VERSION )[0-9\.]+/\1$VERSION/g" CMakeLists.txt
@@ -19,8 +21,6 @@ sed -i "s/unreleased/$VERSION/g" h3_postgis/sql/updates/*--$VERSION.sql
 sed -i "s/unreleased/$VERSION/g" h3_postgis/CMakeLists.txt
 
 git checkout -b "release-$VERSION"
-git add .
-git commit -m "Prepare release $VERSION"
 
 echo "Remember to":
 echo "   - Installer \`.sql\` files should have \`@ availability\` comments updated."
