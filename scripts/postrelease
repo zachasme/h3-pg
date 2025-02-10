@@ -17,5 +17,5 @@ cp h3_postgis/sql/updates/h3_postgis--4.2.1--4.2.2.sql h3_postgis/sql/updates/h3
 sed -i "s/4.2.2/unreleased/g" h3_postgis/sql/updates/h3_postgis--$VERSION--unreleased.sql
 
 # Add them to relevant `CMakeLists.txt` files.
-sed -i "/--$VERSION.sql/a    sql/updates/h3--$VERSION--unreleased.sql" h3/CMakeLists.txt
-sed -i "/--$VERSION.sql/a    sql/updates/h3_postgis--$VERSION--unreleased.sql" h3_postgis/CMakeLists.txt
+sed -i "/--$VERSION.sql/a\ \ \ \ sql/updates/h3--$VERSION--unreleased.sql" h3/CMakeLists.txt
+sed -i "/--$VERSION.sql/a\ \ \ \ sql/updates/h3_postgis--$VERSION--unreleased.sql" h3_postgis/CMakeLists.txt
