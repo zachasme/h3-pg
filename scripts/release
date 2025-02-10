@@ -2,8 +2,6 @@
 
 VERSION="$1"
 
-echo "YO $VERSION"
-
 # Version number should be changed in root `CMakeLists.txt`.
 sed -i -r "s/(  VERSION )[0-9\.]+/\1$VERSION/g" CMakeLists.txt
 
