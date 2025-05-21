@@ -26,6 +26,8 @@ avoid adding features or APIs which do not map onto the
     Click to see more.
   </summary>
 
+- Add `h3_get_resolution_from_tile_zoom` (see [#176], thanks [@sleeping-h])
+
 </details>
 
 ## [4.2.2] - 2025-02-10
@@ -287,6 +289,7 @@ avoid adding features or APIs which do not map onto the
 [#159]: https://github.com/zachasme/h3-pg/pull/159
 [#160]: https://github.com/zachasme/h3-pg/pull/160
 [#169]: https://github.com/zachasme/h3-pg/issues/169
+[#176]: https://github.com/zachasme/h3-pg/pull/176
 [@abelvm]: https://github.com/AbelVM
 [@bayandin]: https://github.com/bayandin
 [@BielStela]: https://github.com/BielStela
@@ -299,5 +302,6 @@ avoid adding features or APIs which do not map onto the
 [@mngr777]: https://github.com/mngr777
 [@robertozimek]: https://github.com/robertozimek
 [@rustprooflabs]: https://github.com/rustprooflabs
+[@sleeping-h]: https://github.com/sleeping-h
 [@trylinka]: https://github.com/trylinka
 [@wolfgangwalther]: https://github.com/wolfgangwalther
