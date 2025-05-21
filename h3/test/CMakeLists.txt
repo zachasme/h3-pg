@@ -1,4 +1,6 @@
 set(TESTS
+  clustering
+  edge
   extension
   hierarchy
   indexing
@@ -11,7 +13,7 @@ set(TESTS
   regions
   traversal
   type
-  edge
+  vertex
 )
 
 if(PostgreSQL_REGRESS)
