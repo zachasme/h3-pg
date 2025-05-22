@@ -3,6 +3,7 @@ name = "documentation"
 version = "1.0.0"
 description = "Autogenerate postgres extension documentation from sql files"
 authors = ["Zacharias Knudsen <z@chari.as>"]
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.10"
