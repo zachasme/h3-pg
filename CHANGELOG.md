@@ -28,7 +28,7 @@ avoid adding features or APIs which do not map onto the
 
 - Add `h3_get_resolution_from_tile_zoom` (see [#176], thanks [@sleeping-h])
 - Alter function names containing `lat_lng` to `latlng` in order to align with other SQL bindings (see [#177])
-- Add support for PostgreSQL 18 [#179]
+- Add support for PostgreSQL 18 ([#179], see thanks [@devrimgunduz])
 
 </details>
 
@@ -293,7 +293,7 @@ avoid adding features or APIs which do not map onto the
 [#169]: https://github.com/zachasme/h3-pg/issues/169
 [#176]: https://github.com/zachasme/h3-pg/pull/176
 [#177]: https://github.com/zachasme/h3-pg/pull/177
-[#177]: https://github.com/zachasme/h3-pg/issues/179
+[#179]: https://github.com/zachasme/h3-pg/issues/179
 [@abelvm]: https://github.com/AbelVM
 [@bayandin]: https://github.com/bayandin
 [@BielStela]: https://github.com/BielStela
