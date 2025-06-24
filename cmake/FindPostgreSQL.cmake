@@ -4,7 +4,7 @@
 
 # https://www.postgresql.org/support/versioning/
 set(PostgreSQL_SUPPORTED_VERSIONS ${PostgreSQL_ADDITIONAL_VERSIONS}
-  "17" "16" "15" "14" "13")
+  "18" "17" "16" "15" "14" "13")
 
 # Use `FIND_VERSION` to locate specific version of pg_config, or fallback to known versions
 if(PostgreSQL_FIND_VERSION)
